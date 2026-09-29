@@ -1,5 +1,7 @@
 # Fixture repos for analyzer precision tests
 
+ClickUp: [CU-869f96kz4](https://app.clickup.com/t/869f96kz4)
+
 ### What is the problem we are trying to solve?
 
 Every analyzer in Phase 1 needs known inputs to test against: repos where a finding **must** appear and repos where it **must not**. Without shared fixtures, each analyzer invents its own test data, coverage drifts, and false positives go unnoticed.
@@ -41,5 +43,5 @@ A `fixtures/` directory with five small, deterministic Maven projects, each repr
 - Gradle and npm fixtures: added when those ecosystems are supported
 - Git-history fixtures (secrets in history, stale branches): built programmatically with JGit inside the hygiene/secrets analyzer tests
 
-Suggested branch: `feature/CU-<clickup-id>_fixture_repos`
+Suggested branch: `feature/CU-869f96kz4_fixture_repos`
 Can run in parallel with the scaffold.

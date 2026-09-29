@@ -1,5 +1,7 @@
 # Check name availability and pick the final project name
 
+ClickUp: [CU-869f96geq](https://app.clickup.com/t/869f96geq)
+
 ### What is the problem we are trying to solve?
 
 `stealth` is a placeholder name. Before the scaffold fixes a Maven `groupId`, root Java package, CLI binary name and Homebrew tap, we need a name that's actually available everywhere we publish. Renaming after Phase 1 launches (Show HN, r/java) would break installs and waste launch momentum.

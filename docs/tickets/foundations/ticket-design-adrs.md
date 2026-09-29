@@ -1,5 +1,7 @@
 # Design ADRs: Finding model, scoring, SARIF mapping, .stealth.yml
 
+ClickUp: [CU-869f96kzk](https://app.clickup.com/t/869f96kzk)
+
 ### What is the problem we are trying to solve?
 
 Phase 1 analyzers, renderers, the scoring engine and the MCP server all share four contracts: what a finding looks like, how findings become a score, how they map to SARIF, and what users can configure. If these are decided ad hoc inside the first analyzer PR, every later analyzer and output format inherits accidental choices, and changing them after launch breaks users' CI gates and SARIF history.
@@ -37,5 +39,5 @@ One ADR per decision (context / decision / consequences / alternatives considere
 - Implementing any of it: Phase 1 tickets
 - Platform/API data model: Phase 5
 
-Suggested branch: `chore/CU-<clickup-id>_design_adrs`
+Suggested branch: `chore/CU-869f96kzk_design_adrs`
 Can run in parallel with the scaffold and fixtures.

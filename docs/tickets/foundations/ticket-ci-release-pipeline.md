@@ -1,5 +1,7 @@
 # CI and release pipeline (GitHub Actions + JReleaser)
 
+ClickUp: [CU-869f96kyh](https://app.clickup.com/t/869f96kyh)
+
 ### What is the problem we are trying to solve?
 
 Nothing checks PRs today, and there's no way to ship a build. We need every PR verified automatically, and a tag on `main` to publish the CLI to GitHub Releases and a Homebrew tap without manual steps.
@@ -44,5 +46,5 @@ Needed before Phase 1 work gets merged in parallel: without CI, broken builds an
 - GitHub Action for `stealth doctor` in users' repos: Phase 4
 - Native images / SDKMAN / Scoop: later distribution channels
 
-Suggested branch: `feature/CU-<clickup-id>_ci_release_pipeline`
+Suggested branch: `feature/CU-869f96kyh_ci_release_pipeline`
 Depends on: Maven scaffold, name availability (for tap/org names)

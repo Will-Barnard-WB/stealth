@@ -1,5 +1,7 @@
 # Maven multi-module scaffold (Java 21, Spring Boot)
 
+ClickUp: [CU-869f96kfq](https://app.clickup.com/t/869f96kfq)
+
 ### What is the problem we are trying to solve?
 
 The repo has no code yet. Every Phase 1 ticket (analyzers, scoring, CLI, MCP server) needs a buildable multi-module project with the agreed stack and test tooling in place, so work can start in parallel without each ticket re-deciding the setup.
@@ -43,5 +45,5 @@ A Maven multi-module project where `./mvnw verify` builds, formats and tests eve
 - Real analyzers or MCP tools: Phase 1
 - GraalVM native image: revisit after measuring startup time
 
-Suggested branch: `feature/CU-<clickup-id>_maven_scaffold`
+Suggested branch: `feature/CU-869f96kfq_maven_scaffold`
 Depends on: name availability (for `groupId`)
