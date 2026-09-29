@@ -55,6 +55,8 @@ jobs:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Fine-grained token with contents:write on the tap repo only
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          # Fine-grained token with contents:write on the bucket repo only
+          JRELEASER_SCOOP_GITHUB_TOKEN: ${{ secrets.SCOOP_BUCKET_TOKEN }}
 
       - name: Upload JReleaser output
         if: always()

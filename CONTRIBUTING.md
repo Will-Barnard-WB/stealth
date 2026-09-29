@@ -46,6 +46,7 @@ Releases are cut from `main` by pushing a `vX.Y.Z` tag. The `/release` skill in 
 The tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml). It checks that the tag matches the POM version, runs `./mvnw verify`, and then JReleaser ([`jreleaser.yml`](jreleaser.yml)) does the rest:
 - publishes a GitHub Release with the CLI as `.zip` and `.tgz` (`bin/stealth`, `bin/stealth.bat`, `lib/`) plus checksums
 - updates the formula in [Will-Barnard-WB/homebrew-tap](https://github.com/Will-Barnard-WB/homebrew-tap), so users can run `brew install Will-Barnard-WB/tap/stealth`
+- updates the manifest in [Will-Barnard-WB/scoop-bucket](https://github.com/Will-Barnard-WB/scoop-bucket), so Windows users can run `scoop install stealth` after `scoop bucket add stealth https://github.com/Will-Barnard-WB/scoop-bucket`. The manifest comes from [`src/jreleaser/distributions/stealth/scoop/manifest.json.tpl`](src/jreleaser/distributions/stealth/scoop/manifest.json.tpl)
 
 Versions with a suffix such as `0.2.0-rc.1` are published as GitHub pre-releases.
 
