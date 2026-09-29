@@ -5,6 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
+/** The root {@code stealth} command. Layout and colours come from {@link StealthCli}. */
 @Component
 @Command(
         name = "stealth",
