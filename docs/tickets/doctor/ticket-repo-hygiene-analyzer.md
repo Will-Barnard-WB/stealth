@@ -32,7 +32,7 @@ Tech findings for: stale branches, large committed files, and missing CODEOWNERS
 ### Definition of done
 
 - [ ] Unit tests for each check, with JGit repos built in `@TempDir`
-- [ ] Precision tests: `fixtures/boot3-clean` produces **no** hygiene findings, and `fixtures/boot2-legacy` flags missing CODEOWNERS/CI
+- [ ] Precision tests: `fixtures/boot4-clean` produces **no** hygiene findings, and `fixtures/boot2-legacy` flags missing CODEOWNERS/CI
 - [ ] A non-git directory doesn't fail the analyzer
 - [ ] Thresholds configurable and tested
 - [ ] `./mvnw verify` passes (tests + Spotless)

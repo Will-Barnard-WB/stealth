@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # Only the root reactor. fixtures/ isn't part of it, so its deliberately outdated
+  # and vulnerable dependencies are never updated.
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: weekly

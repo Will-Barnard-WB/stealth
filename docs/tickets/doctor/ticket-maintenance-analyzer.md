@@ -30,7 +30,7 @@ A finding per dependency with no release in over 2 years (configurable), showing
 ### Definition of done
 
 - [ ] WireMock tests for release-date lookup and the `Last-Modified` fallback
-- [ ] Precision tests: a stale dependency in `fixtures/boot2-legacy` is flagged, and `fixtures/boot3-clean` isn't
+- [ ] Precision tests: a stale dependency in `fixtures/boot2-legacy` is flagged, and `fixtures/boot4-clean` isn't
 - [ ] Threshold configurable and tested
 - [ ] `./mvnw verify` passes (tests + Spotless)
 

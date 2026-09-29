@@ -33,7 +33,7 @@ A finding for each dependency (and parent/BOM) where a newer stable version exis
 ### Definition of done
 
 - [ ] WireMock tests for `MavenCentralClient`: metadata parsing, cache hit/miss/TTL, offline mode, 429/5xx retry
-- [ ] Precision tests: `fixtures/boot2-legacy` flags the pinned outdated dependencies, and `fixtures/boot3-clean` produces **no** freshness findings (with a pinned "latest" snapshot served by WireMock)
+- [ ] Precision tests: `fixtures/boot2-legacy` flags the pinned outdated dependencies, and `fixtures/boot4-clean` produces **no** freshness findings (with a pinned "latest" snapshot served by WireMock)
 - [ ] Pre-release filtering unit tests
 - [ ] Managed dependencies collapsed into one finding on the parent/BOM
 - [ ] `./mvnw verify` passes (tests + Spotless)

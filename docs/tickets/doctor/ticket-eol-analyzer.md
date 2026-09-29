@@ -31,7 +31,7 @@ A finding when the project's Java release or Spring Boot version is past end of 
 ### Definition of done
 
 - [ ] WireMock tests for `EndOfLifeClient` with recorded endoflife.date responses
-- [ ] Precision tests: `fixtures/boot2-legacy` flags Spring Boot 2.7 and Java 11, `fixtures/boot3-clean` produces **no** EOL findings
+- [ ] Precision tests: `fixtures/boot2-legacy` flags Spring Boot 2.7 and Java 11, `fixtures/boot4-clean` produces **no** EOL findings
 - [ ] Unit tests for the "within 6 months" window using a fixed `Clock`
 - [ ] `./mvnw verify` passes (tests + Spotless)
 

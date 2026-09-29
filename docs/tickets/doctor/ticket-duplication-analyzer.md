@@ -29,7 +29,7 @@ A tech finding per group of duplicated code blocks above a size threshold, listi
 
 ### Definition of done
 
-- [ ] Precision tests against `fixtures/duplicated`: blocks above the threshold are flagged, blocks below aren't, and `fixtures/boot3-clean` produces **no** findings
+- [ ] Precision tests against `fixtures/duplicated`: blocks above the threshold are flagged, blocks below aren't, and `fixtures/boot4-clean` produces **no** findings
 - [ ] Generated sources are excluded (test with a fake `target/generated-sources` file)
 - [ ] Threshold configurable and tested
 - [ ] Runtime on a large repo recorded on this ticket
