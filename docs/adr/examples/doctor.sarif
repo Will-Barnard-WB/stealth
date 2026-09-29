@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "stealth",
+          "semanticVersion": "0.1.0",
+          "informationUri": "https://github.com/Will-Barnard-WB/stealth",
+          "rules": [
+            {
+              "id": "vuln/known-vulnerability/GHSA-jjjh-jjxp-wpff",
+              "name": "KnownVulnerability",
+              "shortDescription": { "text": "jackson-databind: uncontrolled resource consumption (CVE-2022-42003)" },
+              "fullDescription": { "text": "A dependency has a known vulnerability published in OSV.dev." },
+              "helpUri": "https://osv.dev/vulnerability/GHSA-jjjh-jjxp-wpff",
+              "help": { "text": "Upgrade the dependency to a version that fixes the advisory.", "markdown": "Upgrade the dependency to a version that fixes the advisory. See [GHSA-jjjh-jjxp-wpff](https://osv.dev/vulnerability/GHSA-jjjh-jjxp-wpff)." },
+              "defaultConfiguration": { "level": "error" },
+              "properties": {
+                "tags": ["security", "dependency", "external/cwe/cwe-400"],
+                "precision": "high",
+                "security-severity": "7.5",
+                "stealthRuleId": "vuln/known-vulnerability",
+                "stealthCategory": "security"
+              }
+            },
+            {
+              "id": "secrets/aws-access-key",
+              "name": "AwsAccessKey",
+              "shortDescription": { "text": "AWS access key committed to the repository" },
+              "fullDescription": { "text": "An AWS access key id was found in a tracked file. Anyone with read access to the repository can use it." },
+              "helpUri": "https://github.com/Will-Barnard-WB/stealth/blob/main/docs/rules/secrets/aws-access-key.md",
+              "defaultConfiguration": { "level": "error" },
+              "properties": {
+                "tags": ["security", "secret"],
+                "precision": "high",
+                "security-severity": "9.5",
+                "stealthRuleId": "secrets/aws-access-key",
+                "stealthCategory": "security"
+              }
+            },
+            {
+              "id": "deps/outdated",
+              "name": "OutdatedDependency",
+              "shortDescription": { "text": "Dependency is behind the latest release" },
+              "fullDescription": { "text": "A newer release of this dependency is available on Maven Central." },
+              "helpUri": "https://github.com/Will-Barnard-WB/stealth/blob/main/docs/rules/deps/outdated.md",
+              "defaultConfiguration": { "level": "warning" },
+              "properties": {
+                "tags": ["maintainability", "dependency"],
+                "precision": "high",
+                "stealthRuleId": "deps/outdated",
+                "stealthCategory": "tech"
+              }
+            },
+            {
+              "id": "hygiene/missing-codeowners",
+              "name": "MissingCodeowners",
+              "shortDescription": { "text": "Repository has no CODEOWNERS file" },
+              "fullDescription": { "text": "Without CODEOWNERS, pull requests have no default reviewers." },
+              "helpUri": "https://github.com/Will-Barnard-WB/stealth/blob/main/docs/rules/hygiene/missing-codeowners.md",
+              "defaultConfiguration": { "level": "note" },
+              "properties": {
+                "tags": ["maintainability"],
+                "precision": "high",
+                "stealthRuleId": "hygiene/missing-codeowners",
+                "stealthCategory": "tech"
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": { "id": "stealth/doctor/" },
+      "results": [
+        {
+          "ruleId": "vuln/known-vulnerability/GHSA-jjjh-jjxp-wpff",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": { "text": "com.fasterxml.jackson.core:jackson-databind 2.13.1 has a known vulnerability (GHSA-jjjh-jjxp-wpff, CVE-2022-42003). Fixed in 2.13.4.2." },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "pom.xml", "uriBaseId": "%SRCROOT%" },
+                "region": { "startLine": 42 }
+              },
+              "logicalLocations": [{ "name": ".", "kind": "module" }]
+            }
+          ],
+          "partialFingerprints": { "stealth/v1": "v1:2bb4790633db48177380a194d116cc3fecb55de8e0078e44620b97e1158ad74e" },
+          "properties": {
+            "severity": "high",
+            "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+            "advisory": "GHSA-jjjh-jjxp-wpff",
+            "aliases": ["CVE-2022-42003"],
+            "fixedVersion": "2.13.4.2"
+          }
+        },
+        {
+          "ruleId": "secrets/aws-access-key",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": { "text": "AWS access key id committed in src/main/resources/application.properties. Revoke it, then remove it from the file." },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/main/resources/application.properties", "uriBaseId": "%SRCROOT%" },
+                "region": { "startLine": 12 }
+              },
+              "logicalLocations": [{ "name": ".", "kind": "module" }]
+            }
+          ],
+          "partialFingerprints": { "stealth/v1": "v1:c77e0939cbd45a129c6cbb29a6edaa001f40e8b2954e3714c1c2532257ee7bd7" },
+          "properties": { "severity": "critical" }
+        },
+        {
+          "ruleId": "deps/outdated",
+          "ruleIndex": 2,
+          "level": "warning",
+          "message": { "text": "org.apache.commons:commons-lang3 3.9 is behind the latest release 3.17.0." },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "core/pom.xml", "uriBaseId": "%SRCROOT%" },
+                "region": { "startLine": 30 }
+              },
+              "logicalLocations": [{ "name": "core", "kind": "module" }]
+            }
+          ],
+          "partialFingerprints": { "stealth/v1": "v1:4dac869dfec4d9e56e079f8fb6ed95b3e9a46e63fbfb4cbaa17f8d6349d2b807" },
+          "properties": {
+            "severity": "medium",
+            "component": "pkg:maven/org.apache.commons/commons-lang3@3.9",
+            "fixedVersion": "3.17.0"
+          }
+        },
+        {
+          "ruleId": "hygiene/missing-codeowners",
+          "ruleIndex": 3,
+          "level": "note",
+          "message": { "text": "No CODEOWNERS file found (checked CODEOWNERS, .github/CODEOWNERS, docs/CODEOWNERS). This finding applies to the whole repository." },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "pom.xml", "uriBaseId": "%SRCROOT%" },
+                "region": { "startLine": 1 }
+              },
+              "logicalLocations": [{ "name": "repository", "kind": "repository" }]
+            }
+          ],
+          "partialFingerprints": { "stealth/v1": "v1:19ef82ff950142f0a532916667bd9e095e824c59654b750b9445bb8acd7b6b46" },
+          "properties": { "severity": "low" }
+        }
+      ],
+      "properties": {
+        "stealthScore": { "overall": 50, "tech": 96, "security": 50, "scoringVersion": 1 }
+      }
+    }
+  ]
+}
