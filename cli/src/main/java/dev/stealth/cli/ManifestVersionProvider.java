@@ -8,9 +8,12 @@ class ManifestVersionProvider implements IVersionProvider {
 
     @Override
     public String[] getVersion() {
-        String version =
-                Objects.requireNonNullElse(
-                        StealthCommand.class.getPackage().getImplementationVersion(), "dev");
-        return new String[] {"stealth " + version};
+        return new String[] {"stealth " + version()};
+    }
+
+    /** The release version, or {@code dev} when running from classes rather than the jar. */
+    static String version() {
+        return Objects.requireNonNullElse(
+                StealthCommand.class.getPackage().getImplementationVersion(), "dev");
     }
 }

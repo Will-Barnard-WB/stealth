@@ -25,7 +25,7 @@ public class StealthApplication implements CommandLineRunner, ExitCodeGenerator 
 
     @Override
     public void run(String... args) {
-        exitCode = new CommandLine(command, factory).execute(args);
+        exitCode = StealthCli.configure(new CommandLine(command, factory)).execute(args);
     }
 
     @Override
