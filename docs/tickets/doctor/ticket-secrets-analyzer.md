@@ -31,7 +31,7 @@ A security finding per detected secret, with file, line, rule (e.g. "AWS access 
 ### Definition of done
 
 - [ ] Unit tests per rule: matches and near-misses
-- [ ] Precision tests against `fixtures/with-secrets`: every real pattern flagged, every look-alike (UUIDs, hashes, `EXAMPLE` keys, env placeholders) **not** flagged, and `fixtures/boot3-clean` produces **no** findings
+- [ ] Precision tests against `fixtures/with-secrets`: every real pattern flagged, every look-alike (UUIDs, hashes, `EXAMPLE` keys, env placeholders) **not** flagged, and `fixtures/boot4-clean` produces **no** findings
 - [ ] Test that no renderer output (terminal, JSON, SARIF) contains an unmasked secret
 - [ ] Allowlist tests (config fingerprint, path glob, inline comment)
 - [ ] `./mvnw verify` passes (tests + Spotless)

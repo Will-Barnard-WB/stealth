@@ -19,9 +19,9 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [ ] **Check name availability:** GitHub org, Maven Central groupId, domain, Homebrew tap. `stealth` is a placeholder.
 - [x] **Maven multi-module scaffold:** parent POM (Java 21), modules `core`, `cli` (picocli), `mcp`. JUnit 5, AssertJ, Spotless.
 - [ ] **CI and release pipeline:** GitHub Actions for build, test and format check. JReleaser → GitHub Releases + Homebrew tap.
-- [ ] **Fixture repos:** `boot2-legacy`, `boot3-clean`, `with-secrets`, `duplicated`, `multi-module`. Every analyzer gets precision tests on these.
+- [ ] **Fixture repos:** `boot2-legacy`, `boot4-clean`, `with-secrets`, `duplicated`, `multi-module`. Every analyzer gets precision tests on these.
 - [x] **License and community docs:** Apache-2.0 license, README, CONTRIBUTING, SECURITY.md, open-core boundary doc.
-- [ ] **Design ADRs:** Finding model, scoring formula, SARIF mapping, `.stealth.yml` format. See [docs/adr](docs/adr/README.md).
+- [x] **Design ADRs:** Finding model, scoring formula, SARIF mapping, `.stealth.yml` format. See [docs/adr](docs/adr/README.md).
 
 ## Phase 1 — Doctor + MCP
 - [ ] **Analyzer SPI and parallel runner:** `Analyzer.analyze(RepoContext) -> List<Finding>`, run in parallel with timeouts. ([ADR-0001](docs/adr/0001-finding-model.md))

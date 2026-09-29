@@ -33,7 +33,7 @@ A small `Analyzer` interface in `core`, and a runner that executes all enabled a
 ### Definition of done
 
 - [ ] Unit tests for `AnalyzerRunner`: parallel execution, a timeout marks the analyzer `TIMED_OUT` without blocking others, an exception marks it `FAILED`, and disabled analyzers are `SKIPPED`
-- [ ] `stealth doctor fixtures/boot3-clean` runs with a stub analyzer and exits 0
+- [ ] `stealth doctor fixtures/boot4-clean` runs with a stub analyzer and exits 0
 - [ ] `Finding` matches ADR-001
 - [ ] `./mvnw verify` passes (tests + Spotless)
 

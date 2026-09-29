@@ -5,10 +5,10 @@ SARIF output, the score users gate CI on, the config file format).
 
 | ADR | Title | Status |
 |---|---|---|
-| [0001](0001-finding-model.md) | Finding model | Proposed |
-| [0002](0002-scoring-formula.md) | Scoring formula | Proposed |
-| [0003](0003-sarif-mapping.md) | SARIF mapping | Proposed |
-| [0004](0004-stealth-yml-format.md) | `.stealth.yml` format | Proposed |
+| [0001](0001-finding-model.md) | Finding model | Accepted |
+| [0002](0002-scoring-formula.md) | Scoring formula | Accepted |
+| [0003](0003-sarif-mapping.md) | SARIF mapping | Accepted |
+| [0004](0004-stealth-yml-format.md) | `.stealth.yml` format | Accepted |
 
 ## Process
 

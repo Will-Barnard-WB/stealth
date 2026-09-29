@@ -30,7 +30,7 @@ Every doctor run produces a tech score, a security score and an overall score (0
 ### Definition of done
 
 - [ ] Unit tests for the formula: weights, diminishing returns, bounds (0–100), incomplete categories
-- [ ] Golden tests on fixtures: `boot3-clean` scores ≥ 95 on both categories, and `boot2-legacy` scores lower than `boot3-clean` in both categories (exact values snapshotted)
+- [ ] Golden tests on fixtures: `boot4-clean` scores ≥ 95 on both categories, and `boot2-legacy` scores lower than `boot4-clean` in both categories (exact values snapshotted)
 - [ ] `FixPlanner` groups a parent upgrade's findings into one item
 - [ ] Same input always gives the same score and order (determinism test)
 - [ ] ADR-002 updated if the implementation diverges

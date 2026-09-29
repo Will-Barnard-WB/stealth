@@ -1,6 +1,6 @@
 # ADR-0002: Scoring formula
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-29
 - **Ticket:** CU-869f96kzk
 

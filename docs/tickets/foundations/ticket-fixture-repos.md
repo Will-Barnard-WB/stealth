@@ -19,7 +19,7 @@ A `fixtures/` directory with five small, deterministic Maven projects, each repr
 | Fixture | Contents | Expected findings |
 |---|---|---|
 | `boot2-legacy` | Spring Boot 2.7, Java 11, `javax.*`, a few outdated and one known-vulnerable dependency pinned | outdated deps, CVE with fixed version, Boot + Java EOL |
-| `boot3-clean` | Current Spring Boot 3.x, Java 21, up-to-date deps, CODEOWNERS, CI config, tests | **none**: the false-positive baseline |
+| `boot4-clean` | Current Spring Boot 4.x (renamed from `boot3-clean`: Boot 3.5 reached EOL on 2026-06-30), Java 21, up-to-date deps, CODEOWNERS, CI config, tests | **none**: the false-positive baseline |
 | `with-secrets` | Fake AWS key, GitHub token, private key block, high-entropy string, plus look-alikes that must not match (UUIDs, hashes in lockfiles) | secrets only for the real patterns |
 | `duplicated` | Copy-pasted helper classes above and below the CPD threshold | duplication only above threshold |
 | `multi-module` | Parent POM + BOM import + 3 modules, versions managed through the parent and properties | correct effective versions per module; no duplicate findings per module |
