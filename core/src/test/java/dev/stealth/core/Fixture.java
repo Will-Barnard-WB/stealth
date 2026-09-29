@@ -33,7 +33,7 @@ public enum Fixture {
     }
 
     public RepoContext context() {
-        return new RepoContext(path());
+        return new RepoContext(path(), StealthConfig.defaults());
     }
 
     /**
