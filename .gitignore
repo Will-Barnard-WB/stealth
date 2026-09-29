@@ -24,3 +24,6 @@ dist/
 .env
 .env.*
 *.log
+
+# Claude Code
+.claude/
