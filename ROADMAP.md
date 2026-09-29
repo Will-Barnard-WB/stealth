@@ -17,14 +17,14 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 
 ## Phase 0 — Foundations
 - [ ] **Check name availability:** GitHub org, Maven Central groupId, domain, Homebrew tap. `stealth` is a placeholder.
-- [ ] **Maven multi-module scaffold:** parent POM (Java 21), modules `core`, `cli` (picocli), `mcp`. JUnit 5, AssertJ, Spotless.
+- [x] **Maven multi-module scaffold:** parent POM (Java 21), modules `core`, `cli` (picocli), `mcp`. JUnit 5, AssertJ, Spotless.
 - [ ] **CI and release pipeline:** GitHub Actions for build, test and format check. JReleaser → GitHub Releases + Homebrew tap.
 - [ ] **Fixture repos:** `boot2-legacy`, `boot3-clean`, `with-secrets`, `duplicated`, `multi-module`. Every analyzer gets precision tests on these.
 - [x] **License and community docs:** Apache-2.0 license, README, CONTRIBUTING, SECURITY.md, open-core boundary doc.
-- [ ] **Design ADRs:** Finding model, scoring formula, SARIF mapping, `.stealth.yml` format.
+- [ ] **Design ADRs:** Finding model, scoring formula, SARIF mapping, `.stealth.yml` format. See [docs/adr](docs/adr/README.md).
 
 ## Phase 1 — Doctor + MCP
-- [ ] **Analyzer SPI and parallel runner:** `Analyzer.analyze(RepoContext) -> List<Finding>`, run in parallel with timeouts.
+- [ ] **Analyzer SPI and parallel runner:** `Analyzer.analyze(RepoContext) -> List<Finding>`, run in parallel with timeouts. ([ADR-0001](docs/adr/0001-finding-model.md))
 - [ ] **Maven model loading:** effective versions including parent POMs and BOMs (maven-model-builder), multi-module support.
 - [ ] **Dependency freshness analyzer:** latest versions via the Maven Central search API, cached in `~/.stealth/cache`.
 - [ ] **Maintenance analyzer:** flag dependencies with no release in over 2 years.
@@ -33,9 +33,9 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [ ] **Secrets analyzer:** regex + entropy ruleset with an allowlist (working tree first, git history later).
 - [ ] **Duplication analyzer:** PMD CPD as a library.
 - [ ] **Repo hygiene analyzer:** JGit for stale branches and large files; missing CODEOWNERS, CI, tests.
-- [ ] **Scoring engine:** 0–100 per category (tech, security) and overall, plus a ranked fix list.
-- [ ] **Output renderers and CI gate:** terminal, `--json`, SARIF 2.1.0, `--fail-under N`.
-- [ ] **`.stealth.yml` config:** ignored paths, severity overrides, allowlists.
+- [ ] **Scoring engine:** 0–100 per category (tech, security) and overall, plus a ranked fix list. ([ADR-0002](docs/adr/0002-scoring-formula.md))
+- [ ] **Output renderers and CI gate:** terminal, `--json`, SARIF 2.1.0, `--fail-under N`. ([ADR-0003](docs/adr/0003-sarif-mapping.md))
+- [ ] **`.stealth.yml` config:** ignored paths, severity overrides, allowlists. ([ADR-0004](docs/adr/0004-stealth-yml-format.md))
 - [ ] **MCP server:** stdio. Tools `repo_health`, `list_findings`, `check_dependency`.
 - [ ] **Phase 1 launch:** docs, demo GIF, Show HN, r/java, Spring community. Check findings by hand on spring-petclinic first.
 
