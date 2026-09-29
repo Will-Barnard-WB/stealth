@@ -1,4 +1,4 @@
-# stealth
+# Stealth
 
 **An autonomous maintainer for your repos: find, prevent and clear tech debt and security debt.**
 
