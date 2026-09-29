@@ -13,7 +13,7 @@ Each phase ships something usable on its own.
 | 5 — Platform | Hosted fleet dashboard, campaigns | Months 6–9 | Revenue |
 | 6 — Prune | Runtime-evidence removal of unused code | Months 9–12 | Security budget, bigger deals |
 
-Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks marked *(not yet in ClickUp)* still need to be added there.
+Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks marked still need to be added there.
 
 ## Phase 0 — Foundations
 - [ ] **Check name availability:** GitHub org, Maven Central groupId, domain, Homebrew tap. `stealth` is a placeholder.
@@ -70,29 +70,29 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 ## Phase 5 — Platform
 - [ ] **Spring Boot API and scan ingestion:** orgs, repos, `stealth upload`, Postgres, GitHub OAuth.
 - [ ] **GitHub App:** org-wide repo discovery and scheduled scans.
-- [ ] **React dashboard:** fleet health, repo drill-down, combined tech + security backlog. *(not yet in ClickUp)*
-- [ ] **Campaigns:** one fix → upgrade PRs across many repos, with progress tracking. *(not yet in ClickUp)*
-- [ ] **Debt in money terms:** effort-hours × rate per finding type. *(not yet in ClickUp)*
-- [ ] **Teams, RBAC and SSO** (SSO in the enterprise tier). *(not yet in ClickUp)*
-- [ ] **Stripe billing and tiers:** Free CLI / Team per developer / Enterprise. *(not yet in ClickUp)*
-- [ ] **Self-hosted distribution:** Docker Compose, then Helm. *(not yet in ClickUp)*
+- [ ] **React dashboard:** fleet health, repo drill-down, combined tech + security backlog.
+- [ ] **Campaigns:** one fix → upgrade PRs across many repos, with progress tracking.
+- [ ] **Debt in money terms:** effort-hours × rate per finding type.
+- [ ] **Teams, RBAC and SSO** (SSO in the enterprise tier).
+- [ ] **Stripe billing and tiers:** Free CLI / Team per developer / Enterprise.
+- [ ] **Self-hosted distribution:** Docker Compose, then Helm.
 
 ## Phase 6 — Prune
-- [ ] **Runtime usage Java agent:** samples which classes and endpoints are used. *(not yet in ClickUp)*
-- [ ] **Unused dependency detection:** jdeps + runtime evidence. *(not yet in ClickUp)*
-- [ ] **Dead endpoint detection:** Spring request mappings × access logs. *(not yet in ClickUp)*
-- [ ] **Removal PRs** verified by the test harness. *(not yet in ClickUp)*
-- [ ] **Attack-surface reduction report** for security buyers. *(not yet in ClickUp)*
+- [ ] **Runtime usage Java agent:** samples which classes and endpoints are used.
+- [ ] **Unused dependency detection:** jdeps + runtime evidence.
+- [ ] **Dead endpoint detection:** Spring request mappings × access logs.
+- [ ] **Removal PRs** verified by the test harness.
+- [ ] **Attack-surface reduction report** for security buyers.
 
 ## Business & go-to-market (runs in parallel)
-- [ ] **Positioning and landing page:** "Your repos maintain themselves", with a waitlist before the Phase 1 launch. *(not yet in ClickUp)*
-- [ ] **Competitive analysis:** Moderne, SonarQube, Renovate/Mend, CodeScene, AWS Transform, Copilot app modernization. *(not yet in ClickUp)*
-- [ ] **Recruit 5 design partners** with large Spring Boot 2 estates. *(not yet in ClickUp)*
-- [ ] **Pricing experiments:** per developer vs per repo. *(not yet in ClickUp)*
-- [ ] **Usage stats and metrics:** opt-in CLI stats; stars, weekly active repos, PRs merged, upgrade success rate. *(not yet in ClickUp)*
-- [ ] **Content plan:** public benchmark, "state of Java tech debt" report, conference talk. *(not yet in ClickUp)*
-- [ ] **Fundraising deck** once there's traction. *(not yet in ClickUp)*
-- [ ] **Track risks** (below). *(not yet in ClickUp)*
+- [ ] **Positioning and landing page:** "Your repos maintain themselves", with a waitlist before the Phase 1 launch.
+- [ ] **Competitive analysis:** Moderne, SonarQube, Renovate/Mend, CodeScene, AWS Transform, Copilot app modernization.
+- [ ] **Recruit 5 design partners** with large Spring Boot 2 estates.
+- [ ] **Pricing experiments:** per developer vs per repo.
+- [ ] **Usage stats and metrics:** opt-in CLI stats; stars, weekly active repos, PRs merged, upgrade success rate.
+- [ ] **Content plan:** public benchmark, "state of Java tech debt" report, conference talk.
+- [ ] **Fundraising deck** once there's traction.
+- [ ] **Track risks** (below).
 
 ## Risks
 - **OpenRewrite recipe licensing:** audit before Phase 2. Use only Apache-2.0 recipes in the paid platform, or write your own.
