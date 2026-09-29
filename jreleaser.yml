@@ -57,3 +57,9 @@ distributions:
       repository:
         owner: Will-Barnard-WB
         name: homebrew-tap
+    scoop:
+      # Same as brew: publish release candidates until the Phase 1 launch, then switch to RELEASE
+      active: ALWAYS
+      repository:
+        owner: Will-Barnard-WB
+        name: scoop-bucket

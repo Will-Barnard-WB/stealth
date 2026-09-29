@@ -59,6 +59,29 @@ fixtures/      sample repos used in tests
 
 Built with Java 21, Maven and picocli.
 
+## Install
+
+stealth needs Java 21. Homebrew installs it for you; on Windows, install it with Scoop as shown below.
+
+macOS and Linux ([Homebrew](https://brew.sh)):
+
+```sh
+brew install Will-Barnard-WB/tap/stealth
+```
+
+On macOS, Homebrew needs up-to-date Command Line Tools to install from a tap. If it says they're outdated, update them in System Settings → General → Software Update, or run `xcode-select --install`.
+
+Windows ([Scoop](https://scoop.sh)):
+
+```powershell
+scoop bucket add java
+scoop install java/temurin21-jre   # skip if you already have Java 21
+scoop bucket add stealth https://github.com/Will-Barnard-WB/scoop-bucket
+scoop install stealth
+```
+
+Or download the `.zip` from [GitHub Releases](https://github.com/Will-Barnard-WB/stealth/releases), unpack it and add `bin/` to your `PATH`.
+
 ## Contributing
 The project is at a very early stage. See [CONTRIBUTING.md](CONTRIBUTING.md), and the roadmap for where help is useful.
 
