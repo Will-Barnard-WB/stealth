@@ -14,7 +14,7 @@
     <!-- groupId is a placeholder until the name-availability ticket (CU-869f96geq) picks the final name -->
     <groupId>dev.stealth</groupId>
     <artifactId>stealth-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0-rc.1</version>
     <packaging>pom</packaging>
 
     <name>stealth</name>
