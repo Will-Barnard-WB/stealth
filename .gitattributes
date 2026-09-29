@@ -1,0 +1,9 @@
+# Normalise line endings so Windows and macOS/Linux checkouts don't churn
+* text=auto eol=lf
+
+*.cmd text eol=crlf
+*.bat text eol=crlf
+mvnw text eol=lf
+
+*.jar binary
+*.png binary
