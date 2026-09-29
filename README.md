@@ -61,13 +61,15 @@ Built with Java 21, Maven and picocli.
 
 ## Install
 
-Release candidates need Java 21.
+stealth needs Java 21. Homebrew installs it for you; on Windows, install it with Scoop as shown below.
 
 macOS and Linux ([Homebrew](https://brew.sh)):
 
 ```sh
 brew install Will-Barnard-WB/tap/stealth
 ```
+
+On macOS, Homebrew needs up-to-date Command Line Tools to install from a tap. If it says they're outdated, update them in System Settings → General → Software Update, or run `xcode-select --install`.
 
 Windows ([Scoop](https://scoop.sh)):
 

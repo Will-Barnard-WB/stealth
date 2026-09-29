@@ -36,6 +36,29 @@ jobs:
       # Tests (Surefire *Test, Failsafe *IT) and spotless:check
       - run: ${{ matrix.mvnw }} -B -ntp verify
 
+      # Packages the CLI zip the same way a release does (what brew and scoop install), then runs its launcher
+      - name: Assemble release zip
+        run: ${{ matrix.mvnw }} -B -ntp -N jreleaser:assemble
+
+      - name: Run packaged CLI (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          unzip -q target/jreleaser/assemble/stealth/java-archive/stealth-*.zip -d target/smoke
+          stealth=$(echo target/smoke/stealth-*/bin/stealth)
+          "$stealth" --version
+          "$stealth" doctor fixtures/boot4-clean
+
+      - name: Run packaged CLI (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          $zip = Get-ChildItem target/jreleaser/assemble/stealth/java-archive/stealth-*.zip
+          Expand-Archive -Path $zip.FullName -DestinationPath target/smoke
+          $stealth = (Get-ChildItem target/smoke/stealth-*/bin/stealth.bat).FullName
+          & $stealth --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $stealth doctor fixtures/boot4-clean
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v7

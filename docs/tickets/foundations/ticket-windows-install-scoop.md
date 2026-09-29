@@ -48,18 +48,19 @@ The other options, and why they come later:
 - **New repo** `Will-Barnard-WB/scoop-bucket`: empty `bucket/` folder and a README with install instructions.
 - **Docs:** add a Windows install section to README, a note in CONTRIBUTING next to the tap line, and a Scoop line in the `/release` skill's UAT template.
 - **Risks:**
-  - Using JReleaser's Boot `JarLauncher` main class through `stealth.bat` on Windows hasn't been tested yet. Check it early on a real install.
+  - Using JReleaser's Boot `JarLauncher` main class through `stealth.bat` on Windows hasn't been tested yet. CI now covers it: the `windows-latest` job assembles the zip and runs the packaged `stealth.bat`. A real Scoop install is still a manual check.
   - Scoop checks `hash` in the manifest. JReleaser fills it in, but a re-run with `overwrite: true` that rebuilds the ZIP would change the hash. Make sure the manifest is regenerated on the same run.
 
 ### Definition of done
 
-- [ ] `jreleaser.yml` has a `scoop` packager, and `./mvnw -N jreleaser:config` validates it
+- [x] `jreleaser.yml` has a `scoop` packager, and a JReleaser dry run generates a valid `bucket/stealth.json`
 - [ ] `scoop-bucket` repo exists, and the `SCOOP_BUCKET_TOKEN` secret is set, scoped to that repo
 - [ ] An rc tag (e.g. `v0.1.0-rc.N`) updates `bucket/stealth.json` automatically
 - [ ] On a clean Windows machine with Scoop: `scoop bucket add` + `scoop install stealth` works, and `stealth --version` and `stealth doctor fixtures/boot4-clean` run from a new terminal
 - [ ] Java 21 dependency handled (installed by Scoop, or a clear message when missing)
 - [ ] `scoop update stealth` picks up the next rc
-- [ ] README, CONTRIBUTING and the `/release` UAT template include the Scoop install
+- [x] README, CONTRIBUTING and the `/release` UAT template include the Scoop install
+- [x] CI assembles the release zip and runs `bin\stealth.bat --version` and `doctor` on `windows-latest` (and `bin/stealth` on Ubuntu)
 - [ ] `./mvnw verify` passes (tests + Spotless)
 
 ### Out of scope

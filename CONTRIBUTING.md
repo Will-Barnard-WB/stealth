@@ -32,7 +32,7 @@ Conventions:
 - New analyzers need tests against the repos in `fixtures/`, including tests showing they *don't* flag clean code.
 
 ## Continuous integration
-Every pull request and every push to `main` runs `./mvnw verify` on Ubuntu and Windows ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). The required check is called `ci`, and PRs can't merge until it passes. If a build fails, the Surefire/Failsafe reports are attached to the run as artifacts. Dependabot opens weekly PRs for Maven and GitHub Actions updates.
+Every pull request and every push to `main` runs `./mvnw verify` on Ubuntu and Windows ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). It also builds the release zip and runs the packaged launcher (`bin/stealth`, or `bin\stealth.bat` on Windows), so packaging problems show up before a release. The required check is called `ci`, and PRs can't merge until it passes. If a build fails, the Surefire/Failsafe reports are attached to the run as artifacts. Dependabot opens weekly PRs for Maven and GitHub Actions updates.
 
 ## Releasing
 Releases are cut from `main` by pushing a `vX.Y.Z` tag. The `/release` skill in Claude Code prepares everything up to the tag. By hand, the steps are:
