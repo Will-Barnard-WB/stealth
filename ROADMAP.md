@@ -24,7 +24,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [x] **Design ADRs:** Finding model, scoring formula, SARIF mapping, `.stealth.yml` format. See [docs/adr](docs/adr/README.md).
 
 ## Phase 1 — Doctor + MCP
-- [ ] **Analyzer SPI and parallel runner:** `Analyzer.analyze(RepoContext) -> List<Finding>`, run in parallel with timeouts. ([ADR-0001](docs/adr/0001-finding-model.md))
+- [x] **Analyzer SPI and parallel runner:** `Analyzer.analyze(RepoContext) -> List<Finding>`, run in parallel with timeouts. ([ADR-0001](docs/adr/0001-finding-model.md))
 - [ ] **Maven model loading:** effective versions including parent POMs and BOMs (maven-model-builder), multi-module support.
 - [ ] **Dependency freshness analyzer:** latest versions via the Maven Central search API, cached in `~/.stealth/cache`.
 - [ ] **Maintenance analyzer:** flag dependencies with no release in over 2 years.
