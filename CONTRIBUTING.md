@@ -31,6 +31,26 @@ Conventions:
 - Name test methods `method_condition_expectedResult`, e.g. `analyze_cleanRepo_reportsNoFindings`.
 - New analyzers need tests against the repos in `fixtures/`, including tests showing they *don't* flag clean code.
 
+## Continuous integration
+Every pull request and every push to `main` runs `./mvnw verify` on Ubuntu and Windows ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). The required check is called `ci`, and PRs can't merge until it passes. If a build fails, the Surefire/Failsafe reports are attached to the run as artifacts. Dependabot opens weekly PRs for Maven and GitHub Actions updates.
+
+## Releasing
+Releases are cut from `main` by pushing a `vX.Y.Z` tag. The `/release` skill in Claude Code prepares everything up to the tag. By hand, the steps are:
+
+1. Add a `## [X.Y.Z] - YYYY-MM-DD` entry to `CHANGELOG.md`. The release notes are taken from this entry, and the release fails without it.
+2. Set the version and check the build: `./mvnw versions:set -DnewVersion=X.Y.Z -DgenerateBackupPoms=false && ./mvnw verify`
+3. Commit (`Release vX.Y.Z`) and tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+4. Set the next development version (`X.Y.(Z+1)-SNAPSHOT`) and commit.
+5. Push `main`, then the tag: `git push origin main && git push origin vX.Y.Z`
+
+The tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml). It checks that the tag matches the POM version, runs `./mvnw verify`, and then JReleaser ([`jreleaser.yml`](jreleaser.yml)) does the rest:
+- publishes a GitHub Release with the CLI as `.zip` and `.tgz` (`bin/stealth`, `bin/stealth.bat`, `lib/`) plus checksums
+- updates the formula in [Will-Barnard-WB/homebrew-tap](https://github.com/Will-Barnard-WB/homebrew-tap), so users can run `brew install Will-Barnard-WB/tap/stealth`
+
+Versions with a suffix such as `0.2.0-rc.1` are published as GitHub pre-releases.
+
+To check a release locally without publishing anything, run `./mvnw package -DskipTests` and then `./mvnw -N jreleaser:assemble jreleaser:full-release -Djreleaser.dry.run=true`. This needs a regular clone: JReleaser can't read git worktrees.
+
 ## Pull requests
 - Keep PRs focused on one change.
 - Describe what changed and why, and how you tested it.
