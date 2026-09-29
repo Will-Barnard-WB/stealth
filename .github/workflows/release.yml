@@ -1,0 +1,67 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Check tag matches the POM version
+        run: |
+          pom_version=$(./mvnw -B -q help:evaluate -Dexpression=project.version -DforceStdout)
+          if [ "v${pom_version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match POM version ${pom_version}. Tag the 'Release vX.Y.Z' commit."
+            exit 1
+          fi
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          mkdir -p target
+          awk -v v="$version" '
+            index($0, "## [" v "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > target/release-notes.md
+          if [ ! -s target/release-notes.md ]; then
+            echo "::error::No '## [${version}]' entry in CHANGELOG.md. Run the /release skill first."
+            exit 1
+          fi
+
+      - run: ./mvnw -B -ntp verify
+
+      - name: Release with JReleaser
+        run: ./mvnw -B -ntp -N jreleaser:assemble jreleaser:full-release
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Fine-grained token with contents:write on the tap repo only
+          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
+      - name: Upload JReleaser output
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jreleaser
+          path: |
+            target/jreleaser/trace.log
+            target/jreleaser/output.properties
+          if-no-files-found: ignore

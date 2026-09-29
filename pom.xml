@@ -46,6 +46,7 @@
         <wiremock.version>3.13.2</wiremock.version>
         <spotless-maven-plugin.version>3.10.3</spotless-maven-plugin.version>
         <google-java-format.version>1.36.1</google-java-format.version>
+        <jreleaser-maven-plugin.version>1.26.0</jreleaser-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -96,6 +97,11 @@
                     <groupId>com.diffplug.spotless</groupId>
                     <artifactId>spotless-maven-plugin</artifactId>
                     <version>${spotless-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jreleaser</groupId>
+                    <artifactId>jreleaser-maven-plugin</artifactId>
+                    <version>${jreleaser-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -149,6 +155,15 @@
                         <phase>verify</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Releases run from the root only (./mvnw -N jreleaser:assemble jreleaser:full-release), configured by jreleaser.yml -->
+            <plugin>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <configFile>${project.basedir}/jreleaser.yml</configFile>
+                </configuration>
             </plugin>
         </plugins>
     </build>

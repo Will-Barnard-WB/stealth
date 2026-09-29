@@ -1,0 +1,59 @@
+# Run from CI on a vX.Y.Z tag: ./mvnw -N jreleaser:assemble jreleaser:full-release (see .github/workflows/release.yml)
+project:
+  name: stealth
+  description: Autonomous maintainer that finds and clears tech and security debt
+  longDescription: Find, prevent and clear tech debt and security debt.
+  authors:
+    - Will Barnard
+  license: Apache-2.0
+  inceptionYear: 2026
+  links:
+    homepage: https://github.com/Will-Barnard-WB/stealth
+  java:
+    version: 21
+    groupId: dev.stealth
+    artifactId: stealth-cli
+
+release:
+  github:
+    owner: Will-Barnard-WB
+    name: stealth
+    tagName: 'v{{projectVersion}}'
+    # The tag is pushed by the maintainer; JReleaser only creates the release
+    skipTag: true
+    overwrite: true
+    prerelease:
+      pattern: '.*-(rc|alpha|beta|M)\.?\d*'
+    changelog:
+      # Extracted from CHANGELOG.md by the release workflow
+      external: target/release-notes.md
+
+assemble:
+  javaArchive:
+    stealth:
+      active: ALWAYS
+      mainJar:
+        path: 'cli/target/stealth-cli-{{projectVersion}}.jar'
+      java:
+        # The CLI jar is a Spring Boot fat jar, so start it through Boot's launcher
+        mainClass: org.springframework.boot.loader.launch.JarLauncher
+      executable:
+        name: stealth
+      formats:
+        - ZIP
+        - TGZ
+      fileSets:
+        - input: '.'
+          includes:
+            - LICENSE
+            - README.md
+
+distributions:
+  stealth:
+    brew:
+      # Pre-launch: publish release candidates to the tap too. Switch to RELEASE after the Phase 1 launch.
+      active: ALWAYS
+      multiPlatform: true
+      repository:
+        owner: Will-Barnard-WB
+        name: homebrew-tap
