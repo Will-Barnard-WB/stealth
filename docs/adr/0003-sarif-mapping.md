@@ -1,6 +1,6 @@
 # ADR-0003: SARIF mapping
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-29
 - **Ticket:** CU-869f96kzk
 

@@ -1,6 +1,6 @@
 # ADR-0004: `.stealth.yml` format
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-29
 - **Ticket:** CU-869f96kzk
 
