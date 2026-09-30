@@ -6,6 +6,8 @@ import dev.stealth.core.deps.DependencyFreshnessAnalyzer;
 import dev.stealth.core.deps.MaintenanceAnalyzer;
 import dev.stealth.core.deps.MavenCentralClient;
 import dev.stealth.core.deps.MavenCentralSearch;
+import dev.stealth.core.eol.EndOfLifeAnalyzer;
+import dev.stealth.core.eol.EndOfLifeClient;
 import dev.stealth.core.http.CachedHttpClient;
 import dev.stealth.core.http.HttpCache;
 import dev.stealth.core.maven.MavenModelLoader;
@@ -44,6 +46,11 @@ class DoctorConfiguration {
     }
 
     @Bean
+    Clock clock() {
+        return Clock.systemUTC();
+    }
+
+    @Bean
     MavenCentralClient mavenCentralClient(CachedHttpClient http) {
         return new MavenCentralClient(http, MavenResolverSettings.MAVEN_CENTRAL);
     }
@@ -77,5 +84,16 @@ class DoctorConfiguration {
             MavenCentralSearch search,
             @Value("${stealth.maintenance.stale-after:P2Y}") Period staleAfter) {
         return new MaintenanceAnalyzer(loader, central, search, staleAfter, Clock.systemUTC());
+    }
+
+    @Bean
+    EndOfLifeClient endOfLifeClient(CachedHttpClient http) {
+        return new EndOfLifeClient(http, EndOfLifeClient.ENDOFLIFE_DATE);
+    }
+
+    @Bean
+    EndOfLifeAnalyzer endOfLifeAnalyzer(
+            MavenModelLoader loader, EndOfLifeClient endOfLife, Clock clock) {
+        return new EndOfLifeAnalyzer(loader, endOfLife, clock);
     }
 }

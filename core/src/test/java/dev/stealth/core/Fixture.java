@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 public enum Fixture {
     BOOT2_LEGACY("boot2-legacy"),
     BOOT4_CLEAN("boot4-clean"),
+    EOL_RUNTIME("eol-runtime"),
     WITH_SECRETS("with-secrets"),
     DUPLICATED("duplicated"),
     MULTI_MODULE("multi-module");

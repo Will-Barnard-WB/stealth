@@ -8,6 +8,7 @@ tests assert against these lists; if you change a fixture, update this file in t
 |---|---|---|
 | [`boot2-legacy`](boot2-legacy) | Spring Boot 2.7, Java 11, `javax.servlet`, pinned outdated and vulnerable dependencies | outdated deps, known vulnerabilities, Spring Boot EOL, unmaintained dep, missing CODEOWNERS/CI |
 | [`boot4-clean`](boot4-clean) | Spring Boot 4.1, Java 21, CODEOWNERS, CI config, tests | **none**: the false-positive baseline |
+| [`eol-runtime`](eol-runtime) | Spring Boot 2.3 and Java 16, both long past end of life, with no dependencies | Spring Boot and Java end of life, outdated parent, missing CODEOWNERS/CI/tests |
 | [`with-secrets`](with-secrets) | Fake credentials plus look-alikes | secrets only for the real patterns |
 | [`duplicated`](duplicated) | Copy-pasted code above and below the CPD threshold | one duplication group |
 | [`multi-module`](multi-module) | Parent POM + BOM import + 3 modules, versions from the parent, properties and overrides | correct effective versions per module; no duplicate findings per module |
@@ -102,6 +103,45 @@ at the reference date.
 | Secrets, duplication | None |
 
 The scoring engine's golden test expects ≥ 95 in both categories.
+
+---
+
+## `eol-runtime`
+
+The end-of-life analyzer's positive case. `boot2-legacy` covers a Spring Boot line that is out of support, but at the
+reference date its Java 11 is still supported on the default distribution (Temurin, until 2027-10-31), so nothing there
+flags a Java release without `eol.javaDistribution: oracle-jdk`. This fixture flags both products with no
+configuration.
+
+Both cycles ended years before the reference date, so unlike the "within 6 months" cases these expectations never
+drift: a cycle that is past end of life stays past end of life.
+
+**It deliberately declares no dependencies.** A real Spring Boot 2.3 tree brings roughly a hundred vulnerability and
+freshness findings, which bury the two findings this fixture exists to show. With an empty tree, `stealth doctor
+fixtures/eol-runtime` puts the end-of-life findings at the top, which is also what makes it useful to run by hand. The
+Boot version is still resolved, because `spring-boot-starter-parent` manages `org.springframework.boot:spring-boot`
+whether or not anything depends on it.
+
+### Must flag
+
+**End of life** (`pom.xml`)
+
+| Subject | Line | Why |
+|---|---|---|
+| Spring Boot 2.3 | 10 | Support ended 2021-05-20; commercial support also ended, on 2022-08-20 |
+| Java 16 | 19 | Temurin support ended 2021-09-30, so it flags on the **default** distribution |
+
+Both are `eol/past-end-of-life` (high). The suggested upgrades are Spring Boot 4.1 and Java 17 — the *oldest* cycles
+still comfortably supported, not the newest releases.
+
+**Outdated dependencies**: `spring-boot-starter-parent:2.3.12.RELEASE` at line 10.
+
+**Repo hygiene**: missing CODEOWNERS, missing CI configuration, missing tests.
+
+### Must not flag
+
+- Vulnerabilities: there are no dependencies to have any.
+- Secrets, duplication.
 
 ---
 
