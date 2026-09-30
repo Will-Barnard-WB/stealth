@@ -17,8 +17,21 @@ You need JDK 21 or newer. Maven itself comes with the wrapper (`./mvnw`, or `mvn
 | `./mvnw verify` | Builds every module and runs unit tests (`*Test`, Surefire), integration tests (`*IT`, Failsafe) and the formatting check |
 | `./mvnw spotless:apply` | Formats the code (google-java-format, AOSP style). Run it before committing if `verify` reports format violations |
 | `./mvnw -pl cli -am test` | Tests one module plus the modules it depends on |
-| `java -jar cli/target/stealth-cli-*.jar --help` | Runs the CLI you just built |
+| `stealth-dev --help` | Runs the CLI from your checkout, rebuilding it first if needed (see below) |
 | `java -jar mcp/target/stealth-mcp-*.jar` | Runs the MCP server on stdio |
+
+### Running your checkout as `stealth-dev`
+`stealth-dev` is the `stealth` command built from whatever branch you have checked out, so you can try a change from any directory without cutting a release. It takes the same arguments as `stealth`, and it doesn't touch a `stealth` installed through Homebrew or Scoop.
+
+Set it up once by adding the repo's `scripts` directory to your `PATH`, then open a new terminal:
+
+| Shell | Run this from the repo root |
+|---|---|
+| macOS / Linux (zsh) | `echo "export PATH=\"$PWD/scripts:\$PATH\"" >> ~/.zshrc` |
+| macOS / Linux (bash), Git Bash | `echo "export PATH=\"$PWD/scripts:\$PATH\"" >> ~/.bashrc` |
+| Windows (PowerShell) | `[Environment]::SetEnvironmentVariable('Path', "$PWD\scripts;" + [Environment]::GetEnvironmentVariable('Path', 'User'), 'User')` |
+
+Each time you run it, `stealth-dev` checks the POMs and every module's `src/main` in your working tree. If a file was edited, added or removed since the last build (including by switching branch), it runs `./mvnw -q -pl cli -am package -DskipTests` first, which takes a few seconds. Otherwise it starts straight away. Uncommitted changes are included. Tests are skipped, so still run `./mvnw verify` before you push.
 
 Modules:
 - `core`: the analyzer SPI and `Finding` model. It must not depend on any other stealth module.
