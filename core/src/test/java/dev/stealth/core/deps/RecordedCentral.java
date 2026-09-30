@@ -3,9 +3,11 @@ package dev.stealth.core.deps;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -23,6 +25,9 @@ final class RecordedCentral {
 
     static final String BASE_PATH = "/maven2/";
 
+    /** Where the search API is served, mirroring {@code search.maven.org}. */
+    static final String SEARCH_PATH = "/solrsearch/select";
+
     private RecordedCentral() {}
 
     /**
@@ -37,6 +42,39 @@ final class RecordedCentral {
                 String path = root.relativize(file).toString().replace('\\', '/');
                 stubFor(
                         get(urlEqualTo(BASE_PATH + path))
+                                .atPriority(1)
+                                .willReturn(aResponse().withBody(Files.readString(file))));
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        stubSearch();
+    }
+
+    /**
+     * Search API responses recorded under {@code __files/central-search/<groupId>/<artifactId>/
+     * <version>.json}, matched on the query the client sends.
+     */
+    private static void stubSearch() {
+        Path searchRoot = root().resolveSibling("central-search");
+        try (Stream<Path> files = Files.walk(searchRoot)) {
+            for (Path file : files.filter(Files::isRegularFile).toList()) {
+                Path relative = searchRoot.relativize(file);
+                String groupId = relative.getName(0).toString();
+                String artifactId = relative.getName(1).toString();
+                String version = relative.getName(2).toString().replaceFirst("\\.json$", "");
+                stubFor(
+                        get(urlPathEqualTo(SEARCH_PATH))
+                                .withQueryParam(
+                                        "q",
+                                        equalTo(
+                                                "g:\""
+                                                        + groupId
+                                                        + "\" AND a:\""
+                                                        + artifactId
+                                                        + "\" AND v:\""
+                                                        + version
+                                                        + "\""))
                                 .atPriority(1)
                                 .willReturn(aResponse().withBody(Files.readString(file))));
             }

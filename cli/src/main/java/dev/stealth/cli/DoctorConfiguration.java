@@ -3,14 +3,18 @@ package dev.stealth.cli;
 import dev.stealth.core.Analyzer;
 import dev.stealth.core.AnalyzerRunner;
 import dev.stealth.core.deps.DependencyFreshnessAnalyzer;
+import dev.stealth.core.deps.MaintenanceAnalyzer;
 import dev.stealth.core.deps.MavenCentralClient;
+import dev.stealth.core.deps.MavenCentralSearch;
 import dev.stealth.core.http.CachedHttpClient;
 import dev.stealth.core.http.HttpCache;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenResolverSettings;
 import dev.stealth.core.vuln.OsvClient;
 import dev.stealth.core.vuln.VulnerabilityAnalyzer;
+import java.time.Clock;
 import java.time.Duration;
+import java.time.Period;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -58,5 +62,20 @@ class DoctorConfiguration {
     @Bean
     VulnerabilityAnalyzer vulnerabilityAnalyzer(MavenModelLoader loader, OsvClient osv) {
         return new VulnerabilityAnalyzer(loader, osv);
+    }
+
+    @Bean
+    MavenCentralSearch mavenCentralSearch(CachedHttpClient http) {
+        return new MavenCentralSearch(http, MavenCentralSearch.SEARCH);
+    }
+
+    /** {@code stealth.maintenance.stale-after} until {@code .stealth.yml} can set it per repo. */
+    @Bean
+    MaintenanceAnalyzer maintenanceAnalyzer(
+            MavenModelLoader loader,
+            MavenCentralClient central,
+            MavenCentralSearch search,
+            @Value("${stealth.maintenance.stale-after:P2Y}") Period staleAfter) {
+        return new MaintenanceAnalyzer(loader, central, search, staleAfter, Clock.systemUTC());
     }
 }
