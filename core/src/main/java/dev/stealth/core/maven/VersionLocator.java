@@ -156,7 +156,7 @@ final class VersionLocator {
      * The location itself, or, if the value written there is a {@code ${property}}, where that
      * property is set.
      */
-    private Optional<Location> followValue(Path pom, InputLocation location, Path modulePom) {
+    Optional<Location> followValue(Path pom, InputLocation location, Path modulePom) {
         if (location == null) {
             return Optional.empty();
         }

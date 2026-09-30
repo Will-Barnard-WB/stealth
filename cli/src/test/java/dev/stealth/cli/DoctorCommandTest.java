@@ -25,6 +25,8 @@ class DoctorCommandTest {
     private final StringWriter out = new StringWriter();
     private final StringWriter err = new StringWriter();
 
+    private final OfflineMode offlineMode = new OfflineMode();
+
     @TempDir private Path repo;
 
     @Test
@@ -68,10 +70,20 @@ class DoctorCommandTest {
         assertThat(err.toString()).contains("not a directory");
     }
 
+    @Test
+    void execute_offlineOption_switchesTheRunToOffline() {
+        int exitCode = execute(List.of(), "--offline", repo.toString());
+
+        assertThat(exitCode).isZero();
+        assertThat(offlineMode.isOffline()).isTrue();
+    }
+
     private int execute(List<Analyzer> analyzers, String... args) {
         CommandLine commandLine =
                 new CommandLine(
-                        new DoctorCommand(new AnalyzerRunner(analyzers, Duration.ofSeconds(10))));
+                        new DoctorCommand(
+                                new AnalyzerRunner(analyzers, Duration.ofSeconds(10)),
+                                offlineMode));
         commandLine.setOut(new PrintWriter(out));
         commandLine.setErr(new PrintWriter(err));
         return commandLine.execute(args);

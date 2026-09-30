@@ -23,20 +23,20 @@ import java.util.zip.ZipOutputStream;
  * repository root. It loads the fixtures against Maven Central into an empty repository and zips
  * the POMs.
  */
-final class SeededMavenRepository {
+public final class SeededMavenRepository {
 
     static final String RESOURCE = "/maven-repo.zip";
 
     /** Unreachable, so a test that isn't offline fails fast instead of reaching Maven Central. */
-    static final URI NO_REMOTE = URI.create("http://127.0.0.1:9/maven2/");
+    public static final URI NO_REMOTE = URI.create("http://127.0.0.1:9/maven2/");
 
     private static final List<Fixture> FIXTURES =
-            List.of(Fixture.MULTI_MODULE, Fixture.BOOT2_LEGACY);
+            List.of(Fixture.MULTI_MODULE, Fixture.BOOT2_LEGACY, Fixture.BOOT4_CLEAN);
 
     private SeededMavenRepository() {}
 
     /** Unzips the seeded repository into {@code directory} and returns offline settings for it. */
-    static MavenResolverSettings extractTo(Path directory) {
+    public static MavenResolverSettings extractTo(Path directory) {
         try (InputStream in = SeededMavenRepository.class.getResourceAsStream(RESOURCE);
                 ZipInputStream zip = new ZipInputStream(in)) {
             for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {

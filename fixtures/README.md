@@ -184,5 +184,7 @@ reference date.
   `slf4j-api` is used by `api` and `app` but reported once, at `pom.xml:23`.
 - `guava` and `commons-lang3` resolve to different versions in different modules, so they can produce separate
   findings, each at the line where that module's version is set.
-- Freshness depends on the stubbed "latest" snapshot: at the reference date, `guava` 33.6.0-jre (`service`) and
-  `commons-lang3` 3.19.0 (`app`) are behind the latest releases; everything else is current.
+- Freshness depends on the stubbed "latest" snapshot: at the reference date, `guava` 33.6.0-jre (`service`,
+  `service/pom.xml:17`), `commons-lang3` 3.19.0 (`app`, `app/pom.xml:27`) and `commons-lang3` 3.20.0 (managed at
+  `pom.xml:48`, used by `service`) are behind the latest releases (guava 33.7.2-jre, commons-lang3 3.21.0, released
+  2026-09-25); everything else is current.

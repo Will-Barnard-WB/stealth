@@ -32,11 +32,20 @@ A finding for each dependency (and parent/BOM) where a newer stable version exis
 
 ### Definition of done
 
-- [ ] WireMock tests for `MavenCentralClient`: metadata parsing, cache hit/miss/TTL, offline mode, 429/5xx retry
-- [ ] Precision tests: `fixtures/boot2-legacy` flags the pinned outdated dependencies, and `fixtures/boot4-clean` produces **no** freshness findings (with a pinned "latest" snapshot served by WireMock)
-- [ ] Pre-release filtering unit tests
-- [ ] Managed dependencies collapsed into one finding on the parent/BOM
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] WireMock tests for `MavenCentralClient`: metadata parsing, cache hit/miss/TTL, offline mode, 429/5xx retry (`MavenCentralClientTest`, `CachedHttpClientTest`)
+- [x] Precision tests: `fixtures/boot2-legacy` flags the pinned outdated dependencies, and `fixtures/boot4-clean` produces **no** freshness findings (with a pinned "latest" snapshot served by WireMock)
+- [x] Pre-release filtering unit tests (`VersionsTest`)
+- [x] Managed dependencies collapsed into one finding on the parent/BOM
+- [x] `./mvnw verify` passes (tests + Spotless)
+
+### Notes from implementation
+
+- **Rules:** three rules instead of one, `deps/outdated-major` (medium), `deps/outdated-minor` (low) and `deps/outdated-patch` (info), because ADR-0001 gives each rule one default severity. It also lets `.stealth.yml` silence patch-level noise on its own. Documented in `docs/rules/deps.md`. Confirm in review: rule ids are permanent once released.
+- **Version source:** `maven-metadata.xml` from `repo.maven.apache.org`, as proposed. `HttpCache` + `CachedHttpClient` (`core/http`) are ready for the OSV and endoflife.date clients.
+- **Precision traps found in the recorded data:** `commons-collections`' newest "version" is `20040616` (date-stamped, older than 3.2.2); Spring Boot's newest is `4.2.0-M2`; guava publishes `-jre` and `-android` side by side. All three are handled and tested.
+- **Fixture README correction:** commons-lang3 3.21.0 was released on 2026-09-25, so at the reference date `multi-module`'s managed 3.20.0 (`pom.xml:48`) is outdated too.
+- **Partial lookups fail the analyzer** (no "incomplete" status in the SPI yet), so one unreachable artifact hides the others' results. Revisit if the runner gets a partial status.
+- **`--offline`** added to `stealth doctor`; it also switches the Maven model loader to the local repository only.
 
 ### Out of scope
 

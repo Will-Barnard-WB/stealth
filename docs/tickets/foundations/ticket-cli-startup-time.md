@@ -6,6 +6,8 @@ The scaffold ticket (CU-869f96kfq) flagged picocli + Spring Boot startup time as
 
 1.3s is fine for `stealth doctor`, which runs for many seconds anyway. It's too slow for Phase 3's `stealth check --changed` Claude Code hook, which runs on every agent edit, and it makes the CLI feel sluggish.
 
+Update 2026-09-30: after the Spring Boot 4 upgrade, the analyzer runner and the first analyzer, `--version` measures about 2.1-2.8 s on `main` and 2.8-3.5 s with the freshness analyzer wired in (same machine, noisy under load). The Maven resolver itself is created lazily, so it isn't part of startup.
+
 ### Who is impacted?
 
 - Claude Code / AI-agent users of the Phase 3 hook (runs on every edit)
