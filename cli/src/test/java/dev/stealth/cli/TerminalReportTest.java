@@ -130,8 +130,9 @@ class TerminalReportTest {
 
         String out = render(false, unmaintained);
 
+        // Compare whole lines: the report ends lines with the platform's separator
+        assertThat(out.lines()).contains("   1  pom.xml:45   commons-collections  3.2.2");
         assertThat(out)
-                .contains("1  pom.xml:45   commons-collections  3.2.2\n")
                 .contains("no release in 10 years (newest is 3.2.2, released 2015-11-12)")
                 .doesNotContain("commons-collections:commons-collections: no release");
     }
@@ -196,8 +197,8 @@ class TerminalReportTest {
         assertThat(out)
                 .contains("✓ deps", "✗ vuln")
                 .contains("vuln failed: OSV.dev unreachable")
-                .contains("No problems found by the analyzers that finished.")
-                .doesNotContain("No problems found.\n");
+                .contains("No problems found by the analyzers that finished.");
+        assertThat(out.lines()).doesNotContain("  No problems found.");
     }
 
     @Test
