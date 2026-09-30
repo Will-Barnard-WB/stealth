@@ -24,6 +24,8 @@ jobs:
             mvnw: ./mvnw
           - os: windows-latest
             mvnw: .\mvnw.cmd
+          - os: macos-latest
+            mvnw: ./mvnw
     steps:
       - uses: actions/checkout@v7
 
@@ -58,6 +60,14 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $stealth doctor fixtures/boot4-clean
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Run packaged CLI (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          unzip -q target/jreleaser/assemble/stealth/java-archive/stealth-*.zip -d target/smoke
+          stealth=$(echo target/smoke/stealth-*/bin/stealth)
+          "$stealth" --version
+          "$stealth" doctor fixtures/boot4-clean
 
       - name: Upload test reports
         if: failure()
