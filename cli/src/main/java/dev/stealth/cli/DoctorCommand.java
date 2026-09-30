@@ -69,7 +69,7 @@ public class DoctorCommand implements Callable<Integer> {
         TerminalReport terminal =
                 new TerminalReport(
                         spec.commandLine().getColorScheme().ansi(),
-                        StealthCli.stdoutSupportsUnicode());
+                        StealthCli.stdoutCanPrint(TerminalReport.UNICODE_SYMBOLS));
         out.print(terminal.render(root, report, all));
         out.flush();
         return ExitCode.OK;

@@ -34,6 +34,9 @@ final class TerminalReport {
 
     private static final int COMPONENTS_LISTED = 5;
 
+    /** Every non-ASCII character the report prints; without them it falls back to ASCII. */
+    static final String UNICODE_SYMBOLS = "✓✗→·";
+
     private final Ansi ansi;
     private final boolean unicode;
 
@@ -108,8 +111,9 @@ final class TerminalReport {
                         + plural(fixes.size(), "fix", "fixes");
         if (!all) {
             summary +=
-                    (fixes.size() > TOP ? " · showing the top " + TOP : "")
-                            + " · stealth doctor --all lists every finding";
+                    (fixes.size() > TOP ? separator() + "showing the top " + TOP : "")
+                            + separator()
+                            + "stealth doctor --all lists every finding";
         }
         lines.add("  " + style("faint", summary));
         lines.add("");
@@ -260,7 +264,7 @@ final class TerminalReport {
         findings.forEach(f -> counts.merge(f.severity(), 1L, Long::sum));
         return counts.entrySet().stream()
                 .map(e -> style(color(e.getKey()), e.getValue() + " " + lower(e.getKey())))
-                .collect(Collectors.joining(style("faint", " · ")));
+                .collect(Collectors.joining(style("faint", separator())));
     }
 
     private String severity(Severity severity) {
@@ -317,6 +321,10 @@ final class TerminalReport {
         return home != null && path.startsWith(home + File.separator)
                 ? "~" + path.substring(home.length())
                 : path;
+    }
+
+    private String separator() {
+        return unicode ? " · " : ", ";
     }
 
     private String arrow() {
