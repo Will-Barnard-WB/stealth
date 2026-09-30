@@ -1,0 +1,55 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 2,
+    "params": {
+      "q": "g:\"org.apache.commons\" AND a:\"commons-text\" AND v:\"1.15.0\"",
+      "core": "gav",
+      "indent": "off",
+      "fl": "id,g,a,v,p,ec,timestamp,tags",
+      "start": "",
+      "sort": "score desc,timestamp desc,g asc,a asc,v desc",
+      "rows": "1",
+      "wt": "json",
+      "version": "2.2"
+    }
+  },
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "docs": [
+      {
+        "id": "org.apache.commons:commons-text:1.15.0",
+        "g": "org.apache.commons",
+        "a": "commons-text",
+        "v": "1.15.0",
+        "p": "jar",
+        "timestamp": 1764863845000,
+        "ec": [
+          "-cyclonedx.json",
+          "-sources.jar",
+          "-cyclonedx.xml",
+          ".spdx.json",
+          ".pom",
+          "-javadoc.jar",
+          "-test-sources.jar",
+          "-tests.jar",
+          ".jar"
+        ],
+        "tags": [
+          "components",
+          "environment",
+          "apache",
+          "java",
+          "functions",
+          "manipulating",
+          "utility",
+          "processing",
+          "text",
+          "commons",
+          "reusable"
+        ]
+      }
+    ]
+  }
+}

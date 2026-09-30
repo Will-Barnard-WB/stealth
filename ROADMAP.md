@@ -27,7 +27,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [x] **Analyzer SPI and parallel runner:** `Analyzer.analyze(RepoContext) -> List<Finding>`, run in parallel with timeouts. ([ADR-0001](docs/adr/0001-finding-model.md))
 - [x] **Maven model loading:** effective versions including parent POMs and BOMs (maven-model-builder), multi-module support.
 - [x] **Dependency freshness analyzer:** latest versions from Maven Central's `maven-metadata.xml`, cached in `~/.stealth/cache`. Rules in [docs/rules/deps.md](docs/rules/deps.md).
-- [ ] **Maintenance analyzer:** flag dependencies with no release in over 2 years.
+- [x] **Maintenance analyzer:** flag dependencies with no release in over 2 years. Rules in [docs/rules/maintenance.md](docs/rules/maintenance.md).
 - [x] **Vulnerability analyzer:** OSV.dev `querybatch`, recording the fixed version. Rules in [docs/rules/vuln.md](docs/rules/vuln.md).
 - [ ] **Framework and runtime end-of-life analyzer:** Java and Spring Boot versions against endoflife.date.
 - [ ] **Secrets analyzer:** regex + entropy ruleset with an allowlist (working tree first, git history later).

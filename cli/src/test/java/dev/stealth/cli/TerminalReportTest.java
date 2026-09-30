@@ -114,6 +114,30 @@ class TerminalReportTest {
     }
 
     @Test
+    void render_unmaintainedDependency_namesItAndSaysWhy() {
+        Finding unmaintained =
+                new Finding(
+                        "maintenance/no-recent-release",
+                        Category.TECH,
+                        Severity.LOW,
+                        "commons-collections:commons-collections: no release in 10 years"
+                                + " (newest is 3.2.2, released 2015-11-12)",
+                        Location.file("pom.xml", 45),
+                        Optional.of("pkg:maven/commons-collections/commons-collections@3.2.2"),
+                        Optional.empty(),
+                        Optional.of(new Remediation(Optional.empty(), Optional.empty())),
+                        Fingerprints.of("maintenance/no-recent-release", "commons-collections"));
+
+        String out = render(false, unmaintained);
+
+        // Compare whole lines: the report ends lines with the platform's separator
+        assertThat(out.lines()).contains("   1  pom.xml:45   commons-collections  3.2.2");
+        assertThat(out)
+                .contains("no release in 10 years (newest is 3.2.2, released 2015-11-12)")
+                .doesNotContain("commons-collections:commons-collections: no release");
+    }
+
+    @Test
     void render_moreThanTopFixes_showsTheTopTenAndPointsAtAll() {
         Finding[] findings = new Finding[12];
         for (int i = 0; i < findings.length; i++) {
@@ -173,8 +197,8 @@ class TerminalReportTest {
         assertThat(out)
                 .contains("✓ deps", "✗ vuln")
                 .contains("vuln failed: OSV.dev unreachable")
-                .contains("No problems found by the analyzers that finished.")
-                .doesNotContain("No problems found.\n");
+                .contains("No problems found by the analyzers that finished.");
+        assertThat(out.lines()).doesNotContain("  No problems found.");
     }
 
     @Test

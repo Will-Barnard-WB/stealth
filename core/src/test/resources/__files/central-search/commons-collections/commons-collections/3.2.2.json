@@ -1,0 +1,48 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 1,
+    "params": {
+      "q": "g:\"commons-collections\" AND a:\"commons-collections\" AND v:\"3.2.2\"",
+      "core": "gav",
+      "indent": "off",
+      "fl": "id,g,a,v,p,ec,timestamp,tags",
+      "start": "",
+      "sort": "score desc,timestamp desc,g asc,a asc,v desc",
+      "rows": "1",
+      "wt": "json",
+      "version": "2.2"
+    }
+  },
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "docs": [
+      {
+        "id": "commons-collections:commons-collections:3.2.2",
+        "g": "commons-collections",
+        "a": "commons-collections",
+        "v": "3.2.2",
+        "p": "jar",
+        "timestamp": 1447369886000,
+        "ec": [
+          "-javadoc.jar",
+          "-sources.jar",
+          "-test-sources.jar",
+          ".jar",
+          "-tests.jar",
+          ".pom"
+        ],
+        "tags": [
+          "that",
+          "extend",
+          "java",
+          "types",
+          "augment",
+          "framework",
+          "collections"
+        ]
+      }
+    ]
+  }
+}

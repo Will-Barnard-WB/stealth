@@ -148,6 +148,16 @@ final class TerminalReport {
         Optional<Component> component =
                 outdated.or(() -> onlyDirectComponent(fix))
                         .flatMap(f -> Component.of(f.component()));
+        if (component.isEmpty() && fix.vulnerabilities().isEmpty()) {
+            // Neither outdated nor vulnerable, e.g. unmaintained: name the dependency, if there is
+            // one
+            Optional<Component> dependency = Component.of(fix.findings().getFirst().component());
+            if (dependency.isPresent()) {
+                return style("bold", dependency.get().artifactId())
+                        + "  "
+                        + dependency.get().version();
+            }
+        }
         if (component.isEmpty()) {
             return fix.findings().getFirst().message();
         }
@@ -182,11 +192,21 @@ final class TerminalReport {
     private List<String> detail(FixList.Fix fix) {
         List<Finding> vulnerabilities = fix.vulnerabilities();
         if (vulnerabilities.isEmpty()) {
-            return fix
-                    .outdated()
-                    .map(f -> style("faint", f.ruleId().replace("deps/outdated-", "") + " update"))
-                    .stream()
-                    .toList();
+            List<String> details = new ArrayList<>();
+            fix.outdated()
+                    .ifPresent(
+                            f ->
+                                    details.add(
+                                            style(
+                                                    "faint",
+                                                    f.ruleId().replace("deps/outdated-", "")
+                                                            + " update")));
+            // Anything else about the dependency, such as "no release in 10 years", minus the
+            // coordinates the title already shows
+            fix.findings().stream()
+                    .filter(f -> !f.ruleId().startsWith("deps/") && f.component().isPresent())
+                    .forEach(f -> details.add(f.message().replaceFirst("^[^ :]+:[^ :]+: ", "")));
+            return details;
         }
         String testOnly =
                 vulnerabilities.stream().allMatch(f -> f.message().endsWith("[test scope]"))
