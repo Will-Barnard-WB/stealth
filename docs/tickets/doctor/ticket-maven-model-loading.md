@@ -33,12 +33,17 @@ A shared `MavenProjectModel`, built once per run and exposed through `RepoContex
 
 ### Definition of done
 
-- [ ] Tests against `fixtures/multi-module`: correct effective versions per module for parent-managed, BOM-managed and property-defined dependencies
-- [ ] Tests against `fixtures/boot2-legacy`: Spring Boot and Java versions extracted, and starter versions resolved from the Boot parent
-- [ ] `declaredAt` points at the line that actually sets the version (parent or `dependencyManagement`), not the usage site
-- [ ] Offline mode with an empty local repo degrades to warnings and doesn't throw
-- [ ] Remote calls in tests go through WireMock or a pre-seeded local repo, never the real Central
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] Tests against `fixtures/multi-module`: correct effective versions per module for parent-managed, BOM-managed and property-defined dependencies
+- [x] Tests against `fixtures/boot2-legacy`: Spring Boot and Java versions extracted, and starter versions resolved from the Boot parent
+- [x] `declaredAt` points at the line that actually sets the version (parent or `dependencyManagement`), not the usage site
+- [x] Offline mode with an empty local repo degrades to warnings and doesn't throw
+- [x] Remote calls in tests go through WireMock or a pre-seeded local repo, never the real Central (`core/src/test/resources/maven-repo.zip`, regenerated with `SeededMavenRepository#main`)
+- [x] `./mvnw verify` passes (tests + Spotless)
+
+### Notes from implementation
+
+- `MavenModelLoader` is a `SharedResource`: analyzers call `context.get(loader)`, so one run builds the model once. It isn't wired into the CLI yet; the first analyzer that needs it (dependency freshness) adds the bean and the `--offline` flag.
+- `~/.m2/settings.xml` mirrors and servers aren't read yet. Repositories declared inside POMs are ignored on purpose, so a run only talks to the configured repository.
 
 ### Out of scope
 
