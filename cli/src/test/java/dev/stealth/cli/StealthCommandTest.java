@@ -108,7 +108,10 @@ class StealthCommandTest {
                     }
                 };
         CommandLine commandLine =
-                StealthCli.configure(new CommandLine(new StealthCommand(), factory), ansi);
+                StealthCli.configure(
+                        new CommandLine(new StealthCommand(), factory),
+                        ansi,
+                        Banner.Glyphs.UNICODE);
         commandLine.setOut(new PrintWriter(out));
         commandLine.setErr(new PrintWriter(err));
         return commandLine;
