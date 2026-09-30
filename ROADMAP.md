@@ -36,7 +36,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [ ] **Scoring engine:** 0–100 per category (tech, security) and overall, plus a ranked fix list. ([ADR-0002](docs/adr/0002-scoring-formula.md))
 - [ ] **Output renderers and CI gate:** terminal, `--json`, SARIF 2.1.0, `--fail-under N`. ([ADR-0003](docs/adr/0003-sarif-mapping.md))
 - [ ] **`.stealth.yml` config:** ignored paths, severity overrides, allowlists. ([ADR-0004](docs/adr/0004-stealth-yml-format.md))
-- [ ] **MCP server:** stdio. Tools `repo_health`, `list_findings`, `check_dependency`.
+- [ ] **MCP server:** local HTTP server started by `stealth mcp`, registered with Claude Code by `stealth mcp install`. Tools `repo_health`, `list_findings`, `check_dependency`.
 - [ ] **Phase 1 launch:** docs, demo GIF, Show HN, r/java, Spring community. Check findings by hand on spring-petclinic first.
 
 ## Phase 2 — Upgrade
