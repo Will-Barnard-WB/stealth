@@ -122,6 +122,29 @@ class AnalyzerRunnerTest {
     }
 
     @Test
+    void run_analyzerNotSelected_leavesItOutWithoutRunning() throws Exception {
+        AtomicBoolean ran = new AtomicBoolean();
+        Analyzer deps =
+                new StubAnalyzer(
+                        "deps",
+                        ctx -> {
+                            ran.set(true);
+                            return List.of(finding("deps/outdated-major"));
+                        });
+        Analyzer secrets = new StubAnalyzer("secrets", ctx -> List.of(finding("secrets/aws")));
+
+        DoctorReport report =
+                new AnalyzerRunner(List.of(deps, secrets), TIMEOUT)
+                        .run(context, analyzer -> analyzer.id().equals("secrets"));
+
+        assertThat(report.results())
+                .extracting(AnalyzerResult::analyzerId)
+                .containsExactly("secrets");
+        assertThat(report.findings()).extracting(Finding::ruleId).containsExactly("secrets/aws");
+        assertThat(ran).isFalse();
+    }
+
+    @Test
     void run_noAnalyzers_returnsEmptyReport() throws Exception {
         DoctorReport report = new AnalyzerRunner(List.of(), TIMEOUT).run(context);
 

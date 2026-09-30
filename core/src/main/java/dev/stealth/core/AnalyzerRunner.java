@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
 
 /**
  * Runs every enabled analyzer in parallel, each on its own virtual thread with a timeout. A slow or
@@ -40,6 +41,16 @@ public class AnalyzerRunner {
     }
 
     public DoctorReport run(RepoContext context) throws InterruptedException {
+        return run(context, analyzer -> true);
+    }
+
+    /**
+     * Runs only the analyzers {@code selected} accepts; the rest are left out of the report
+     * entirely, unlike analyzers disabled in {@code .stealth.yml}, which show up as skipped.
+     */
+    public DoctorReport run(RepoContext context, Predicate<Analyzer> selected)
+            throws InterruptedException {
+        List<Analyzer> analyzers = this.analyzers.stream().filter(selected).toList();
         // Not try-with-resources: close() waits for every task, including timed-out analyzers
         // that ignore interruption. Virtual threads are daemons, so abandoning them is safe.
         ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();

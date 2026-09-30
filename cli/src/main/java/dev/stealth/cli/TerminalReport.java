@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import picocli.CommandLine.Help.Ansi;
@@ -46,6 +47,14 @@ final class TerminalReport {
     }
 
     String render(Path root, DoctorReport report, boolean all) {
+        return render(root, report, all, Set.of());
+    }
+
+    /**
+     * @param severities the severities the findings were filtered to, which the report names when
+     *     none are left; empty if they weren't filtered
+     */
+    String render(Path root, DoctorReport report, boolean all, Set<Severity> severities) {
         List<String> lines = new ArrayList<>();
         lines.add("");
         lines.add(style("bold", "stealth doctor") + "  " + displayPath(root));
@@ -69,11 +78,20 @@ final class TerminalReport {
         if (findings.isEmpty()) {
             boolean incomplete =
                     report.results().stream().anyMatch(r -> r.status() != AnalyzerStatus.OK);
+            String none =
+                    severities.isEmpty()
+                            ? "No problems found"
+                            : "No "
+                                    + severities.stream()
+                                            .sorted()
+                                            .map(TerminalReport::lower)
+                                            .collect(Collectors.joining(" or "))
+                                    + " findings";
             lines.add(
                     "  "
                             + (incomplete
-                                    ? "No problems found by the analyzers that finished."
-                                    : style("fg(114)", "No problems found.")));
+                                    ? none + " by the analyzers that finished."
+                                    : style("fg(114)", none + ".")));
             lines.add("");
             return String.join(System.lineSeparator(), lines) + System.lineSeparator();
         }

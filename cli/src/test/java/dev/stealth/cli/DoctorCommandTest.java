@@ -80,6 +80,77 @@ class DoctorCommandTest {
         assertThat(offlineMode.isOffline()).isTrue();
     }
 
+    @Test
+    void execute_analyzerFlag_runsOnlyThatAnalyzer() {
+        Analyzer secrets = analyzer("secrets", Category.SECURITY, List.of());
+        Analyzer vuln = analyzer("vuln", Category.SECURITY, List.of());
+        Analyzer duplication = analyzer("duplication", Category.TECH, List.of());
+
+        execute(List.of(secrets, vuln, duplication), "--secrets", repo.toString());
+
+        assertThat(out.toString()).contains("secrets").doesNotContain("vuln", "duplication");
+    }
+
+    @Test
+    void execute_analyzerAndCategoryFlags_runEverythingTheyName() {
+        Analyzer secrets = analyzer("secrets", Category.SECURITY, List.of());
+        Analyzer vuln = analyzer("vuln", Category.SECURITY, List.of());
+        Analyzer deps = analyzer("deps", Category.TECH, List.of());
+        Analyzer duplication = analyzer("duplication", Category.TECH, List.of());
+
+        execute(
+                List.of(secrets, vuln, deps, duplication),
+                "--security",
+                "--duplication",
+                repo.toString());
+
+        assertThat(out.toString())
+                .contains("secrets", "vuln", "duplication")
+                .doesNotContain("deps");
+    }
+
+    @Test
+    void execute_severityFlags_showOnlyThoseSeverities() {
+        Analyzer hygiene =
+                analyzer(
+                        "hygiene",
+                        Category.TECH,
+                        List.of(
+                                finding(Severity.CRITICAL, "Critical problem"),
+                                finding(Severity.HIGH, "High problem"),
+                                finding(Severity.LOW, "Low problem")));
+
+        execute(List.of(hygiene), "--critical", "--high", repo.toString());
+
+        assertThat(out.toString())
+                .contains("1 critical", "1 high", "2 findings")
+                .doesNotContain("Low problem", "1 low");
+    }
+
+    @Test
+    void execute_severityFlagsMatchNothing_saysNoneOfThoseSeverities() {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        execute(List.of(hygiene), "--critical", "--high", repo.toString());
+
+        assertThat(out.toString()).contains("No critical or high findings.");
+    }
+
+    @Test
+    void usage_groupsTheFiltersAndKeepsTheSynopsisShort() {
+        String usage =
+                new CommandLine(
+                                new DoctorCommand(
+                                        new AnalyzerRunner(List.of(), Duration.ofSeconds(10)),
+                                        offlineMode))
+                        .getUsageMessage(CommandLine.Help.Ansi.OFF);
+
+        assertThat(usage)
+                .contains("Usage: doctor [OPTIONS] [PATH]")
+                .contains("Run only:", "--secrets", "--security")
+                .contains("Show only:", "--critical", "--info");
+    }
+
     private int execute(List<Analyzer> analyzers, String... args) {
         CommandLine commandLine =
                 new CommandLine(
@@ -102,6 +173,19 @@ class DoctorCommandTest {
                 Optional.empty(),
                 Optional.empty(),
                 Fingerprints.of("hygiene/missing-codeowners", "CODEOWNERS"));
+    }
+
+    private static Finding finding(Severity severity, String message) {
+        return new Finding(
+                "hygiene/" + severity.name().toLowerCase(),
+                Category.TECH,
+                severity,
+                message,
+                Location.repository(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Fingerprints.of("hygiene/" + severity.name().toLowerCase(), message));
     }
 
     private static Analyzer analyzer(String id, Category category, List<Finding> findings) {
