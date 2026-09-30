@@ -6,4 +6,5 @@
 mvnw text eol=lf
 
 *.jar binary
+*.zip binary
 *.png binary
