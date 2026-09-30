@@ -1,0 +1,48 @@
+#!/bin/sh
+# Runs the stealth CLI from this checkout, rebuilding it first if the sources changed.
+# Put this directory on your PATH, then use `stealth-dev` wherever you would use `stealth`.
+set -eu
+
+script=$0
+while [ -L "$script" ]; do
+  dir=$(cd "$(dirname "$script")" && pwd)
+  script=$(readlink "$script")
+  case $script in /*) ;; *) script=$dir/$script ;; esac
+done
+root=$(cd "$(dirname "$script")/.." && pwd)
+stamp=$root/cli/target/stealth-dev.stamp
+
+# Everything that goes into the jar: the POMs and each module's main sources
+sources() {
+  (cd "$root" && find pom.xml */pom.xml */src/main -type f 2>/dev/null | LC_ALL=C sort)
+}
+
+newest_jar() {
+  ls -t "$root"/cli/target/stealth-cli-*.jar 2>/dev/null | head -n 1
+}
+
+stale() {
+  [ -f "$stamp" ] || return 0
+  [ -n "$(newest_jar)" ] || return 0
+  # A different file list catches added and deleted files, e.g. after switching branch
+  [ "$(sources)" = "$(cat "$stamp")" ] || return 0
+  [ -n "$(cd "$root" && find pom.xml */pom.xml */src/main -type f -newer "$stamp" 2>/dev/null | head -n 1)" ]
+}
+
+if stale; then
+  branch=$(git -C "$root" rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)
+  echo "stealth-dev: building $root ($branch)..." >&2
+  mkdir -p "$root/cli/target"
+  # Written before the build so that edits made while it runs trigger another build next time
+  sources > "$stamp.tmp"
+  if ! (cd "$root" && ./mvnw -q -pl cli -am package -DskipTests) >&2; then
+    rm -f "$stamp.tmp"
+    echo "stealth-dev: build failed" >&2
+    exit 1
+  fi
+  mv -f "$stamp.tmp" "$stamp"
+fi
+
+java=java
+[ -z "${JAVA_HOME:-}" ] || java=$JAVA_HOME/bin/java
+exec "$java" -jar "$(newest_jar)" "$@"
