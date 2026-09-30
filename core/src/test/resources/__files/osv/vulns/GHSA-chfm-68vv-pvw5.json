@@ -1,0 +1,34 @@
+{
+  "id": "GHSA-chfm-68vv-pvw5",
+  "summary": "XMLUnit for Java has Insecure Defaults when Processing XSLT Stylesheets",
+  "aliases": [
+    "CVE-2024-31573"
+  ],
+  "modified": "2024-12-05T05:28:04.518630Z",
+  "published": "2024-05-01T16:40:01Z",
+  "database_specific": {
+    "severity": "LOW"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.xmlunit:xmlunit-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.xmlunit/xmlunit-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.10.0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

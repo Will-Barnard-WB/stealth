@@ -1,0 +1,121 @@
+{
+  "id": "GHSA-c4r9-r8fh-9vj2",
+  "summary": "snakeYAML before 1.31 vulnerable to Denial of Service due to Out-of-bounds Write",
+  "aliases": [
+    "CVE-2022-38749"
+  ],
+  "modified": "2026-09-10T03:49:45.518714221Z",
+  "published": "2022-09-06T00:00:27Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.yaml:snakeyaml",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.yaml/snakeyaml"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.31"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "be.cylab:snakeyaml",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/be.cylab/snakeyaml"
+      }
+    },
+    {
+      "package": {
+        "name": "com.alipay.sofa.acts:acts-common-util",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.alipay.sofa.acts/acts-common-util"
+      }
+    },
+    {
+      "package": {
+        "name": "io.prometheus.jmx:jmx_prometheus_httpserver",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/io.prometheus.jmx/jmx_prometheus_httpserver"
+      }
+    },
+    {
+      "package": {
+        "name": "io.prometheus.jmx:jmx_prometheus_httpserver_java6",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/io.prometheus.jmx/jmx_prometheus_httpserver_java6"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "0.18.0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.testifyproject.external:external-snakeyaml",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.testifyproject.external/external-snakeyaml"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "1.0.6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "pl.droidsonroids.yaml:snakeyaml",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/pl.droidsonroids.yaml/snakeyaml"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "1.18.2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ]
+}

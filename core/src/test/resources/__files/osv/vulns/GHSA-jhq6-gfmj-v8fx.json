@@ -1,0 +1,40 @@
+{
+  "id": "GHSA-jhq6-gfmj-v8fx",
+  "summary": "Logback vulnerable to Object Injection through HardenedObjectInputStream modules",
+  "aliases": [
+    "CVE-2026-10532"
+  ],
+  "modified": "2026-09-10T03:50:50.074688321Z",
+  "published": "2026-06-01T15:30:40Z",
+  "database_specific": {
+    "severity": "LOW"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "ch.qos.logback:logback-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/ch.qos.logback/logback-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.5.34"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V4",
+      "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:L/VI:L/VA:N/SC:L/SI:L/SA:N/E:P/RE:M/U:Green"
+    }
+  ]
+}

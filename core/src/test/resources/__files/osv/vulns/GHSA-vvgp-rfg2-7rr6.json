@@ -1,0 +1,120 @@
+{
+  "id": "GHSA-vvgp-rfg2-7rr6",
+  "summary": "jackson-databind: Incomplete fix for CVE-2026-54514: eager DNS resolution (SSRF) still present in InetAddress deserialization",
+  "aliases": [
+    "CVE-2026-77310"
+  ],
+  "modified": "2026-09-28T20:30:05.324367371Z",
+  "published": "2026-09-28T20:17:41Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.0.0"
+            },
+            {
+              "fixed": "2.18.9"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.19.0"
+            },
+            {
+              "fixed": "2.21.5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.22.0"
+            },
+            {
+              "fixed": "2.22.1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "tools.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/tools.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.0.0"
+            },
+            {
+              "fixed": "3.1.5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "tools.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/tools.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.2.0"
+            },
+            {
+              "fixed": "3.2.1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    }
+  ]
+}

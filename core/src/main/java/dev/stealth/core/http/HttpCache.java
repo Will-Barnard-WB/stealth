@@ -51,8 +51,13 @@ public class HttpCache {
     public record Entry(Optional<String> body, boolean fresh) {}
 
     public Optional<Entry> get(URI uri) {
-        Path file = file(uri);
-        Path notFound = notFoundMarker(uri);
+        return get(uri.toString());
+    }
+
+    /** {@link #get(URI)} for a request identified by more than its URL, such as a POST. */
+    public Optional<Entry> get(String key) {
+        Path file = file(key);
+        Path notFound = notFoundMarker(key);
         try {
             if (Files.isRegularFile(file)) {
                 return Optional.of(
@@ -72,10 +77,14 @@ public class HttpCache {
 
     /** Stores {@code body}, or "not found" if it's empty. */
     public void put(URI uri, Optional<String> body) {
+        put(uri.toString(), body);
+    }
+
+    public void put(String key, Optional<String> body) {
         try {
             Files.createDirectories(directory);
-            Path file = file(uri);
-            Path notFound = notFoundMarker(uri);
+            Path file = file(key);
+            Path notFound = notFoundMarker(key);
             Path target = body.isPresent() ? file : notFound;
             // Write then move, so a concurrent reader never sees half a file
             Path temp = Files.createTempFile(directory, "entry", ".tmp");
@@ -93,19 +102,18 @@ public class HttpCache {
         return fetched.plus(timeToLive).isAfter(clock.instant());
     }
 
-    private Path file(URI uri) {
-        return directory.resolve(key(uri) + ".body");
+    private Path file(String key) {
+        return directory.resolve(hash(key) + ".body");
     }
 
-    private Path notFoundMarker(URI uri) {
-        return directory.resolve(key(uri) + ".404");
+    private Path notFoundMarker(String key) {
+        return directory.resolve(hash(key) + ".404");
     }
 
-    private static String key(URI uri) {
+    static String hash(String key) {
         try {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-            return HexFormat.of()
-                    .formatHex(sha256.digest(uri.toString().getBytes(StandardCharsets.UTF_8)));
+            return HexFormat.of().formatHex(sha256.digest(key.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("SHA-256 is required on every JVM", e);
         }

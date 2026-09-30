@@ -1,0 +1,40 @@
+{
+  "id": "GHSA-7g45-4rm6-3mm3",
+  "summary": "Guava vulnerable to insecure use of temporary directory",
+  "aliases": [
+    "CVE-2023-2976"
+  ],
+  "modified": "2026-09-10T03:49:53.859811124Z",
+  "published": "2023-06-14T18:30:38Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "com.google.guava:guava",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.google.guava/guava"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "1.0"
+            },
+            {
+              "fixed": "32.0.0-android"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+    }
+  ]
+}

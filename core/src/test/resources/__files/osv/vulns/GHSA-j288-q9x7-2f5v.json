@@ -1,0 +1,60 @@
+{
+  "id": "GHSA-j288-q9x7-2f5v",
+  "summary": "Apache Commons Lang is vulnerable to Uncontrolled Recursion when processing long inputs",
+  "aliases": [
+    "CVE-2025-48924"
+  ],
+  "modified": "2026-09-10T03:50:26.176912270Z",
+  "published": "2025-07-11T15:31:37Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.apache.commons:commons-lang3",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.commons/commons-lang3"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.0"
+            },
+            {
+              "fixed": "3.18.0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "commons-lang:commons-lang",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/commons-lang/commons-lang"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.0"
+            },
+            {
+              "last_affected": "2.6"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+    }
+  ]
+}

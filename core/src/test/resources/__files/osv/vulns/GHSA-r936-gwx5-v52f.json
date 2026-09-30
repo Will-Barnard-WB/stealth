@@ -1,0 +1,100 @@
+{
+  "id": "GHSA-r936-gwx5-v52f",
+  "summary": "Spring Framework MVC Applications Path Traversal Vulnerability",
+  "aliases": [
+    "CVE-2025-41242"
+  ],
+  "modified": "2026-09-10T03:50:27.662656136Z",
+  "published": "2025-08-18T09:31:44Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.springframework:spring-webmvc",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-webmvc"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.2.0"
+            },
+            {
+              "fixed": "6.2.10"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-webmvc",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-webmvc"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.1.0"
+            },
+            {
+              "last_affected": "6.1.21"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-webmvc",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-webmvc"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.0.0"
+            },
+            {
+              "last_affected": "6.0.29"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-webmvc",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-webmvc"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "5.3.0"
+            },
+            {
+              "last_affected": "5.3.43"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    }
+  ]
+}

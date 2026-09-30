@@ -1,0 +1,40 @@
+{
+  "id": "GHSA-4wrc-f8pq-fpqp",
+  "summary": "Pivotal Spring Framework contains unsafe Java deserialization methods",
+  "aliases": [
+    "CVE-2016-1000027"
+  ],
+  "modified": "2026-09-10T03:49:19.715346399Z",
+  "published": "2022-05-24T17:05:30Z",
+  "database_specific": {
+    "severity": "CRITICAL"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.springframework:spring-web",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-web"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "6.0.0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  ]
+}

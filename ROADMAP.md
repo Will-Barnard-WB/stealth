@@ -28,13 +28,13 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [x] **Maven model loading:** effective versions including parent POMs and BOMs (maven-model-builder), multi-module support.
 - [x] **Dependency freshness analyzer:** latest versions from Maven Central's `maven-metadata.xml`, cached in `~/.stealth/cache`. Rules in [docs/rules/deps.md](docs/rules/deps.md).
 - [ ] **Maintenance analyzer:** flag dependencies with no release in over 2 years.
-- [ ] **Vulnerability analyzer:** OSV.dev `querybatch`, recording the fixed version.
+- [x] **Vulnerability analyzer:** OSV.dev `querybatch`, recording the fixed version. Rules in [docs/rules/vuln.md](docs/rules/vuln.md).
 - [ ] **Framework and runtime end-of-life analyzer:** Java and Spring Boot versions against endoflife.date.
 - [ ] **Secrets analyzer:** regex + entropy ruleset with an allowlist (working tree first, git history later).
 - [ ] **Duplication analyzer:** PMD CPD as a library.
 - [ ] **Repo hygiene analyzer:** JGit for stale branches and large files; missing CODEOWNERS, CI, tests.
 - [ ] **Scoring engine:** 0–100 per category (tech, security) and overall, plus a ranked fix list. ([ADR-0002](docs/adr/0002-scoring-formula.md))
-- [ ] **Output renderers and CI gate:** terminal, `--json`, SARIF 2.1.0, `--fail-under N`. ([ADR-0003](docs/adr/0003-sarif-mapping.md))
+- [ ] **Output renderers and CI gate:** terminal, `--json`, SARIF 2.1.0, `--fail-under N`. ([ADR-0003](docs/adr/0003-sarif-mapping.md)) *Terminal done: findings grouped into ranked fixes, top 10, `--all`. Still to do: `--json`, SARIF, `--fail-under`.*
 - [ ] **`.stealth.yml` config:** ignored paths, severity overrides, allowlists. ([ADR-0004](docs/adr/0004-stealth-yml-format.md))
 - [ ] **MCP server:** local HTTP server started by `stealth mcp`, registered with Claude Code by `stealth mcp install`. Tools `repo_health`, `list_findings`, `check_dependency`.
 - [ ] **Phase 1 launch:** docs, demo GIF, Show HN, r/java, Spring community. Check findings by hand on spring-petclinic first.

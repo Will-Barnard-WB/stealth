@@ -1,0 +1,40 @@
+{
+  "id": "GHSA-3mc7-4q67-w48m",
+  "summary": "Uncontrolled Resource Consumption in snakeyaml",
+  "aliases": [
+    "CVE-2022-25857"
+  ],
+  "modified": "2026-09-10T03:49:45.081110360Z",
+  "published": "2022-08-31T00:00:24Z",
+  "database_specific": {
+    "severity": "HIGH"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.yaml:snakeyaml",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.yaml/snakeyaml"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.31"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ]
+}

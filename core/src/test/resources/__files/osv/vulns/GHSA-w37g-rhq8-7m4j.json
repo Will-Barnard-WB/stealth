@@ -1,0 +1,40 @@
+{
+  "id": "GHSA-w37g-rhq8-7m4j",
+  "summary": "Snakeyaml vulnerable to Stack overflow leading to denial of service",
+  "aliases": [
+    "CVE-2022-41854"
+  ],
+  "modified": "2026-09-10T03:50:07.647199817Z",
+  "published": "2022-11-11T19:00:31Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.yaml:snakeyaml",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.yaml/snakeyaml"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.32"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+    }
+  ]
+}

@@ -33,6 +33,11 @@ Terminal output is the first impression at launch. JSON and SARIF formats become
 - **Exit codes**: `0` ok, `1` score below `--fail-under` (or the `fail-under` in `.stealth.yml`), `2` usage or runtime error. Failed or timed-out analyzers don't cause `1` on their own, but are printed as warnings
 - Paths in JSON/SARIF are relative to the repo root, with forward slashes on all OSes
 
+### Progress
+
+- **Terminal output (done early, with the vulnerability analyzer):** `stealth doctor` groups findings by the line they point at, so each group is one fix (upgrading `spring-boot-starter-parent` covers its own outdatedness and every vulnerability that comes in through it), ranks fixes by worst severity then ADR-0002 weight, shows the top 10 with a summary per category, and `--all` lists every finding under its fix. Colours by severity on an ANSI terminal; plain symbols where stdout can't encode ✓ or →. See `FixList` and `TerminalReport` in `cli`. The score line comes with the scoring engine.
+- Still to do: `--json`, SARIF, `--fail-under`.
+
 ### Definition of done
 
 - [ ] Snapshot tests per renderer on `fixtures/boot2-legacy`
