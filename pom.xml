@@ -48,6 +48,7 @@
         <google-java-format.version>1.36.1</google-java-format.version>
         <maven.version>3.9.16</maven.version>
         <maven-resolver.version>1.9.27</maven-resolver.version>
+        <jgit.version>7.8.0.202609011348-r</jgit.version>
         <jreleaser-maven-plugin.version>1.26.0</jreleaser-maven-plugin.version>
     </properties>
 
@@ -73,6 +74,12 @@
                 <groupId>org.apache.maven.resolver</groupId>
                 <artifactId>maven-resolver-supplier</artifactId>
                 <version>${maven-resolver.version}</version>
+            </dependency>
+            <!-- Reads the repos stealth analyzes: tracked files, .gitignore, later branches and history -->
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>${jgit.version}</version>
             </dependency>
             <dependency>
                 <groupId>info.picocli</groupId>
