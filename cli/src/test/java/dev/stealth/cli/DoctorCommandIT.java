@@ -39,7 +39,7 @@ class DoctorCommandIT {
 
         assertThat(exitCode).isZero();
         assertThat(out.toString())
-                .contains("stub", "deps", "vuln", "eol")
+                .contains("stub", "deps", "vuln", "eol", "secrets")
                 .doesNotContain("failed")
                 .contains("No problems found.");
     }

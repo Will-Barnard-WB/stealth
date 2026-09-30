@@ -12,6 +12,7 @@ import dev.stealth.core.http.CachedHttpClient;
 import dev.stealth.core.http.HttpCache;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenResolverSettings;
+import dev.stealth.core.secrets.SecretsAnalyzer;
 import dev.stealth.core.vuln.OsvClient;
 import dev.stealth.core.vuln.VulnerabilityAnalyzer;
 import java.time.Clock;
@@ -95,5 +96,10 @@ class DoctorConfiguration {
     EndOfLifeAnalyzer endOfLifeAnalyzer(
             MavenModelLoader loader, EndOfLifeClient endOfLife, Clock clock) {
         return new EndOfLifeAnalyzer(loader, endOfLife, clock);
+    }
+
+    @Bean
+    SecretsAnalyzer secretsAnalyzer(Clock clock) {
+        return new SecretsAnalyzer(clock);
     }
 }

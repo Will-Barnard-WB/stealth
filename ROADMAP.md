@@ -30,7 +30,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [x] **Maintenance analyzer:** flag dependencies with no release in over 2 years. Rules in [docs/rules/maintenance.md](docs/rules/maintenance.md).
 - [x] **Vulnerability analyzer:** OSV.dev `querybatch`, recording the fixed version. Rules in [docs/rules/vuln.md](docs/rules/vuln.md).
 - [ ] **Framework and runtime end-of-life analyzer:** Java and Spring Boot versions against endoflife.date.
-- [ ] **Secrets analyzer:** regex + entropy ruleset with an allowlist (working tree first, git history later).
+- [x] **Secrets analyzer:** regex + entropy ruleset with an allowlist (working tree first, git history later). Rules in [docs/rules/secrets.md](docs/rules/secrets.md). *Still to do: git history scanning.*
 - [ ] **Duplication analyzer:** PMD CPD as a library.
 - [ ] **Repo hygiene analyzer:** JGit for stale branches and large files; missing CODEOWNERS, CI, tests.
 - [ ] **Scoring engine:** 0–100 per category (tech, security) and overall, plus a ranked fix list. ([ADR-0002](docs/adr/0002-scoring-formula.md))
