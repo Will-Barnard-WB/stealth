@@ -169,6 +169,14 @@ final class StealthCli {
     }
 
     /** The richest set of characters stdout can actually print. */
+    /**
+     * Whether stdout's encoding can print every character of {@code text}, such as the ✓ and → in
+     * the doctor report. The same check as {@link #glyphs()}, for output outside the banner.
+     */
+    static boolean stdoutCanPrint(String text) {
+        return System.out.charset().newEncoder().canEncode(text);
+    }
+
     static Banner.Glyphs glyphs() {
         return glyphs(System.out.charset());
     }

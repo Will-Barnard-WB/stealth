@@ -208,7 +208,9 @@ class TerminalReportTest {
                                 List.of(aResult("deps", AnalyzerStatus.OK, null))),
                         false);
 
-        assertThat(out).contains("ok deps", "commons-text  1.9 -> 1.15.0").doesNotContain("✓", "→");
+        assertThat(out)
+                .contains("ok deps", "commons-text  1.9 -> 1.15.0")
+                .doesNotContain("✓", "→", "·");
     }
 
     @Test
