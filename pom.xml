@@ -49,6 +49,7 @@
         <maven.version>3.9.16</maven.version>
         <maven-resolver.version>1.9.27</maven-resolver.version>
         <jgit.version>7.8.0.202609011348-r</jgit.version>
+        <pmd.version>7.28.0</pmd.version>
         <jreleaser-maven-plugin.version>1.26.0</jreleaser-maven-plugin.version>
     </properties>
 
@@ -80,6 +81,12 @@
                 <groupId>org.eclipse.jgit</groupId>
                 <artifactId>org.eclipse.jgit</artifactId>
                 <version>${jgit.version}</version>
+            </dependency>
+            <!-- CPD, the copy-paste detector behind the duplication analyzer. BSD-licensed -->
+            <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-java</artifactId>
+                <version>${pmd.version}</version>
             </dependency>
             <dependency>
                 <groupId>info.picocli</groupId>
