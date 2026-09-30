@@ -107,6 +107,35 @@ class EndOfLifeAnalyzerTest {
     }
 
     @Test
+    void analyze_eolRuntime_flagsBothJavaAndSpringBootOnTheDefaultDistribution() throws Exception {
+        List<Finding> findings = analyzer(REFERENCE_DATE).analyze(Fixture.EOL_RUNTIME.context());
+
+        assertThat(findings)
+                .extracting(
+                        f -> f.location().line().orElseThrow(), Finding::ruleId, Finding::message)
+                .containsExactlyInAnyOrder(
+                        Tuple.tuple(
+                                10,
+                                "eol/past-end-of-life",
+                                "uses Spring Boot 2.3, which reached end of life on 2021-05-20. The"
+                                        + " oldest supported release is Spring Boot 4.1 (4.1.1)."
+                                        + " Commercial support ended on 2022-08-20."),
+                        Tuple.tuple(
+                                19,
+                                "eol/past-end-of-life",
+                                "targets Java 16 (eclipse-temurin), which reached end of life on"
+                                        + " 2021-09-30. The oldest supported release is Java 17"
+                                        + " (17.0.20.1+1)."));
+    }
+
+    @Test
+    void analyze_eolRuntime_bothFindingsAreHighSeverity() throws Exception {
+        assertThat(analyzer(REFERENCE_DATE).analyze(Fixture.EOL_RUNTIME.context()))
+                .extracting(Finding::severity)
+                .containsOnly(Severity.HIGH);
+    }
+
+    @Test
     void analyze_boot4Clean_reportsNothing() throws Exception {
         assertThat(analyzer(REFERENCE_DATE).analyze(Fixture.BOOT4_CLEAN.context())).isEmpty();
     }

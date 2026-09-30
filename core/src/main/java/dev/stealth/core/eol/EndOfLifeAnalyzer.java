@@ -110,7 +110,8 @@ public class EndOfLifeAnalyzer implements Analyzer {
                                                     cycle,
                                                     assessment,
                                                     upgradeTarget(cycles, subject.cycle(), today),
-                                                    settings)));
+                                                    settings,
+                                                    today)));
         }
         return findings;
     }
@@ -216,13 +217,14 @@ public class EndOfLifeAnalyzer implements Analyzer {
             ReleaseCycle current,
             Assessment assessment,
             Optional<ReleaseCycle> target,
-            StealthConfig.Eol settings) {
+            StealthConfig.Eol settings,
+            LocalDate today) {
         Rule rule = assessment.rule();
         return new Finding(
                 rule.id(),
                 rule.category(),
                 rule.defaultSeverity(),
-                message(subject, current, assessment, target, settings),
+                message(subject, current, assessment, target, settings, today),
                 subject.location(),
                 component(subject),
                 Optional.empty(),
@@ -235,7 +237,8 @@ public class EndOfLifeAnalyzer implements Analyzer {
             ReleaseCycle current,
             Assessment assessment,
             Optional<ReleaseCycle> target,
-            StealthConfig.Eol settings) {
+            StealthConfig.Eol settings,
+            LocalDate today) {
         StringBuilder message = new StringBuilder();
         if (subject.product() == Product.JAVA) {
             message.append(subject.configured() ? "runs on Java " : "targets Java ")
@@ -256,7 +259,12 @@ public class EndOfLifeAnalyzer implements Analyzer {
                                 .append(name(subject.product(), cycle))
                                 .append("."));
         if (current.extendedSupport() instanceof Support.Until(LocalDate end)) {
-            message.append(" Commercial support runs to ").append(end).append(".");
+            message.append(
+                            today.isAfter(end)
+                                    ? " Commercial support ended on "
+                                    : " Commercial support runs to ")
+                    .append(end)
+                    .append(".");
         }
         return message.toString();
     }

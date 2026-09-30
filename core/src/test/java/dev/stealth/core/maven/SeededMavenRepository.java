@@ -31,7 +31,11 @@ public final class SeededMavenRepository {
     public static final URI NO_REMOTE = URI.create("http://127.0.0.1:9/maven2/");
 
     private static final List<Fixture> FIXTURES =
-            List.of(Fixture.MULTI_MODULE, Fixture.BOOT2_LEGACY, Fixture.BOOT4_CLEAN);
+            List.of(
+                    Fixture.MULTI_MODULE,
+                    Fixture.BOOT2_LEGACY,
+                    Fixture.BOOT4_CLEAN,
+                    Fixture.EOL_RUNTIME);
 
     private SeededMavenRepository() {}
 
