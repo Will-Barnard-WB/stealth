@@ -25,6 +25,9 @@ final class Banner {
 
     private static final String WORD = "STEALTH";
 
+    /** The distinct characters the logo is drawn with, for {@link Glyphs#sample()}. */
+    private static final String LOGO_CHARS = "█╗╔═╝║╚";
+
     // "ANSI Shadow" letters. Every row of a letter has the same width so the columns line up.
     private static final Map<Character, String[]> LETTERS =
             Map.of(
@@ -63,25 +66,51 @@ final class Banner {
                     "stealth -V prints the version you're running",
                     "Every command has --help, including stealth doctor --help");
 
-    /** What the welcome box shows. {@code unicode} is false when stdout can't encode ╭ or ✻. */
-    record Details(String version, String tagline, String cwd, boolean unicode) {}
+    /** What the welcome box shows, and how much of it stdout's encoding can print. */
+    record Details(String version, String tagline, String cwd, Glyphs glyphs) {}
 
-    private record Glyphs(
+    /**
+     * The characters the banner is drawn with. A Windows console runs in a code page rather than
+     * UTF-8 unless it is asked otherwise, so the drawing has to degrade rather than turn into
+     * question marks: the OEM code pages (437, 850, 852) carry box drawing and the blocks the logo
+     * is built from, but not ✻ or ╭, and a Latin-1 code page carries none of them.
+     */
+    record Glyphs(
             String topLeft,
             String topRight,
             String bottomLeft,
             String bottomRight,
+            String horizontal,
+            String vertical,
             String star,
             String ellipsis,
-            String tip) {
+            String tip,
+            boolean logo) {
 
-        static final Glyphs UNICODE = new Glyphs("╭", "╮", "╰", "╯", "✻", "…", "※");
+        static final Glyphs UNICODE = new Glyphs("╭", "╮", "╰", "╯", "─", "│", "✻", "…", "※", true);
 
-        // Box-drawing characters that also exist in the Windows console code pages (437, 850)
-        static final Glyphs CODE_PAGE_SAFE = new Glyphs("┌", "┐", "└", "┘", "*", "...", "*");
+        static final Glyphs CODE_PAGE =
+                new Glyphs("┌", "┐", "└", "┘", "─", "│", "*", "...", "*", true);
 
-        static Glyphs of(Details details) {
-            return details.unicode() ? UNICODE : CODE_PAGE_SAFE;
+        /** No box drawing and no blocks, so no logo either. */
+        static final Glyphs ASCII =
+                new Glyphs("+", "+", "+", "+", "-", "|", "*", "...", "*", false);
+
+        /** Richest first, so the best set an encoding supports is the first one that fits. */
+        static final List<Glyphs> BY_RICHNESS = List.of(UNICODE, CODE_PAGE, ASCII);
+
+        /** Every character this set prints, so an encoding can be asked whether it has them. */
+        String sample() {
+            return topLeft
+                    + topRight
+                    + bottomLeft
+                    + bottomRight
+                    + horizontal
+                    + vertical
+                    + star
+                    + ellipsis
+                    + tip
+                    + (logo ? LOGO_CHARS : "");
         }
     }
 
@@ -94,8 +123,10 @@ final class Banner {
         }
         List<String> lines = new ArrayList<>();
         lines.add("");
-        lines.addAll(logo(ansi));
-        lines.add("");
+        if (details.glyphs().logo()) {
+            lines.addAll(logo(ansi));
+            lines.add("");
+        }
         lines.addAll(welcomeBox(ansi, details));
         lines.add("");
         lines.addAll(gettingStarted(ansi));
@@ -109,7 +140,7 @@ final class Banner {
         }
         String tip = TIPS.get(ThreadLocalRandom.current().nextInt(TIPS.size()));
         return nl
-                + ansi.string("@|" + MUTED + " " + Glyphs.of(details).tip() + " Tip: " + tip + "|@")
+                + ansi.string("@|" + MUTED + " " + details.glyphs().tip() + " Tip: " + tip + "|@")
                 + nl;
     }
 
@@ -131,7 +162,7 @@ final class Banner {
     }
 
     private static List<String> welcomeBox(Ansi ansi, Details details) {
-        Glyphs glyphs = Glyphs.of(details);
+        Glyphs glyphs = details.glyphs();
         int contentWidth = WIDTH - 4;
         String tagline = fit(details.tagline(), contentWidth - 2, glyphs.ellipsis());
         String cwd = fit(details.cwd(), contentWidth - "  cwd: ".length(), glyphs.ellipsis());
@@ -158,8 +189,8 @@ final class Banner {
                         },
                         new String[] {"  cwd: " + cwd, "  @|" + MUTED + " cwd: " + cwd + "|@"});
 
-        String border = "─".repeat(WIDTH - 2);
-        String side = ansi.string("@|" + ACCENT + " │|@");
+        String border = glyphs.horizontal().repeat(WIDTH - 2);
+        String side = ansi.string("@|" + ACCENT + " " + glyphs.vertical() + "|@");
         List<String> lines = new ArrayList<>();
         lines.add(
                 ansi.string(
