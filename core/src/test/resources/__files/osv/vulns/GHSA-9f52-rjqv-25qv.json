@@ -1,0 +1,100 @@
+{
+  "id": "GHSA-9f52-rjqv-25qv",
+  "summary": "Spring Framework Arbitrary Method Invocation in SpEL Expressions",
+  "aliases": [
+    "CVE-2026-41852"
+  ],
+  "modified": "2026-09-10T03:50:49.325466833Z",
+  "published": "2026-06-09T06:31:58Z",
+  "database_specific": {
+    "severity": "LOW"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.springframework:spring-expression",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-expression"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "7.0.0"
+            },
+            {
+              "fixed": "7.0.8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-expression",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-expression"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.2.0"
+            },
+            {
+              "fixed": "6.2.19"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-expression",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-expression"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.1.0"
+            },
+            {
+              "last_affected": "6.1.21"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-expression",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-expression"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "5.3.39"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  ]
+}

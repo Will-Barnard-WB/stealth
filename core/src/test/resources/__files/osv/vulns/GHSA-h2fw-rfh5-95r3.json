@@ -1,0 +1,181 @@
+{
+  "id": "GHSA-h2fw-rfh5-95r3",
+  "summary": "Apache Tomcat - CGI security constraint bypass",
+  "aliases": [
+    "BIT-tomcat-2025-46701",
+    "CVE-2025-46701"
+  ],
+  "modified": "2026-09-10T03:50:57.935292058Z",
+  "published": "2025-05-29T21:31:37Z",
+  "database_specific": {
+    "severity": "LOW"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.0.M1"
+            },
+            {
+              "fixed": "9.0.105"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M1"
+            },
+            {
+              "fixed": "10.1.41"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.0.M1"
+            },
+            {
+              "fixed": "9.0.105"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M1"
+            },
+            {
+              "fixed": "10.1.41"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "8.5.0"
+            },
+            {
+              "last_affected": "8.5.100"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "8.5.0"
+            },
+            {
+              "last_affected": "8.5.100"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V4",
+      "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N/E:U/U:Clear"
+    }
+  ]
+}

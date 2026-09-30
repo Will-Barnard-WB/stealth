@@ -1,0 +1,120 @@
+{
+  "id": "GHSA-gx83-3vf8-gh7j",
+  "summary": "jackson-databind: Comparable missing from DefaultBaseTypeLimitingValidator's unsafe base types (incomplete PolymorphicTypeValidator denylist)",
+  "aliases": [
+    "CVE-2026-83557"
+  ],
+  "modified": "2026-09-28T21:00:05.608227628Z",
+  "published": "2026-09-28T20:44:25Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "tools.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/tools.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.0.0"
+            },
+            {
+              "fixed": "3.1.6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "tools.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/tools.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.2.0"
+            },
+            {
+              "fixed": "3.2.2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.11.0"
+            },
+            {
+              "fixed": "2.18.10"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.19.0"
+            },
+            {
+              "fixed": "2.21.6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.22.0"
+            },
+            {
+              "fixed": "2.22.2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L"
+    }
+  ]
+}

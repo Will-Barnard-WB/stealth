@@ -65,7 +65,7 @@ public final class Versions {
     }
 
     /** The variant qualifier, such as {@code jre} in {@code 33.0.0-jre}. */
-    static Optional<String> variant(String version) {
+    public static Optional<String> variant(String version) {
         return tokens(version).stream().filter(t -> VARIANT_TOKEN.matcher(t).matches()).findFirst();
     }
 

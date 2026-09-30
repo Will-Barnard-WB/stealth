@@ -1,0 +1,80 @@
+{
+  "id": "GHSA-2rmj-mq67-h97g",
+  "summary": "Spring Framework DoS via conditional HTTP request",
+  "aliases": [
+    "CVE-2024-38809"
+  ],
+  "modified": "2026-09-10T03:50:55.885781916Z",
+  "published": "2024-09-24T18:34:43Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.springframework:spring-web",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-web"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "5.3.38"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-web",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-web"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.0.0"
+            },
+            {
+              "fixed": "6.0.23"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-web",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-web"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.1.0"
+            },
+            {
+              "fixed": "6.1.12"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+    }
+  ]
+}

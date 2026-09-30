@@ -1,0 +1,181 @@
+{
+  "id": "GHSA-25xr-qj8w-c4vf",
+  "summary": "Apache Tomcat Coyote vulnerable to Denial of Service via excessive HTTP/2 streams",
+  "aliases": [
+    "BIT-tomcat-2025-53506",
+    "CVE-2025-53506"
+  ],
+  "modified": "2026-09-10T03:50:25.989583964Z",
+  "published": "2025-07-10T21:31:53Z",
+  "database_specific": {
+    "severity": "HIGH"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-coyote",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-coyote"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.9"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-coyote",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-coyote"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M1"
+            },
+            {
+              "fixed": "10.1.43"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-coyote",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-coyote"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.0.M1"
+            },
+            {
+              "fixed": "9.0.107"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-coyote",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-coyote"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "8.5.0"
+            },
+            {
+              "last_affected": "8.5.100"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "8.5.0"
+            },
+            {
+              "last_affected": "8.5.100"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.0.M1"
+            },
+            {
+              "fixed": "9.0.107"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M1"
+            },
+            {
+              "fixed": "10.1.43"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.9"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ]
+}

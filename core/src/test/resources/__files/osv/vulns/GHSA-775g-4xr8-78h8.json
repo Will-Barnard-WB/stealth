@@ -1,0 +1,40 @@
+{
+  "id": "GHSA-775g-4xr8-78h8",
+  "summary": "Spring Framework Denial of Service via Integer Overflow in SpEL Expressions",
+  "aliases": [
+    "CVE-2026-41849"
+  ],
+  "modified": "2026-07-30T17:11:43.450555Z",
+  "published": "2026-06-09T06:31:58Z",
+  "database_specific": {
+    "severity": "HIGH"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.springframework:spring-expression",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-expression"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "5.3.39"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    }
+  ]
+}

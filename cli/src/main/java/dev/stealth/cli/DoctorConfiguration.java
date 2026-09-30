@@ -8,6 +8,8 @@ import dev.stealth.core.http.CachedHttpClient;
 import dev.stealth.core.http.HttpCache;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenResolverSettings;
+import dev.stealth.core.vuln.OsvClient;
+import dev.stealth.core.vuln.VulnerabilityAnalyzer;
 import java.time.Duration;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,5 +48,15 @@ class DoctorConfiguration {
     DependencyFreshnessAnalyzer dependencyFreshnessAnalyzer(
             MavenModelLoader loader, MavenCentralClient central) {
         return new DependencyFreshnessAnalyzer(loader, central);
+    }
+
+    @Bean
+    OsvClient osvClient(CachedHttpClient http) {
+        return new OsvClient(http, OsvClient.OSV);
+    }
+
+    @Bean
+    VulnerabilityAnalyzer vulnerabilityAnalyzer(MavenModelLoader loader, OsvClient osv) {
+        return new VulnerabilityAnalyzer(loader, osv);
     }
 }

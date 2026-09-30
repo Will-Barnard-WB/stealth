@@ -41,7 +41,8 @@ class DoctorCommandIT {
         assertThat(out.toString())
                 .containsPattern("stub +tech +ok")
                 .containsPattern("deps +tech +ok")
-                .contains("0 findings from 2 analyzers");
+                .containsPattern("vuln +security +ok")
+                .contains("0 findings from 3 analyzers");
     }
 
     @TestConfiguration

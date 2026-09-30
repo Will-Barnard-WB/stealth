@@ -1,0 +1,185 @@
+{
+  "id": "GHSA-83qj-6fr2-vhqg",
+  "summary": "Apache Tomcat: Potential RCE and/or information disclosure and/or information corruption with partial PUT",
+  "aliases": [
+    "BIT-tomcat-2025-24813",
+    "CVE-2025-24813"
+  ],
+  "modified": "2026-09-10T03:50:23.313083129Z",
+  "published": "2025-03-10T18:31:56Z",
+  "database_specific": {
+    "severity": "CRITICAL"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M1"
+            },
+            {
+              "fixed": "10.1.35"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.0.M1"
+            },
+            {
+              "fixed": "9.0.99"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M1"
+            },
+            {
+              "fixed": "10.1.35"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.0.M1"
+            },
+            {
+              "fixed": "9.0.99"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "8.5.0"
+            },
+            {
+              "last_affected": "8.5.100"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "8.5.0"
+            },
+            {
+              "last_affected": "8.5.100"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:H"
+    },
+    {
+      "type": "CVSS_V4",
+      "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:A"
+    }
+  ]
+}

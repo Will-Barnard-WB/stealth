@@ -65,7 +65,26 @@ public class CachedHttpClient {
      * @throws IOException if there's no usable response and nothing cached, including when offline
      */
     public Optional<String> get(URI uri) throws IOException, InterruptedException {
-        Optional<HttpCache.Entry> cached = cache.get(uri);
+        return send(uri.toString(), HttpRequest.newBuilder(uri).GET(), uri);
+    }
+
+    /**
+     * POSTs a JSON {@code body}, cached by URL and body, for query APIs such as OSV.dev's batch
+     * query. Same caching, retries and offline behaviour as {@link #get}.
+     */
+    public Optional<String> postJson(URI uri, String body)
+            throws IOException, InterruptedException {
+        String key = "POST " + uri + "\n" + HttpCache.hash(body);
+        HttpRequest.Builder request =
+                HttpRequest.newBuilder(uri)
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body));
+        return send(key, request, uri);
+    }
+
+    private Optional<String> send(String key, HttpRequest.Builder request, URI uri)
+            throws IOException, InterruptedException {
+        Optional<HttpCache.Entry> cached = cache.get(key);
         if (cached.isPresent() && (cached.get().fresh() || offline.getAsBoolean())) {
             return cached.get().body();
         }
@@ -73,8 +92,8 @@ public class CachedHttpClient {
             throw new IOException("offline and not cached: " + uri);
         }
         try {
-            Optional<String> body = fetch(uri);
-            cache.put(uri, body);
+            Optional<String> body = fetch(request, uri);
+            cache.put(key, body);
             return body;
         } catch (IOException e) {
             if (cached.isPresent()) {
@@ -84,14 +103,13 @@ public class CachedHttpClient {
         }
     }
 
-    private Optional<String> fetch(URI uri) throws IOException, InterruptedException {
+    private Optional<String> fetch(HttpRequest.Builder builder, URI uri)
+            throws IOException, InterruptedException {
         HttpRequest request =
-                HttpRequest.newBuilder(uri)
-                        .timeout(Duration.ofSeconds(30))
+                builder.timeout(Duration.ofSeconds(30))
                         .header(
                                 "User-Agent",
                                 "stealth (+https://github.com/Will-Barnard-WB/stealth)")
-                        .GET()
                         .build();
         Duration backoff = initialBackoff;
         IOException failure = null;

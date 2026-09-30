@@ -1,0 +1,100 @@
+{
+  "id": "GHSA-j3rv-43j4-c7qm",
+  "summary": "jackson-databind has a PolymorphicTypeValidator bypass via generic type parameters that allows arbitrary class instantiation",
+  "aliases": [
+    "CVE-2026-54512"
+  ],
+  "modified": "2026-09-10T03:50:50.187641487Z",
+  "published": "2026-06-23T21:21:38Z",
+  "database_specific": {
+    "severity": "HIGH"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.10.0"
+            },
+            {
+              "fixed": "2.18.8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.0.0"
+            },
+            {
+              "fixed": "3.1.4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "com.fasterxml.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.19.0"
+            },
+            {
+              "fixed": "2.21.4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "tools.jackson.core:jackson-databind",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/tools.jackson.core/jackson-databind"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.0.0"
+            },
+            {
+              "fixed": "3.1.4"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  ]
+}

@@ -28,7 +28,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [x] **Maven model loading:** effective versions including parent POMs and BOMs (maven-model-builder), multi-module support.
 - [x] **Dependency freshness analyzer:** latest versions from Maven Central's `maven-metadata.xml`, cached in `~/.stealth/cache`. Rules in [docs/rules/deps.md](docs/rules/deps.md).
 - [ ] **Maintenance analyzer:** flag dependencies with no release in over 2 years.
-- [ ] **Vulnerability analyzer:** OSV.dev `querybatch`, recording the fixed version.
+- [x] **Vulnerability analyzer:** OSV.dev `querybatch`, recording the fixed version. Rules in [docs/rules/vuln.md](docs/rules/vuln.md).
 - [ ] **Framework and runtime end-of-life analyzer:** Java and Spring Boot versions against endoflife.date.
 - [ ] **Secrets analyzer:** regex + entropy ruleset with an allowlist (working tree first, git history later).
 - [ ] **Duplication analyzer:** PMD CPD as a library.

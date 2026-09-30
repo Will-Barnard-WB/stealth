@@ -1,0 +1,201 @@
+{
+  "id": "GHSA-42wg-hm62-jcwg",
+  "summary": "Apache Tomcat installer for Windows has an untrusted search path vulnerability",
+  "aliases": [
+    "BIT-tomcat-2025-49124",
+    "CVE-2025-49124"
+  ],
+  "modified": "2025-10-29T16:13:33.340454Z",
+  "published": "2025-06-16T15:32:28Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0"
+            },
+            {
+              "fixed": "10.1.42"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.23"
+            },
+            {
+              "fixed": "9.0.106"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0"
+            },
+            {
+              "fixed": "10.1.42"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.23"
+            },
+            {
+              "fixed": "9.0.106"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0"
+            },
+            {
+              "fixed": "10.1.42"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-catalina",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-catalina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.23"
+            },
+            {
+              "fixed": "9.0.106"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V4",
+      "score": "CVSS:4.0/AV:L/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:U"
+    }
+  ]
+}

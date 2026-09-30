@@ -1,0 +1,141 @@
+{
+  "id": "GHSA-mgp5-rv84-w37q",
+  "summary": "Apache Tomcat has an Improper Input Validation vulnerability",
+  "aliases": [
+    "BIT-tomcat-2026-24734",
+    "CVE-2026-24734"
+  ],
+  "modified": "2026-09-10T03:50:35.574464523Z",
+  "published": "2026-02-17T21:31:13Z",
+  "database_specific": {
+    "severity": "HIGH"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-coyote",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-coyote"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-coyote",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-coyote"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M7"
+            },
+            {
+              "fixed": "10.1.52"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat:tomcat-coyote",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat/tomcat-coyote"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.83"
+            },
+            {
+              "fixed": "9.0.115"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "11.0.0-M1"
+            },
+            {
+              "fixed": "11.0.18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "10.1.0-M7"
+            },
+            {
+              "fixed": "10.1.52"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.apache.tomcat.embed:tomcat-embed-core",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "9.0.83"
+            },
+            {
+              "fixed": "9.0.115"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+    }
+  ]
+}

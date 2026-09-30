@@ -1,0 +1,140 @@
+{
+  "id": "GHSA-4gc7-5j7h-4qph",
+  "summary": "Spring Framework DataBinder Case Sensitive Match Exception",
+  "aliases": [
+    "CVE-2024-38820"
+  ],
+  "modified": "2026-09-10T03:50:19.586027622Z",
+  "published": "2024-10-18T06:30:32Z",
+  "database_specific": {
+    "severity": "MODERATE"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.springframework:spring-context",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-context"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.1.0"
+            },
+            {
+              "fixed": "6.1.14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-web",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-web"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.1.0"
+            },
+            {
+              "fixed": "6.1.14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-web",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-web"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.0.0"
+            },
+            {
+              "last_affected": "6.0.24"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-context",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-context"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.0.0"
+            },
+            {
+              "last_affected": "6.0.24"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-context",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-context"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "5.3.40"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework:spring-web",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework/spring-web"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "5.3.40"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+    }
+  ]
+}

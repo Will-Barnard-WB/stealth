@@ -1,0 +1,120 @@
+{
+  "id": "GHSA-wwpq-f5c3-7hvx",
+  "summary": "Spring Boot accepts predictable temp directory without ownership verification",
+  "aliases": [
+    "CVE-2026-40973"
+  ],
+  "modified": "2026-09-10T03:51:04.035674492Z",
+  "published": "2026-04-28T00:31:41Z",
+  "database_specific": {
+    "severity": "HIGH"
+  },
+  "affected": [
+    {
+      "package": {
+        "name": "org.springframework.boot:spring-boot",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework.boot/spring-boot"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "4.0.0"
+            },
+            {
+              "fixed": "4.0.6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework.boot:spring-boot",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework.boot/spring-boot"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.5.0"
+            },
+            {
+              "fixed": "3.5.14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework.boot:spring-boot",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework.boot/spring-boot"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.4.0"
+            },
+            {
+              "last_affected": "3.4.15"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework.boot:spring-boot",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework.boot/spring-boot"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.3.0"
+            },
+            {
+              "last_affected": "3.3.18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "org.springframework.boot:spring-boot",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.springframework.boot/spring-boot"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "last_affected": "2.7.32"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    }
+  ]
+}
