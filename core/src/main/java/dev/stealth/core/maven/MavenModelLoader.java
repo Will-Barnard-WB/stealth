@@ -1,5 +1,6 @@
 package dev.stealth.core.maven;
 
+import dev.stealth.core.Location;
 import dev.stealth.core.RepoContext;
 import dev.stealth.core.SharedResource;
 import java.nio.file.Path;
@@ -13,6 +14,10 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
@@ -53,6 +58,8 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
 
     private static final String SPRING_BOOT_GROUP = "org.springframework.boot";
 
+    private static final Pattern PROPERTY = Pattern.compile("\\$\\{([^}]+)}");
+
     // Most specific first: release beats source, which beats Spring Boot's java.version
     private static final List<String> JAVA_VERSION_PROPERTIES =
             List.of(
@@ -61,11 +68,20 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                     "maven.compiler.target",
                     "java.version");
 
-    private final MavenResolverSettings settings;
-    private final RepositorySystem system = new RepositorySystemSupplier().get();
-    private final ModelBuilder modelBuilder = new DefaultModelBuilderFactory().newInstance();
+    private final Supplier<MavenResolverSettings> settings;
+    private final ReentrantLock lock = new ReentrantLock();
+
+    // Created on first load: building the resolver is slow, and most CLI runs never load a model
+    private RepositorySystem system;
+    private ModelBuilder modelBuilder;
 
     public MavenModelLoader(MavenResolverSettings settings) {
+        Objects.requireNonNull(settings, "settings");
+        this.settings = () -> settings;
+    }
+
+    /** Reads {@code settings} at the start of each load, so a CLI flag can switch to offline. */
+    public MavenModelLoader(Supplier<MavenResolverSettings> settings) {
         this.settings = Objects.requireNonNull(settings, "settings");
     }
 
@@ -79,13 +95,27 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
         if (poms.pomFiles().isEmpty()) {
             return new MavenProjectModel(List.of(), poms.warnings());
         }
-        return new Run(poms).load();
+        start();
+        return new Run(poms, settings.get()).load();
+    }
+
+    private void start() {
+        lock.lock();
+        try {
+            if (system == null) {
+                system = new RepositorySystemSupplier().get();
+                modelBuilder = new DefaultModelBuilderFactory().newInstance();
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
     /** One load: the resolver session and caches are shared by every module of the repository. */
     private final class Run {
 
         private final RepoPoms poms;
+        private final MavenResolverSettings settings;
         private final VersionLocator locator;
         private final Map<String, Path> modules;
         private final DefaultRepositorySystemSession session;
@@ -95,8 +125,9 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
         private final Properties systemProperties = new Properties();
         private final List<String> warnings = new ArrayList<>();
 
-        Run(RepoPoms poms) {
+        Run(RepoPoms poms, MavenResolverSettings settings) {
             this.poms = poms;
+            this.settings = settings;
             this.locator = new VersionLocator(poms);
             this.modules = poms.modulesByCoordinates();
             this.session = session();
@@ -178,7 +209,60 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                             dependencyTree(effective, pomPath),
                             propertiesOf(effective),
                             javaVersion(effective, pom),
-                            springBootVersion(effective, pom)));
+                            springBootVersion(effective, pom),
+                            externalParent(pom),
+                            importedBoms(pom, effective)));
+        }
+
+        private Optional<PomReference> externalParent(Path pom) {
+            return poms.externalParent(pom)
+                    .map(
+                            parent ->
+                                    new PomReference(
+                                            parent.getGroupId(),
+                                            parent.getArtifactId(),
+                                            parent.getVersion(),
+                                            locator.externalParent(pom)
+                                                    .flatMap(VersionLocator.Located::location)));
+        }
+
+        /**
+         * Imports as written, with {@code ${property}} versions filled in from the effective model.
+         */
+        private List<PomReference> importedBoms(Path pom, Model effective) {
+            List<PomReference> boms = new ArrayList<>();
+            for (Path declaring : poms.hierarchy(pom)) {
+                Model raw = poms.raw(declaring);
+                if (raw.getDependencyManagement() == null) {
+                    continue;
+                }
+                for (Dependency managed : raw.getDependencyManagement().getDependencies()) {
+                    if ("import".equals(managed.getScope()) && managed.getVersion() != null) {
+                        boms.add(
+                                new PomReference(
+                                        managed.getGroupId(),
+                                        managed.getArtifactId(),
+                                        interpolate(managed.getVersion(), effective),
+                                        locator.followValue(
+                                                declaring, managed.getLocation("version"), pom)));
+                    }
+                }
+            }
+            return boms;
+        }
+
+        private String interpolate(String value, Model effective) {
+            Matcher property = PROPERTY.matcher(value);
+            StringBuilder result = new StringBuilder();
+            while (property.find()) {
+                String name = property.group(1);
+                String replacement =
+                        name.equals("project.version") || name.equals("version")
+                                ? effective.getVersion()
+                                : effective.getProperties().getProperty(name, property.group());
+                property.appendReplacement(result, Matcher.quoteReplacement(replacement));
+            }
+            return property.appendTail(result).toString();
         }
 
         private Optional<ResolvedDependency> resolvedDependency(Dependency dependency, Path pom) {
@@ -218,7 +302,9 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                     List.of(),
                     propertiesOf(raw),
                     Optional.empty(),
-                    Optional.empty());
+                    Optional.empty(),
+                    Optional.empty(),
+                    List.of());
         }
 
         private List<DependencyNode> dependencyTree(Model effective, String pomPath) {
@@ -324,7 +410,7 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
             if (value.isEmpty()) {
                 return Optional.empty();
             }
-            Optional<dev.stealth.core.Location> declaredAt =
+            Optional<Location> declaredAt =
                     JAVA_VERSION_PROPERTIES.stream()
                             .filter(name -> definedInRepository(name, pom))
                             .findFirst()

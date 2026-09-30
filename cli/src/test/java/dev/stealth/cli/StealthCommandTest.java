@@ -101,7 +101,8 @@ class StealthCommandTest {
                         if (cls == DoctorCommand.class) {
                             return cls.cast(
                                     new DoctorCommand(
-                                            new AnalyzerRunner(List.of(), Duration.ofSeconds(1))));
+                                            new AnalyzerRunner(List.of(), Duration.ofSeconds(1)),
+                                            new OfflineMode()));
                         }
                         return CommandLine.defaultFactory().create(cls);
                     }

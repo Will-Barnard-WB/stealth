@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ExitCode;
 import picocli.CommandLine.Model.CommandSpec;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
 
@@ -27,6 +28,7 @@ import picocli.CommandLine.Spec;
 public class DoctorCommand implements Callable<Integer> {
 
     private final AnalyzerRunner runner;
+    private final OfflineMode offlineMode;
 
     @Spec private CommandSpec spec;
 
@@ -37,8 +39,15 @@ public class DoctorCommand implements Callable<Integer> {
             description = "Repository to check. Defaults to the current directory.")
     private Path path;
 
-    public DoctorCommand(AnalyzerRunner runner) {
+    @Option(
+            names = "--offline",
+            description =
+                    "Don't use the network: only cached lookups and the local Maven repository.")
+    private boolean offline;
+
+    public DoctorCommand(AnalyzerRunner runner, OfflineMode offlineMode) {
         this.runner = runner;
+        this.offlineMode = offlineMode;
     }
 
     @Override
@@ -49,6 +58,7 @@ public class DoctorCommand implements Callable<Integer> {
             return ExitCode.USAGE;
         }
 
+        offlineMode.set(offline);
         DoctorReport report = runner.run(new RepoContext(root, StealthConfig.defaults()));
 
         PrintWriter out = spec.commandLine().getOut();

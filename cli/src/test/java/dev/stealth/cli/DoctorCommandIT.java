@@ -30,7 +30,7 @@ class DoctorCommandIT {
     @TempDir private Path repo;
 
     @Test
-    void execute_doctorWithStubAnalyzerBean_runsItAndExitsZero() {
+    void execute_doctorOnRepoWithoutPom_runsEveryAnalyzerBeanAndExitsZero() {
         StringWriter out = new StringWriter();
         CommandLine commandLine = new CommandLine(command, factory);
         commandLine.setOut(new PrintWriter(out));
@@ -40,7 +40,8 @@ class DoctorCommandIT {
         assertThat(exitCode).isZero();
         assertThat(out.toString())
                 .containsPattern("stub +tech +ok")
-                .contains("0 findings from 1 analyzer");
+                .containsPattern("deps +tech +ok")
+                .contains("0 findings from 2 analyzers");
     }
 
     @TestConfiguration
