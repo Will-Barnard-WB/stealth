@@ -39,10 +39,9 @@ class DoctorCommandIT {
 
         assertThat(exitCode).isZero();
         assertThat(out.toString())
-                .containsPattern("stub +tech +ok")
-                .containsPattern("deps +tech +ok")
-                .containsPattern("vuln +security +ok")
-                .contains("0 findings from 3 analyzers");
+                .contains("stub", "deps", "vuln")
+                .doesNotContain("failed")
+                .contains("No problems found.");
     }
 
     @TestConfiguration

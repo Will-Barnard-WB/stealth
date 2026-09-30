@@ -92,7 +92,7 @@ final class StealthCli {
     }
 
     /** Whether stdout's encoding can print ╭ and ✻, which the Windows console code pages can't. */
-    private static boolean stdoutSupportsUnicode() {
+    static boolean stdoutSupportsUnicode() {
         String encoding = System.getProperty("stdout.encoding", Charset.defaultCharset().name());
         return encoding.toUpperCase(Locale.ROOT).startsWith("UTF");
     }

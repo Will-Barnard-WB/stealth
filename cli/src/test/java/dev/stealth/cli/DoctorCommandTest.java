@@ -30,7 +30,7 @@ class DoctorCommandTest {
     @TempDir private Path repo;
 
     @Test
-    void execute_analyzersSucceedAndFail_printsSummaryAndExitsZero() {
+    void execute_analyzersSucceedAndFail_printsTheReportAndExitsZero() {
         Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
         Analyzer vuln =
                 new Analyzer() {
@@ -54,11 +54,13 @@ class DoctorCommandTest {
 
         assertThat(exitCode).isZero();
         assertThat(out.toString())
-                .contains(repo.toAbsolutePath().toString())
-                .containsPattern("hygiene +tech +ok")
-                .containsPattern("vuln +security +failed .*OSV.dev unreachable")
-                .contains("LOW      hygiene/missing-codeowners  No CODEOWNERS file")
-                .contains("1 finding from 2 analyzers");
+                .contains(repo.getFileName().toString())
+                .contains(
+                        "hygiene",
+                        "vuln failed: java.lang.IllegalStateException: OSV.dev unreachable")
+                .contains("Tech       1 low")
+                .contains("1  (repository)   No CODEOWNERS file")
+                .contains("1 finding in 1 fix");
         assertThat(err.toString()).isEmpty();
     }
 

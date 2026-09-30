@@ -1,15 +1,12 @@
 package dev.stealth.cli;
 
-import dev.stealth.core.AnalyzerResult;
 import dev.stealth.core.AnalyzerRunner;
 import dev.stealth.core.DoctorReport;
-import dev.stealth.core.Finding;
 import dev.stealth.core.RepoContext;
 import dev.stealth.core.StealthConfig;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Locale;
 import java.util.concurrent.Callable;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -19,7 +16,9 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
 
-/** {@code stealth doctor [path]}. Prints a plain summary until the renderers ticket lands. */
+/**
+ * {@code stealth doctor [path]}: runs every analyzer and prints the fixes, most important first.
+ */
 @Component
 @Command(
         name = "doctor",
@@ -45,6 +44,11 @@ public class DoctorCommand implements Callable<Integer> {
                     "Don't use the network: only cached lookups and the local Maven repository.")
     private boolean offline;
 
+    @Option(
+            names = "--all",
+            description = "List every finding under its fix, and every fix, not just the top 10.")
+    private boolean all;
+
     public DoctorCommand(AnalyzerRunner runner, OfflineMode offlineMode) {
         this.runner = runner;
         this.offlineMode = offlineMode;
@@ -62,33 +66,12 @@ public class DoctorCommand implements Callable<Integer> {
         DoctorReport report = runner.run(new RepoContext(root, StealthConfig.defaults()));
 
         PrintWriter out = spec.commandLine().getOut();
-        out.printf("stealth doctor %s%n%n", root);
-        for (AnalyzerResult result : report.results()) {
-            out.printf(
-                    "  %-14s %-9s %-10s %6d ms%s%n",
-                    result.analyzerId(),
-                    lowerCase(result.category()),
-                    lowerCase(result.status()).replace('_', ' '),
-                    result.duration().toMillis(),
-                    result.error().map(error -> "  " + error).orElse(""));
-        }
-        if (!report.results().isEmpty()) {
-            out.println();
-        }
-        for (Finding finding : report.findings()) {
-            out.printf("  %-8s %s  %s%n", finding.severity(), finding.ruleId(), finding.message());
-        }
-        out.printf(
-                "%d %s from %d %s%n",
-                report.findings().size(),
-                report.findings().size() == 1 ? "finding" : "findings",
-                report.results().size(),
-                report.results().size() == 1 ? "analyzer" : "analyzers");
+        TerminalReport terminal =
+                new TerminalReport(
+                        spec.commandLine().getColorScheme().ansi(),
+                        StealthCli.stdoutSupportsUnicode());
+        out.print(terminal.render(root, report, all));
         out.flush();
         return ExitCode.OK;
-    }
-
-    private static String lowerCase(Enum<?> value) {
-        return value.name().toLowerCase(Locale.ROOT);
     }
 }
