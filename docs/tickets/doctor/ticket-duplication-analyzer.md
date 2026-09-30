@@ -29,11 +29,19 @@ A tech finding per group of duplicated code blocks above a size threshold, listi
 
 ### Definition of done
 
-- [ ] Precision tests against `fixtures/duplicated`: blocks above the threshold are flagged, blocks below aren't, and `fixtures/boot4-clean` produces **no** findings
-- [ ] Generated sources are excluded (test with a fake `target/generated-sources` file)
-- [ ] Threshold configurable and tested
-- [ ] Runtime on a large repo recorded on this ticket
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] Precision tests against `fixtures/duplicated`: blocks above the threshold are flagged, blocks below aren't, and `fixtures/boot4-clean` produces **no** findings
+- [x] Generated sources are excluded (test with a fake `target/generated-sources` file)
+- [x] Threshold configurable and tested
+- [x] Runtime on a large repo recorded on this ticket
+- [x] `./mvnw verify` passes (tests + Spotless)
+
+### Runtime (2026-09-30)
+
+Duplication analyzer alone, Windows 11, JDK 21, shallow clones:
+
+- spring-petclinic: 30 main-source files, 0.1 s, no findings
+- spring-framework: 5,464 main-source files, 2.1 s, needs 256–512 MB heap, 236 findings (37 medium, 199 low)
+- spring-framework with tests included: 8,952 files, 4.0 s, needs over 1 GB heap, 915 findings
 
 ### Out of scope
 

@@ -6,6 +6,7 @@ import dev.stealth.core.deps.DependencyFreshnessAnalyzer;
 import dev.stealth.core.deps.MaintenanceAnalyzer;
 import dev.stealth.core.deps.MavenCentralClient;
 import dev.stealth.core.deps.MavenCentralSearch;
+import dev.stealth.core.duplication.DuplicationAnalyzer;
 import dev.stealth.core.eol.EndOfLifeAnalyzer;
 import dev.stealth.core.eol.EndOfLifeClient;
 import dev.stealth.core.http.CachedHttpClient;
@@ -20,10 +21,12 @@ import java.time.Duration;
 import java.time.Period;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties(DuplicationProperties.class)
 class DoctorConfiguration {
 
     /** Runs every {@link Analyzer} bean. */
@@ -101,5 +104,10 @@ class DoctorConfiguration {
     @Bean
     SecretsAnalyzer secretsAnalyzer(Clock clock) {
         return new SecretsAnalyzer(clock);
+    }
+
+    @Bean
+    DuplicationAnalyzer duplicationAnalyzer(DuplicationProperties properties) {
+        return new DuplicationAnalyzer(properties.minTokens(), properties.includeTests());
     }
 }
