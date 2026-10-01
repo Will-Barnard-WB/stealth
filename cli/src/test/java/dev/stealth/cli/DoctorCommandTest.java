@@ -92,6 +92,16 @@ class DoctorCommandTest {
     }
 
     @Test
+    void execute_hygieneFlag_runsOnlyTheHygieneAnalyzer() {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of());
+        Analyzer duplication = analyzer("duplication", Category.TECH, List.of());
+
+        execute(List.of(hygiene, duplication), "--hygiene", repo.toString());
+
+        assertThat(out.toString()).contains("hygiene").doesNotContain("duplication");
+    }
+
+    @Test
     void execute_analyzerAndCategoryFlags_runEverythingTheyName() {
         Analyzer secrets = analyzer("secrets", Category.SECURITY, List.of());
         Analyzer vuln = analyzer("vuln", Category.SECURITY, List.of());

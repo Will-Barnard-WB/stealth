@@ -31,11 +31,20 @@ Tech findings for: stale branches, large committed files, and missing CODEOWNERS
 
 ### Definition of done
 
-- [ ] Unit tests for each check, with JGit repos built in `@TempDir`
-- [ ] Precision tests: `fixtures/boot4-clean` produces **no** hygiene findings, and `fixtures/boot2-legacy` flags missing CODEOWNERS/CI
-- [ ] A non-git directory doesn't fail the analyzer
-- [ ] Thresholds configurable and tested
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] Unit tests for each check, with JGit repos built in `@TempDir`
+- [x] Precision tests: `fixtures/boot4-clean` produces **no** hygiene findings, and `fixtures/boot2-legacy` flags missing CODEOWNERS/CI
+- [x] A non-git directory doesn't fail the analyzer
+- [x] Thresholds configurable and tested
+- [x] `./mvnw verify` passes (tests + Spotless)
+
+### Notes from implementation
+
+- **Rules** (all low): `hygiene/missing-codeowners`, `hygiene/missing-ci`, `hygiene/missing-tests` (per module, at its `pom.xml`), `hygiene/stale-branches` (one finding listing the names), `hygiene/large-file` (per file). Documented in `docs/rules/hygiene.md`.
+- **Branch checks only run at a work-tree root.** For a subdirectory of a repository (a service in a monorepo, or a fixture inside stealth's own repo) the branches belong to the whole repository, so reporting them would be noise; the file checks still run. A non-git directory skips them the same way. There's no SPI status for "partly skipped", so it's silent.
+- **Excluded branches:** the checked-out branch, `origin/HEAD`'s target, `main` and `master`. A local branch and its `origin/` copy count once, by their newest commit.
+- **Large files** come from `WorkingTreeFiles` (tracked, plus untracked files `.gitignore` doesn't exclude), not just the HEAD tree, so a big file about to be committed is caught too.
+- **Thresholds:** `stealth.hygiene.stale-branch-after` (default `P90D`) and `stealth.hygiene.large-file-bytes` (default 5 MB) until `.stealth.yml` adds `hygiene.*`.
+- `stealth doctor --hygiene` runs it alone.
 
 ### Out of scope
 

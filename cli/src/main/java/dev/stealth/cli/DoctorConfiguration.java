@@ -11,6 +11,7 @@ import dev.stealth.core.eol.EndOfLifeAnalyzer;
 import dev.stealth.core.eol.EndOfLifeClient;
 import dev.stealth.core.http.CachedHttpClient;
 import dev.stealth.core.http.HttpCache;
+import dev.stealth.core.hygiene.RepoHygieneAnalyzer;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenResolverSettings;
 import dev.stealth.core.secrets.SecretsAnalyzer;
@@ -26,7 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(DuplicationProperties.class)
+@EnableConfigurationProperties({DuplicationProperties.class, HygieneProperties.class})
 class DoctorConfiguration {
 
     /** Runs every {@link Analyzer} bean. */
@@ -109,5 +110,12 @@ class DoctorConfiguration {
     @Bean
     DuplicationAnalyzer duplicationAnalyzer(DuplicationProperties properties) {
         return new DuplicationAnalyzer(properties.minTokens(), properties.includeTests());
+    }
+
+    @Bean
+    RepoHygieneAnalyzer repoHygieneAnalyzer(
+            MavenModelLoader loader, HygieneProperties properties, Clock clock) {
+        return new RepoHygieneAnalyzer(
+                loader, properties.staleBranchAfter(), properties.largeFileBytes(), clock);
     }
 }

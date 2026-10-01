@@ -138,6 +138,17 @@ class TerminalReportTest {
     }
 
     @Test
+    void render_repositoryFindings_areSeparateFixes() {
+        Finding codeowners = aRepositoryFinding("hygiene/missing-codeowners", "No CODEOWNERS file");
+        Finding ci = aRepositoryFinding("hygiene/missing-ci", "No CI configuration");
+
+        String out = render(false, codeowners, ci);
+
+        assertThat(out)
+                .contains("No CODEOWNERS file", "No CI configuration", "2 findings in 2 fixes");
+    }
+
+    @Test
     void render_moreThanTopFixes_showsTheTopTenAndPointsAtAll() {
         Finding[] findings = new Finding[12];
         for (int i = 0; i < findings.length; i++) {
@@ -326,6 +337,19 @@ class TerminalReportTest {
                         new Advisory(id, List.of(cve), OptionalDouble.empty(), Optional.empty())),
                 Optional.of(new Remediation(Optional.of(fixed), Optional.empty())),
                 Fingerprints.of("vuln/known-vulnerability", name, id, location.toString()));
+    }
+
+    private static Finding aRepositoryFinding(String ruleId, String message) {
+        return new Finding(
+                ruleId,
+                Category.TECH,
+                Severity.LOW,
+                message,
+                Location.repository(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Fingerprints.of(ruleId, ""));
     }
 
     private static AnalyzerResult aResult(String id, AnalyzerStatus status, String error) {
