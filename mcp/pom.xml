@@ -12,7 +12,7 @@
 
     <artifactId>stealth-mcp</artifactId>
     <name>stealth-mcp</name>
-    <description>MCP server exposing stealth to AI agents over stdio.</description>
+    <description>MCP server exposing stealth to AI agents over Streamable HTTP on localhost.</description>
 
     <dependencies>
         <dependency>
@@ -21,16 +21,16 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-mcp-server</artifactId>
+            <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.stealth</groupId>
+            <artifactId>stealth-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>

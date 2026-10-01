@@ -104,6 +104,20 @@ class StealthCommandTest {
                                             new AnalyzerRunner(List.of(), Duration.ofSeconds(1)),
                                             new OfflineMode()));
                         }
+                        if (cls == McpCommand.class) {
+                            return cls.cast(
+                                    new McpCommand(
+                                            new org.springframework.context.support
+                                                    .GenericApplicationContext(),
+                                            new StealthHome()));
+                        }
+                        if (cls == McpInstallCommand.class) {
+                            return cls.cast(
+                                    new McpInstallCommand(new ProcessRunner(), new StealthHome()));
+                        }
+                        if (cls == McpStatusCommand.class) {
+                            return cls.cast(new McpStatusCommand(new StealthHome()));
+                        }
                         return CommandLine.defaultFactory().create(cls);
                     }
                 };

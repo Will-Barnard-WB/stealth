@@ -37,7 +37,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [x] **Output renderers and CI gate:** terminal, `--json`, SARIF 2.1.0, `--fail-under N`. ([ADR-0003](docs/adr/0003-sarif-mapping.md)) `--format terminal|json|sarif`, `--output FILE`; JSON schema in [docs/schema](docs/schema/doctor-report.schema.json).
 - [x] **Doctor filters:** run only some analyzers (`--secrets`, `--vuln`, …, `--security`, `--tech`) and show only some severities (`--critical`, `--high`, …). See [docs/tickets/doctor/ticket-doctor-filters.md](docs/tickets/doctor/ticket-doctor-filters.md).
 - [x] **`.stealth.yml` config:** ignored paths, severity overrides, allowlists. ([ADR-0004](docs/adr/0004-stealth-yml-format.md)) Documented in the README; schema in [docs/schema](docs/schema/stealth-yml.schema.json).
-- [ ] **MCP server:** local HTTP server started by `stealth mcp`, registered with Claude Code by `stealth mcp install`. Tools `repo_health`, `list_findings`, `check_dependency`.
+- [x] **MCP server:** local HTTP server started by `stealth mcp`, registered with Claude Code by `stealth mcp install`. Tools `repo_health`, `list_findings`, `check_dependency`. Setup in the README; verified in Claude Code via `stealth mcp install`. *Still to do: verify in Cursor; run as a background service.*
 - [ ] **Phase 1 launch:** docs, demo GIF, Show HN, r/java, Spring community. Check findings by hand on spring-petclinic first.
 
 ## Phase 2 — Upgrade

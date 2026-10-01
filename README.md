@@ -52,7 +52,7 @@ core/          analyzers, Finding model, scoring, registry and OSV clients
 rewrite/       OpenRewrite integration and test verification harness
 conventions/   learn/check engine (ArchUnit rules, helper index)
 cli/           picocli command-line tool
-mcp/           MCP server for AI agents
+mcp/           MCP server for AI agents (`stealth mcp`)
 action/        GitHub Action
 fixtures/      sample repos used in tests
 ```
@@ -81,6 +81,36 @@ scoop install stealth
 ```
 
 Or download the `.zip` from [GitHub Releases](https://github.com/Will-Barnard-WB/stealth/releases), unpack it and add `bin/` to your `PATH`.
+
+## Use it from Claude Code (MCP)
+
+`stealth mcp` runs a local [MCP](https://modelcontextprotocol.io) server, so AI agents can check a repository or a
+dependency themselves while they work. Ask Claude Code *"how are this repo's vulnerabilities looking?"* or *"is
+log4j-core 2.14.1 safe to add?"* and it calls stealth and answers from the results.
+
+```bash
+stealth mcp install   # once: registers stealth with Claude Code for every repository
+stealth mcp           # start the server and leave it running (Ctrl+C stops it)
+stealth mcp status    # is it running?
+```
+
+Then start Claude Code in any Java/Maven repository (`/mcp` in Claude Code shows `stealth` as connected).
+
+| Tool | What the agent gets | Typical question |
+|---|---|---|
+| `repo_health` | Security and tech scores, finding counts by severity, the top 5 fixes, analyzer statuses | "How healthy is this codebase?" |
+| `list_findings` | Findings with location and fix, filtered by `category` (security/tech), minimum `severity`, `analyzer`, `limit` (default 50) | "What vulnerabilities do we have?" |
+| `check_dependency` | Latest version, whether it's maintained, known vulnerabilities in a version and what fixes them. No repository needed | "Should I add commons-text 1.9?" |
+
+- **Fast follow-ups.** The first scan of a repository takes as long as `stealth doctor`; later calls reuse it until a file
+  changes (git repositories), for up to an hour. `.stealth.yml` in the repository applies.
+- **Local only.** The server listens on `127.0.0.1:7331` (`--port` to change; pass the same port to
+  `install`). Clients need the token in `~/.stealth/mcp-token`, which `install` gives Claude Code; requests from web
+  pages are refused. `stealth mcp install --rotate-token` replaces the token.
+- **Without the `claude` command on PATH**, `install` prints the `claude mcp add` command to run instead. It always
+  prints the `~/.cursor/mcp.json` entry for Cursor and other MCP clients.
+- The server has to be running when Claude Code starts a session; if it isn't, `/mcp` shows stealth as failed. Start
+  `stealth mcp` and reconnect.
 
 ## Output formats and the CI gate
 

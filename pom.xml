@@ -30,8 +30,8 @@
 
     <modules>
         <module>core</module>
-        <module>cli</module>
         <module>mcp</module>
+        <module>cli</module>
     </modules>
 
     <properties>

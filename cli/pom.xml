@@ -20,6 +20,11 @@
             <artifactId>stealth-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>dev.stealth</groupId>
+            <artifactId>stealth-mcp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli-spring-boot-starter</artifactId>
         </dependency>

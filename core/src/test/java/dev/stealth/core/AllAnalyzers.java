@@ -46,11 +46,21 @@ public final class AllAnalyzers {
                 .collect(java.util.stream.Collectors.joining("; "));
     }
 
+    /** The runner and the remote clients its analyzers use, for wiring other services. */
+    public record Components(
+            AnalyzerRunner runner,
+            MavenCentralClient central,
+            MavenCentralSearch search,
+            VulnerabilityAnalyzer vulnerabilities) {}
+
     public static AnalyzerRunner runner(
             String wireMockBase, Path cacheDirectory, MavenModelLoader loader) {
-        RecordedCentral.stubAll();
-        RecordedOsv.stubAll();
-        RecordedEndOfLife.stubAll();
+        return components(wireMockBase, cacheDirectory, loader).runner();
+    }
+
+    public static Components components(
+            String wireMockBase, Path cacheDirectory, MavenModelLoader loader) {
+        stubAll();
         CachedHttpClient http =
                 new CachedHttpClient(
                         HttpClient.newHttpClient(),
@@ -60,34 +70,47 @@ public final class AllAnalyzers {
                         Duration.ZERO);
         MavenCentralClient central =
                 new MavenCentralClient(http, URI.create(wireMockBase + RecordedCentral.BASE_PATH));
-        return new AnalyzerRunner(
-                List.of(
-                        new DependencyFreshnessAnalyzer(loader, central),
-                        new VulnerabilityAnalyzer(
-                                loader,
-                                new OsvClient(
-                                        http, URI.create(wireMockBase + RecordedOsv.BASE_PATH))),
-                        new MaintenanceAnalyzer(
-                                loader,
-                                central,
-                                new MavenCentralSearch(
-                                        http,
-                                        URI.create(wireMockBase + RecordedCentral.SEARCH_PATH)),
-                                MaintenanceAnalyzer.DEFAULT_STALE_AFTER,
-                                REFERENCE_DATE),
-                        new EndOfLifeAnalyzer(
-                                loader,
-                                new EndOfLifeClient(
-                                        http,
-                                        URI.create(wireMockBase + RecordedEndOfLife.BASE_PATH)),
-                                REFERENCE_DATE),
-                        new SecretsAnalyzer(REFERENCE_DATE),
-                        new DuplicationAnalyzer(),
-                        new RepoHygieneAnalyzer(
-                                loader,
-                                RepoHygieneAnalyzer.DEFAULT_STALE_BRANCH_AFTER,
-                                RepoHygieneAnalyzer.DEFAULT_LARGE_FILE_BYTES,
-                                REFERENCE_DATE)),
-                Duration.ofSeconds(120));
+        MavenCentralSearch search =
+                new MavenCentralSearch(
+                        http, URI.create(wireMockBase + RecordedCentral.SEARCH_PATH));
+        VulnerabilityAnalyzer vulnerabilities =
+                new VulnerabilityAnalyzer(
+                        loader,
+                        new OsvClient(http, URI.create(wireMockBase + RecordedOsv.BASE_PATH)));
+        AnalyzerRunner runner =
+                new AnalyzerRunner(
+                        List.of(
+                                new DependencyFreshnessAnalyzer(loader, central),
+                                vulnerabilities,
+                                new MaintenanceAnalyzer(
+                                        loader,
+                                        central,
+                                        search,
+                                        MaintenanceAnalyzer.DEFAULT_STALE_AFTER,
+                                        REFERENCE_DATE),
+                                new EndOfLifeAnalyzer(
+                                        loader,
+                                        new EndOfLifeClient(
+                                                http,
+                                                URI.create(
+                                                        wireMockBase
+                                                                + RecordedEndOfLife.BASE_PATH)),
+                                        REFERENCE_DATE),
+                                new SecretsAnalyzer(REFERENCE_DATE),
+                                new DuplicationAnalyzer(),
+                                new RepoHygieneAnalyzer(
+                                        loader,
+                                        RepoHygieneAnalyzer.DEFAULT_STALE_BRANCH_AFTER,
+                                        RepoHygieneAnalyzer.DEFAULT_LARGE_FILE_BYTES,
+                                        REFERENCE_DATE)),
+                        Duration.ofSeconds(120));
+        return new Components(runner, central, search, vulnerabilities);
+    }
+
+    /** Registers every recording with WireMock; call again after WireMock resets its stubs. */
+    public static void stubAll() {
+        RecordedCentral.stubAll();
+        RecordedOsv.stubAll();
+        RecordedEndOfLife.stubAll();
     }
 }

@@ -10,13 +10,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 import dev.stealth.core.Fixture;
+import dev.stealth.core.TestResources;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenProjectModel;
 import dev.stealth.core.maven.SeededMavenRepository;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -182,10 +182,6 @@ public final class RecordedOsv {
     }
 
     private static Path root() {
-        try {
-            return Path.of(RecordedOsv.class.getResource("/__files/osv").toURI());
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException(e);
-        }
+        return TestResources.path("/__files/osv");
     }
 }
