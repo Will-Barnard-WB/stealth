@@ -122,7 +122,7 @@ class AnalyzerRunnerTest {
     }
 
     @Test
-    void run_analyzerNotSelected_leavesItOutWithoutRunning() throws Exception {
+    void run_analyzerNotSelected_reportsItNotSelectedWithoutRunning() throws Exception {
         AtomicBoolean ran = new AtomicBoolean();
         Analyzer deps =
                 new StubAnalyzer(
@@ -138,8 +138,10 @@ class AnalyzerRunnerTest {
                         .run(context, analyzer -> analyzer.id().equals("secrets"));
 
         assertThat(report.results())
-                .extracting(AnalyzerResult::analyzerId)
-                .containsExactly("secrets");
+                .extracting(AnalyzerResult::analyzerId, AnalyzerResult::status)
+                .containsExactly(
+                        tuple("deps", AnalyzerStatus.NOT_SELECTED),
+                        tuple("secrets", AnalyzerStatus.OK));
         assertThat(report.findings()).extracting(Finding::ruleId).containsExactly("secrets/aws");
         assertThat(ran).isFalse();
     }

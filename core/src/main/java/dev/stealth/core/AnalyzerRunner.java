@@ -99,10 +99,28 @@ public class AnalyzerRunner {
                                     e.getCause().toString()));
                 }
             }
-            return new DoctorReport(findings, results);
+            return new DoctorReport(findings, withUnselected(analyzers, results));
         } finally {
             executor.shutdownNow();
         }
+    }
+
+    /**
+     * Every analyzer's result in registration order, with the ones the filter left out marked
+     * {@link AnalyzerStatus#NOT_SELECTED}, so the score can tell a partial run from a full one.
+     */
+    private List<AnalyzerResult> withUnselected(
+            List<Analyzer> selected, List<AnalyzerResult> results) {
+        List<AnalyzerResult> all = new ArrayList<>();
+        int next = 0;
+        for (Analyzer analyzer : this.analyzers) {
+            if (next < selected.size() && selected.get(next) == analyzer) {
+                all.add(results.get(next++));
+            } else {
+                all.add(result(analyzer, AnalyzerStatus.NOT_SELECTED, Duration.ZERO, null));
+            }
+        }
+        return all;
     }
 
     private static Outcome analyze(Analyzer analyzer, RepoContext context) {

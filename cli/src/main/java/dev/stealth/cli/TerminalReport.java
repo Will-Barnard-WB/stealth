@@ -101,7 +101,11 @@ final class TerminalReport {
 
         if (findings.isEmpty()) {
             boolean incomplete =
-                    report.results().stream().anyMatch(r -> r.status() != AnalyzerStatus.OK);
+                    report.results().stream()
+                            .anyMatch(
+                                    r ->
+                                            r.status() == AnalyzerStatus.FAILED
+                                                    || r.status() == AnalyzerStatus.TIMED_OUT);
             String none =
                     severities.isEmpty()
                             ? "No problems found"
@@ -288,7 +292,7 @@ final class TerminalReport {
                                 + (incomplete(score)
                                         ? style("faint", "   incomplete: an analyzer failed")
                                         : "")
-                        : style("faint", "-    needs both categories; some analyzers didn't run");
+                        : style("faint", "-    needs a run of every analyzer; some were left out");
         lines.add("  " + style("bold", pad("Health", 10)) + " " + overall);
         for (Category category : List.of(Category.SECURITY, Category.TECH)) {
             CategoryScore categoryScore = score.category(category);
@@ -305,6 +309,13 @@ final class TerminalReport {
                             + (inCategory.isEmpty() ? "" : "   " + severityCounts(inCategory))
                             + (categoryScore.status() == HealthScore.Status.INCOMPLETE
                                     ? style("faint", "   incomplete: an analyzer failed")
+                                    : "")
+                            + (categoryScore.status() == HealthScore.Status.PARTIAL
+                                    ? style(
+                                            "faint",
+                                            "   partial: only "
+                                                    + String.join(", ", categoryScore.analyzers())
+                                                    + " ran")
                                     : ""));
         }
         return lines;
@@ -337,6 +348,8 @@ final class TerminalReport {
     }
 
     private String statuses(List<AnalyzerResult> results) {
+        // Analyzers a filter left out aren't part of this run
+        results = results.stream().filter(r -> r.status() != AnalyzerStatus.NOT_SELECTED).toList();
         if (results.isEmpty()) {
             return style("faint", "no analyzers ran");
         }
@@ -352,7 +365,8 @@ final class TerminalReport {
                                                     style("bold,fg(203)", unicode ? "✗" : "x")
                                                             + " "
                                                             + r.analyzerId();
-                                            case SKIPPED -> style("faint", "- " + r.analyzerId());
+                                            case SKIPPED, NOT_SELECTED ->
+                                                    style("faint", "- " + r.analyzerId());
                                         })
                         .collect(Collectors.joining("   "))
                 + style(

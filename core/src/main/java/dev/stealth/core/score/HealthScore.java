@@ -51,6 +51,11 @@ public record HealthScore(
         COMPLETE,
         /** An analyzer in the category failed or timed out, so findings may be missing. */
         INCOMPLETE,
+        /**
+         * Only some of the category's analyzers were selected (e.g. {@code doctor --hygiene}), so
+         * the score covers just those.
+         */
+        PARTIAL,
         /** No analyzer in the category ran. */
         NOT_RUN
     }
@@ -61,6 +66,7 @@ public record HealthScore(
      * @param value the unrounded score, which the overall score is computed from
      * @param capped whether a critical finding capped it at 50
      * @param deductions what each analyzer took off, largest first
+     * @param analyzers the category's analyzers that ran, in registration order
      */
     public record CategoryScore(
             Category category,
@@ -68,12 +74,14 @@ public record HealthScore(
             double value,
             int score,
             boolean capped,
-            List<Deduction> deductions) {
+            List<Deduction> deductions,
+            List<String> analyzers) {
 
         public CategoryScore {
             Objects.requireNonNull(category, "category");
             Objects.requireNonNull(status, "status");
             deductions = List.copyOf(deductions);
+            analyzers = List.copyOf(analyzers);
         }
     }
 

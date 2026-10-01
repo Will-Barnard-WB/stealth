@@ -46,7 +46,7 @@ public final class ScoringEngine {
         CategoryScore tech = category(Category.TECH, findings, results);
         boolean anyCritical = findings.stream().anyMatch(f -> f.severity() == Severity.CRITICAL);
         double overall = overall(security.value(), tech.value(), anyCritical);
-        boolean bothRan = security.status() != Status.NOT_RUN && tech.status() != Status.NOT_RUN;
+        boolean bothRan = isScored(security) && isScored(tech);
         return new HealthScore(
                 security,
                 tech,
@@ -120,7 +120,13 @@ public final class ScoringEngine {
             value = Math.min(value, CRITICAL_CEILING);
         }
         return new CategoryScore(
-                category, status(category, results), value, round(value), capped, deductions);
+                category,
+                status(category, results),
+                value,
+                round(value),
+                capped,
+                deductions,
+                ran(category, results));
     }
 
     /** The i-th heaviest finding (1-based) deducts {@code weight / √i}. */
@@ -137,18 +143,39 @@ public final class ScoringEngine {
         return total;
     }
 
+    /** Whether the category ran in full, so it can count towards the overall score. */
+    private static boolean isScored(CategoryScore score) {
+        return score.status() == Status.COMPLETE || score.status() == Status.INCOMPLETE;
+    }
+
     private static Status status(Category category, List<AnalyzerResult> results) {
-        List<AnalyzerResult> ran =
-                results.stream()
-                        .filter(r -> r.category() == category)
-                        .filter(r -> r.status() != AnalyzerStatus.SKIPPED)
-                        .toList();
-        if (ran.isEmpty()) {
+        List<AnalyzerResult> inCategory =
+                results.stream().filter(r -> r.category() == category).toList();
+        if (ran(category, results).isEmpty()) {
             return Status.NOT_RUN;
         }
-        return ran.stream().allMatch(r -> r.status() == AnalyzerStatus.OK)
-                ? Status.COMPLETE
-                : Status.INCOMPLETE;
+        if (inCategory.stream()
+                .anyMatch(
+                        r ->
+                                r.status() == AnalyzerStatus.FAILED
+                                        || r.status() == AnalyzerStatus.TIMED_OUT)) {
+            return Status.INCOMPLETE;
+        }
+        return inCategory.stream().anyMatch(r -> r.status() == AnalyzerStatus.NOT_SELECTED)
+                ? Status.PARTIAL
+                : Status.COMPLETE;
+    }
+
+    /** The category's analyzers that ran, finished or not. */
+    private static List<String> ran(Category category, List<AnalyzerResult> results) {
+        return results.stream()
+                .filter(r -> r.category() == category)
+                .filter(
+                        r ->
+                                r.status() != AnalyzerStatus.SKIPPED
+                                        && r.status() != AnalyzerStatus.NOT_SELECTED)
+                .map(AnalyzerResult::analyzerId)
+                .toList();
     }
 
     static String analyzerId(Finding finding) {

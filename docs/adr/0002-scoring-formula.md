@@ -77,6 +77,11 @@ decimal place so the terminal can show the breakdown.
 Only findings that survive `.stealth.yml` (ignored paths, rules set to `off`, allowlists) are scored, using their
 overridden severity. Info findings are listed but weigh 0.
 
+A run that leaves analyzers out (`stealth doctor --hygiene`, `--security`, …) doesn't produce the repository's score:
+a category where only some analyzers ran is shown as **partial**, naming the ones that did, and there's no overall
+score unless both categories ran in full. Only a category whose analyzers all ran (or failed, which marks it
+*incomplete*) counts.
+
 ### Worked example
 
 | Analyzer | Category | Findings | Deduction |

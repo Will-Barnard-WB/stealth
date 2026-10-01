@@ -153,6 +153,37 @@ class ScoringEngineTest {
     }
 
     @Test
+    void score_someOfACategorysAnalyzersLeftOut_isPartialWithNoOverallScore() {
+        List<AnalyzerResult> results =
+                List.of(
+                        aResult("deps", Category.TECH, AnalyzerStatus.NOT_SELECTED),
+                        aResult("hygiene", Category.TECH, AnalyzerStatus.OK),
+                        aResult("vuln", Category.SECURITY, AnalyzerStatus.OK));
+
+        HealthScore score =
+                ScoringEngine.score(some(2, "hygiene", Category.TECH, Severity.LOW), results);
+
+        assertThat(score.tech().status()).isEqualTo(Status.PARTIAL);
+        assertThat(score.tech().analyzers()).containsExactly("hygiene");
+        assertThat(score.security().status()).isEqualTo(Status.COMPLETE);
+        assertThat(score.overall()).isEmpty();
+    }
+
+    @Test
+    void score_everyAnalyzerOfACategorySelected_isComplete() {
+        List<AnalyzerResult> results =
+                List.of(
+                        aResult("deps", Category.TECH, AnalyzerStatus.OK),
+                        aResult("hygiene", Category.TECH, AnalyzerStatus.OK),
+                        aResult("vuln", Category.SECURITY, AnalyzerStatus.NOT_SELECTED));
+
+        HealthScore score = ScoringEngine.score(List.of(), results);
+
+        assertThat(score.tech().status()).isEqualTo(Status.COMPLETE);
+        assertThat(score.security().status()).isEqualTo(Status.NOT_RUN);
+    }
+
+    @Test
     void score_sameFindingsInAnyOrder_givesTheSameScore() {
         List<Finding> findings = new ArrayList<>();
         findings.addAll(some(7, "deps", Category.TECH, Severity.MEDIUM));

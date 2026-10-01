@@ -203,6 +203,34 @@ class TerminalReportTest {
     }
 
     @Test
+    void render_filteredRun_marksThePartialCategoryAndHidesFilteredAnalyzers() {
+        String out =
+                report.render(
+                        ROOT,
+                        new DoctorReport(
+                                List.of(
+                                        anOutdated(
+                                                GUAVA,
+                                                "com.google.guava",
+                                                "guava",
+                                                "30.1-jre",
+                                                "33.7.2-jre",
+                                                Severity.LOW)),
+                                List.of(
+                                        aResult("deps", AnalyzerStatus.OK, null),
+                                        aResult("duplication", AnalyzerStatus.NOT_SELECTED, null),
+                                        aResult("vuln", AnalyzerStatus.NOT_SELECTED, null))),
+                        false);
+
+        assertThat(out.lines())
+                .contains(
+                        "  ✓ deps   0.3 s",
+                        "  Health     -    needs a run of every analyzer; some were left out",
+                        "  Security   not run",
+                        "  Tech       99  A   1 low   partial: only deps ran");
+    }
+
+    @Test
     void render_moreThanTopFixes_showsTheTopTenAndPointsAtAll() {
         Finding[] findings = new Finding[12];
         for (int i = 0; i < findings.length; i++) {
