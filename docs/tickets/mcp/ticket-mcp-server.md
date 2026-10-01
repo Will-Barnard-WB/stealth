@@ -69,7 +69,7 @@ Every tool that reads a repo takes `path`, so one server works for every reposit
 - [x] Security tests: missing or wrong token → 401; foreign `Origin` → 403; the server listens on 127.0.0.1 only (`McpServerIT`, plus foreign `Host` → 403)
 - [x] `stealth mcp install` tested with the `claude` call stubbed: correct command and token when `claude` exists, printed instructions when it doesn't (`McpCommandTest`)
 - [x] Port-in-use exits non-zero with a clear message (`McpCommandTest`)
-- [ ] Manually verified in Claude Code and one other MCP client (Cursor), with setup documented in README. *Claude Code done (headless `claude -p` against the running server: it called `repo_health` and `list_findings` and answered correctly). Cursor still to do.*
+- [ ] Manually verified in Claude Code and one other MCP client (Cursor), with setup documented in README. *Claude Code done: headless `claude -p` against the running server (it called `repo_health` and `list_findings` and answered correctly), then by hand with `stealth mcp install` and `stealth mcp` on 2026-10-01. Cursor still to do.*
 - [x] `./mvnw verify` passes (tests + Spotless)
 
 ### Notes from implementation
