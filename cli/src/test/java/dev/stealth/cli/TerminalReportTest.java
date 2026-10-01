@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine.Help.Ansi;
 
@@ -146,6 +147,87 @@ class TerminalReportTest {
 
         assertThat(out)
                 .contains("No CODEOWNERS file", "No CI configuration", "2 findings in 2 fixes");
+    }
+
+    @Test
+    void render_criticalFinding_showsTheCappedScoresAndGrades() {
+        String out =
+                render(
+                        false,
+                        aVulnerability(
+                                TEXT,
+                                "org.apache.commons:commons-text",
+                                "1.9",
+                                "GHSA-x",
+                                Severity.CRITICAL,
+                                "",
+                                "1.10.0"));
+
+        assertThat(out.lines())
+                .contains(
+                        "  Health     50  D   capped at 50 by critical findings",
+                        "  Security   50  D   1 critical",
+                        "  Tech       100 A");
+    }
+
+    @Test
+    void render_severityFilter_narrowsTheListButNotTheScore() {
+        String out =
+                report.render(
+                        ROOT,
+                        new DoctorReport(
+                                List.of(
+                                        aVulnerability(
+                                                TEXT,
+                                                "org.apache.commons:commons-text",
+                                                "1.9",
+                                                "GHSA-x",
+                                                Severity.CRITICAL,
+                                                "",
+                                                "1.10.0"),
+                                        anOutdated(
+                                                GUAVA,
+                                                "com.google.guava",
+                                                "guava",
+                                                "30.1-jre",
+                                                "33.7.2-jre",
+                                                Severity.LOW)),
+                                List.of(
+                                        aResult("deps", AnalyzerStatus.OK, null),
+                                        aResult("vuln", AnalyzerStatus.OK, null))),
+                        false,
+                        Set.of(Severity.LOW));
+
+        assertThat(out.lines()).contains("  Health     50  D   capped at 50 by critical findings");
+        assertThat(out).contains("guava").doesNotContain("commons-text");
+    }
+
+    @Test
+    void render_filteredRun_marksThePartialCategoryAndHidesFilteredAnalyzers() {
+        String out =
+                report.render(
+                        ROOT,
+                        new DoctorReport(
+                                List.of(
+                                        anOutdated(
+                                                GUAVA,
+                                                "com.google.guava",
+                                                "guava",
+                                                "30.1-jre",
+                                                "33.7.2-jre",
+                                                Severity.LOW)),
+                                List.of(
+                                        aResult("deps", AnalyzerStatus.OK, null),
+                                        aResult("duplication", AnalyzerStatus.NOT_SELECTED, null),
+                                        aResult("vuln", AnalyzerStatus.NOT_SELECTED, null))),
+                        false);
+
+        assertThat(out.lines())
+                .contains(
+                        "  ✓ deps   0.3 s",
+                        "  Health     -    needs a run of every analyzer; some were left out",
+                        "  Security   not run",
+                        "  Tech       99  A   1 low   partial: only deps ran");
     }
 
     @Test
@@ -353,7 +435,9 @@ class TerminalReportTest {
     }
 
     private static AnalyzerResult aResult(String id, AnalyzerStatus status, String error) {
+        Category category =
+                id.equals("vuln") || id.equals("secrets") ? Category.SECURITY : Category.TECH;
         return new AnalyzerResult(
-                id, Category.TECH, status, Duration.ofMillis(300), Optional.ofNullable(error));
+                id, category, status, Duration.ofMillis(300), Optional.ofNullable(error));
     }
 }

@@ -21,12 +21,12 @@ import java.util.stream.Stream;
  * the fixtures' reference date (2026-09-29): versions uploaded after it are removed. Stored under
  * {@code __files/central/}, in Central's own layout.
  */
-final class RecordedCentral {
+public final class RecordedCentral {
 
-    static final String BASE_PATH = "/maven2/";
+    public static final String BASE_PATH = "/maven2/";
 
     /** Where the search API is served, mirroring {@code search.maven.org}. */
-    static final String SEARCH_PATH = "/solrsearch/select";
+    public static final String SEARCH_PATH = "/solrsearch/select";
 
     private RecordedCentral() {}
 
@@ -34,7 +34,7 @@ final class RecordedCentral {
      * Serves every recorded file, and answers anything else with a 500 so a lookup that wasn't
      * recorded fails the test rather than silently counting as "not on Central".
      */
-    static void stubAll() {
+    public static void stubAll() {
         stubFor(any(anyUrl()).atPriority(10).willReturn(aResponse().withStatus(500)));
         Path root = root();
         try (Stream<Path> files = Files.walk(root)) {

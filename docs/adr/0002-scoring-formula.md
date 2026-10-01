@@ -77,6 +77,11 @@ decimal place so the terminal can show the breakdown.
 Only findings that survive `.stealth.yml` (ignored paths, rules set to `off`, allowlists) are scored, using their
 overridden severity. Info findings are listed but weigh 0.
 
+A run that leaves analyzers out (`stealth doctor --hygiene`, `--security`, …) doesn't produce the repository's score:
+a category where only some analyzers ran is shown as **partial**, naming the ones that did, and there's no overall
+score unless both categories ran in full. Only a category whose analyzers all ran (or failed, which marks it
+*incomplete*) counts.
+
 ### Worked example
 
 | Analyzer | Category | Findings | Deduction |
@@ -99,11 +104,16 @@ For display only: A ≥ 90, B ≥ 75, C ≥ 60, D ≥ 40, F < 40. CI gates use t
    CVEs), otherwise one item per finding.
 2. Items are ordered by:
    1. highest severity in the item
-   2. points the overall score would gain if the item were fixed (recomputed, so capped analyzers rank lower)
+   2. points the overall score would gain if the item were fixed (recomputed, so capped analyzers rank lower). The
+      gain is computed **without the critical ceiling**: while any critical finding remains the overall score is
+      pinned at 50, so with the ceiling every other fix would gain 0 and the order would fall to the tie-breakers
    3. has a concrete remediation (`fixedVersion`) before one without
-   4. security before tech
+   4. items with a security finding before tech-only items
    5. `ruleId`, then path, then fingerprint, so ties are always broken the same way
 3. The terminal shows the top 10; JSON and MCP return the full list.
+4. Findings that aren't about a dependency (no `component`, e.g. a missing CODEOWNERS file or a secret) are one item
+   each, even at the same location: they're separate changes. Dependency findings at the same `pom.xml` line are one
+   item, which also groups transitive vulnerabilities under the direct dependency or parent that brings them in.
 
 ### Stability guarantees
 
@@ -140,3 +150,7 @@ For display only: A ≥ 90, B ≥ 75, C ≥ 60, D ≥ 40, F < 40. CI gates use t
   spring-petclinic and the fixture repos before the Phase 1 launch, then freeze them as `scoringVersion: 1`.
 - Grade boundaries.
 - Whether "unmaintained dependency" findings belong to security rather than tech.
+- How generous tech scores are. At the reference date `boot2-legacy`, a deliberately neglected repo, scores
+  **tech 91 (A)**: 4 outdated dependencies (−6.2), missing CODEOWNERS and CI (−1.7) and one unmaintained dependency
+  (−1.0). Its security score is 50 (critical ceiling; vulnerabilities alone hit the 40 cap). Outdated dependencies and
+  hygiene may need more weight before the launch freeze.

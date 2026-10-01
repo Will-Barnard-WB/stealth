@@ -9,6 +9,9 @@ import dev.stealth.core.Finding;
 import dev.stealth.core.Location;
 import dev.stealth.core.Remediation;
 import dev.stealth.core.Severity;
+import dev.stealth.core.score.FixPlanner;
+import dev.stealth.core.score.HealthScore;
+import dev.stealth.core.score.HealthScore.CategoryScore;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,12 +24,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import picocli.CommandLine.Help.Ansi;
 
 /**
  * The {@code stealth doctor} report for a terminal: which analyzers ran, a summary per category,
- * then the fixes ranked most important first (see {@link FixList}), each with what it deals with.
+ * then the fixes ranked most important first (see {@link FixPlanner}), each with what it deals
+ * with.
  */
 final class TerminalReport {
 
@@ -74,10 +79,33 @@ final class TerminalReport {
         }
         lines.add("");
 
-        List<Finding> findings = report.findings();
+        // The score always counts every finding; --critical and friends only narrow what's listed
+        HealthScore score = report.score();
+        List<Finding> findings =
+                severities.isEmpty()
+                        ? report.findings()
+                        : report.findings().stream()
+                                .filter(f -> severities.contains(f.severity()))
+                                .toList();
+        List<FixPlanner.Fix> fixes =
+                report.fixes().stream()
+                        .flatMap(
+                                fix ->
+                                        severities.isEmpty()
+                                                ? Stream.of(fix)
+                                                : fix.only(severities).stream())
+                        .toList();
+
+        lines.addAll(scoreLines(score, findings));
+        lines.add("");
+
         if (findings.isEmpty()) {
             boolean incomplete =
-                    report.results().stream().anyMatch(r -> r.status() != AnalyzerStatus.OK);
+                    report.results().stream()
+                            .anyMatch(
+                                    r ->
+                                            r.status() == AnalyzerStatus.FAILED
+                                                    || r.status() == AnalyzerStatus.TIMED_OUT);
             String none =
                     severities.isEmpty()
                             ? "No problems found"
@@ -96,23 +124,9 @@ final class TerminalReport {
             return String.join(System.lineSeparator(), lines) + System.lineSeparator();
         }
 
-        for (Category category : List.of(Category.SECURITY, Category.TECH)) {
-            List<Finding> inCategory =
-                    findings.stream().filter(f -> f.category() == category).toList();
-            if (!inCategory.isEmpty()) {
-                lines.add(
-                        "  "
-                                + style("bold", pad(capitalized(category), 10))
-                                + " "
-                                + severityCounts(inCategory));
-            }
-        }
-        lines.add("");
-
-        List<FixList.Fix> fixes = FixList.of(findings);
         lines.add("  " + style("bold,fg(209)", "Fix these first"));
         lines.add("");
-        List<FixList.Fix> shown = all ? fixes : fixes.subList(0, Math.min(TOP, fixes.size()));
+        List<FixPlanner.Fix> shown = all ? fixes : fixes.subList(0, Math.min(TOP, fixes.size()));
         int locationWidth =
                 shown.stream().mapToInt(fix -> location(fix.location()).length()).max().orElse(0);
         for (int i = 0; i < shown.size(); i++) {
@@ -139,7 +153,7 @@ final class TerminalReport {
     }
 
     private void renderFix(
-            List<String> lines, int rank, FixList.Fix fix, int locationWidth, boolean all) {
+            List<String> lines, int rank, FixPlanner.Fix fix, int locationWidth, boolean all) {
         String indent = " ".repeat(2 + 2 + 2 + locationWidth + 3);
         lines.add(
                 "  "
@@ -161,12 +175,12 @@ final class TerminalReport {
      * What to change: the dependency and the version to move to. For a line with no outdated
      * finding, the version that fixes every vulnerability found there.
      */
-    private String title(FixList.Fix fix) {
-        Optional<Finding> outdated = fix.outdated();
+    private String title(FixPlanner.Fix fix) {
+        Optional<Finding> outdated = outdated(fix);
         Optional<Component> component =
                 outdated.or(() -> onlyDirectComponent(fix))
                         .flatMap(f -> Component.of(f.component()));
-        if (component.isEmpty() && fix.vulnerabilities().isEmpty()) {
+        if (component.isEmpty() && vulnerabilities(fix).isEmpty()) {
             // Neither outdated nor vulnerable, e.g. unmaintained: name the dependency, if there is
             // one
             Optional<Component> dependency = Component.of(fix.findings().getFirst().component());
@@ -182,7 +196,7 @@ final class TerminalReport {
         Optional<String> target =
                 outdated.isPresent()
                         ? outdated.flatMap(f -> f.remediation()).flatMap(Remediation::fixedVersion)
-                        : fix.vulnerabilities().stream()
+                        : vulnerabilities(fix).stream()
                                 .flatMap(
                                         f ->
                                                 f
@@ -198,8 +212,8 @@ final class TerminalReport {
     }
 
     /** The vulnerable dependency, if every vulnerability at this line is in the same one. */
-    private static Optional<Finding> onlyDirectComponent(FixList.Fix fix) {
-        List<Finding> vulnerabilities = fix.vulnerabilities();
+    private static Optional<Finding> onlyDirectComponent(FixPlanner.Fix fix) {
+        List<Finding> vulnerabilities = vulnerabilities(fix);
         boolean single =
                 !vulnerabilities.isEmpty()
                         && vulnerabilities.stream().map(Finding::component).distinct().count() == 1;
@@ -207,11 +221,11 @@ final class TerminalReport {
     }
 
     /** One line on what the fix deals with, beyond the dependency being outdated. */
-    private List<String> detail(FixList.Fix fix) {
-        List<Finding> vulnerabilities = fix.vulnerabilities();
+    private List<String> detail(FixPlanner.Fix fix) {
+        List<Finding> vulnerabilities = vulnerabilities(fix);
         if (vulnerabilities.isEmpty()) {
             List<String> details = new ArrayList<>();
-            fix.outdated()
+            outdated(fix)
                     .ifPresent(
                             f ->
                                     details.add(
@@ -266,7 +280,76 @@ final class TerminalReport {
                 style("faint", components + (more > 0 ? ", +" + more + " more" : "")));
     }
 
+    /** "Health 50 / 100" and a line per category with its score, grade and finding counts. */
+    private List<String> scoreLines(HealthScore score, List<Finding> findings) {
+        List<String> lines = new ArrayList<>();
+        String overall =
+                score.overall().isPresent()
+                        ? scored(score.overall().getAsInt())
+                                + (score.overallCapped()
+                                        ? style("faint", "   capped at 50 by critical findings")
+                                        : "")
+                                + (incomplete(score)
+                                        ? style("faint", "   incomplete: an analyzer failed")
+                                        : "")
+                        : style("faint", "-    needs a run of every analyzer; some were left out");
+        lines.add("  " + style("bold", pad("Health", 10)) + " " + overall);
+        for (Category category : List.of(Category.SECURITY, Category.TECH)) {
+            CategoryScore categoryScore = score.category(category);
+            String label = "  " + style("bold", pad(capitalized(category), 10)) + " ";
+            if (categoryScore.status() == HealthScore.Status.NOT_RUN) {
+                lines.add(label + style("faint", "not run"));
+                continue;
+            }
+            List<Finding> inCategory =
+                    findings.stream().filter(f -> f.category() == category).toList();
+            lines.add(
+                    label
+                            + scored(categoryScore.score())
+                            + (inCategory.isEmpty() ? "" : "   " + severityCounts(inCategory))
+                            + (categoryScore.status() == HealthScore.Status.INCOMPLETE
+                                    ? style("faint", "   incomplete: an analyzer failed")
+                                    : "")
+                            + (categoryScore.status() == HealthScore.Status.PARTIAL
+                                    ? style(
+                                            "faint",
+                                            "   partial: only "
+                                                    + String.join(", ", categoryScore.analyzers())
+                                                    + " ran")
+                                    : ""));
+        }
+        return lines;
+    }
+
+    private static boolean incomplete(HealthScore score) {
+        return score.security().status() == HealthScore.Status.INCOMPLETE
+                || score.tech().status() == HealthScore.Status.INCOMPLETE;
+    }
+
+    /** The score and its grade, coloured by grade. */
+    private String scored(int score) {
+        String grade = HealthScore.grade(score);
+        String color =
+                switch (grade) {
+                    case "A", "B" -> "fg(114)";
+                    case "C" -> "fg(214)";
+                    default -> "fg(203)";
+                };
+        return style("bold," + color, pad(String.valueOf(score), 3) + " " + grade);
+    }
+
+    /** The dependency-freshness finding in this fix, if the dependency is outdated. */
+    private static Optional<Finding> outdated(FixPlanner.Fix fix) {
+        return fix.findings().stream().filter(f -> f.ruleId().startsWith("deps/")).findFirst();
+    }
+
+    private static List<Finding> vulnerabilities(FixPlanner.Fix fix) {
+        return fix.findings().stream().filter(f -> f.advisory().isPresent()).toList();
+    }
+
     private String statuses(List<AnalyzerResult> results) {
+        // Analyzers a filter left out aren't part of this run
+        results = results.stream().filter(r -> r.status() != AnalyzerStatus.NOT_SELECTED).toList();
         if (results.isEmpty()) {
             return style("faint", "no analyzers ran");
         }
@@ -282,7 +365,8 @@ final class TerminalReport {
                                                     style("bold,fg(203)", unicode ? "✗" : "x")
                                                             + " "
                                                             + r.analyzerId();
-                                            case SKIPPED -> style("faint", "- " + r.analyzerId());
+                                            case SKIPPED, NOT_SELECTED ->
+                                                    style("faint", "- " + r.analyzerId());
                                         })
                         .collect(Collectors.joining("   "))
                 + style(

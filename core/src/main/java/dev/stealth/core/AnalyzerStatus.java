@@ -6,5 +6,7 @@ public enum AnalyzerStatus {
     FAILED,
     TIMED_OUT,
     /** Disabled in the config, so it didn't run. */
-    SKIPPED
+    SKIPPED,
+    /** Left out of this run by a command-line filter such as {@code --hygiene}. */
+    NOT_SELECTED
 }
