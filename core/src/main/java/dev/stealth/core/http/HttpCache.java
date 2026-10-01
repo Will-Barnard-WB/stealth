@@ -1,9 +1,9 @@
 package dev.stealth.core.http;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -23,6 +23,8 @@ import java.util.Optional;
  * Maven Central isn't looked up on every run.
  */
 public class HttpCache {
+
+    private static final int MOVE_ATTEMPTS = 5;
 
     private final Path directory;
     private final Duration timeToLive;
@@ -80,20 +82,61 @@ public class HttpCache {
         put(uri.toString(), body);
     }
 
-    public void put(String key, Optional<String> body) {
+    /**
+     * Stores {@code body}, or "not found" if it's empty. Best effort: a cache that can't be written
+     * (a read-only home directory, or on Windows another thread replacing the same entry) never
+     * fails the lookup that fetched the body.
+     *
+     * @return whether the entry was written
+     */
+    public boolean put(String key, Optional<String> body) {
+        Path temp = null;
         try {
             Files.createDirectories(directory);
             Path file = file(key);
             Path notFound = notFoundMarker(key);
             Path target = body.isPresent() ? file : notFound;
             // Write then move, so a concurrent reader never sees half a file
-            Path temp = Files.createTempFile(directory, "entry", ".tmp");
+            temp = Files.createTempFile(directory, "entry", ".tmp");
             Files.writeString(temp, body.orElse(""), StandardCharsets.UTF_8);
             Files.setLastModifiedTime(temp, FileTime.from(clock.instant()));
-            Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING);
+            moveReplacing(temp, target);
+            temp = null;
             Files.deleteIfExists(body.isPresent() ? notFound : file);
+            return true;
         } catch (IOException e) {
-            throw new UncheckedIOException("Couldn't write the HTTP cache in " + directory, e);
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        } finally {
+            if (temp != null) {
+                try {
+                    Files.deleteIfExists(temp);
+                } catch (IOException ignored) {
+                    // Left for the next run's writes to ignore; it's never read
+                }
+            }
+        }
+    }
+
+    /**
+     * Windows refuses to replace a file another thread has open or is replacing at that moment (the
+     * deps and maintenance analyzers fetch the same metadata in parallel), and lets go within
+     * milliseconds, so retry briefly.
+     */
+    private static void moveReplacing(Path source, Path target)
+            throws IOException, InterruptedException {
+        for (int attempt = 1; ; attempt++) {
+            try {
+                Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+                return;
+            } catch (FileSystemException e) {
+                if (attempt == MOVE_ATTEMPTS) {
+                    throw e;
+                }
+                Thread.sleep(10L * attempt);
+            }
         }
     }
 

@@ -52,13 +52,11 @@ public final class AllAnalyzers {
         RecordedOsv.stubAll();
         RecordedEndOfLife.stubAll();
         CachedHttpClient http =
-                // A full run makes hundreds of localhost requests; on the Windows runner one can
-                // drop, so retry (as the real client does) and skip the h2c upgrade attempt
                 new CachedHttpClient(
-                        HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build(),
+                        HttpClient.newHttpClient(),
                         new HttpCache(cacheDirectory, Duration.ofHours(24), Clock.systemUTC()),
                         () -> false,
-                        3,
+                        1,
                         Duration.ZERO);
         MavenCentralClient central =
                 new MavenCentralClient(http, URI.create(wireMockBase + RecordedCentral.BASE_PATH));
