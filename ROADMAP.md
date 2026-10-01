@@ -32,7 +32,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [x] **Framework and runtime end-of-life analyzer:** Java and Spring Boot versions against endoflife.date. Rules in [docs/rules/eol.md](docs/rules/eol.md).
 - [x] **Secrets analyzer:** regex + entropy ruleset with an allowlist (working tree first, git history later). Rules in [docs/rules/secrets.md](docs/rules/secrets.md). *Still to do: git history scanning.*
 - [x] **Duplication analyzer:** PMD CPD as a library. Rules in [docs/rules/duplication.md](docs/rules/duplication.md).
-- [ ] **Repo hygiene analyzer:** JGit for stale branches and large files; missing CODEOWNERS, CI, tests.
+- [x] **Repo hygiene analyzer:** JGit for stale branches and large files; missing CODEOWNERS, CI, tests. Rules in [docs/rules/hygiene.md](docs/rules/hygiene.md).
 - [ ] **Scoring engine:** 0–100 per category (tech, security) and overall, plus a ranked fix list. ([ADR-0002](docs/adr/0002-scoring-formula.md))
 - [ ] **Output renderers and CI gate:** terminal, `--json`, SARIF 2.1.0, `--fail-under N`. ([ADR-0003](docs/adr/0003-sarif-mapping.md)) *Terminal done: findings grouped into ranked fixes, top 10, `--all`. Still to do: `--json`, SARIF, `--fail-under`.*
 - [x] **Doctor filters:** run only some analyzers (`--secrets`, `--vuln`, …, `--security`, `--tech`) and show only some severities (`--critical`, `--high`, …). See [docs/tickets/doctor/ticket-doctor-filters.md](docs/tickets/doctor/ticket-doctor-filters.md).

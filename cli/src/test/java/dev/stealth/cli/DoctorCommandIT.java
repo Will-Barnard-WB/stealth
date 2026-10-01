@@ -39,9 +39,10 @@ class DoctorCommandIT {
 
         assertThat(exitCode).isZero();
         assertThat(out.toString())
-                .contains("stub", "deps", "vuln", "eol", "secrets", "duplication")
+                .contains("stub", "deps", "vuln", "eol", "secrets", "duplication", "hygiene")
                 .doesNotContain("failed")
-                .contains("No problems found.");
+                // An empty directory has no CODEOWNERS or CI; nothing else applies to it
+                .contains("No CODEOWNERS file", "No CI configuration", "2 findings in 2 fixes");
     }
 
     @TestConfiguration

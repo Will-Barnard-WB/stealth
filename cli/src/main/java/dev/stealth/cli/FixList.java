@@ -47,12 +47,19 @@ final class FixList {
 
     /** Most important first: worst severity, then total weight, then location. */
     static List<Fix> of(List<Finding> findings) {
-        Map<Location, List<Finding>> byLocation = new LinkedHashMap<>();
+        // Dependency findings at the same line share one fix (one version to change). Anything
+        // else, such as a missing CODEOWNERS file or a secret, is a fix of its own even when it
+        // shares a location: adding CI doesn't add CODEOWNERS.
+        Map<List<Object>, List<Finding>> groups = new LinkedHashMap<>();
         for (Finding finding : findings) {
-            byLocation.computeIfAbsent(finding.location(), l -> new ArrayList<>()).add(finding);
+            List<Object> key =
+                    finding.component().isPresent()
+                            ? List.of(finding.location())
+                            : List.of(finding.location(), finding.fingerprint());
+            groups.computeIfAbsent(key, k -> new ArrayList<>()).add(finding);
         }
-        return byLocation.entrySet().stream()
-                .map(e -> new Fix(e.getKey(), sorted(e.getValue())))
+        return groups.values().stream()
+                .map(group -> new Fix(group.getFirst().location(), sorted(group)))
                 .sorted(
                         Comparator.comparing(Fix::worst)
                                 .thenComparing(Comparator.comparingInt(Fix::weight).reversed())

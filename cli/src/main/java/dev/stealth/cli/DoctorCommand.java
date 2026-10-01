@@ -130,6 +130,9 @@ public class DoctorCommand implements Callable<Integer> {
         @Option(names = "--duplication", description = "Duplicated code")
         boolean duplication;
 
+        @Option(names = "--hygiene", description = "Repo hygiene: CODEOWNERS, CI, tests, branches")
+        boolean hygiene;
+
         Predicate<Analyzer> selection() {
             Set<Category> categories = EnumSet.noneOf(Category.class);
             if (security) {
@@ -145,6 +148,7 @@ public class DoctorCommand implements Callable<Integer> {
             addIf(ids, secrets, "secrets");
             addIf(ids, maintenance, "maintenance");
             addIf(ids, duplication, "duplication");
+            addIf(ids, hygiene, "hygiene");
             if (categories.isEmpty() && ids.isEmpty()) {
                 return analyzer -> true;
             }
