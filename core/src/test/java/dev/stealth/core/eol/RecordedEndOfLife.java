@@ -7,9 +7,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
+import dev.stealth.core.TestResources;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -55,10 +55,6 @@ public final class RecordedEndOfLife {
     }
 
     private static Path root() {
-        try {
-            return Path.of(RecordedEndOfLife.class.getResource("/__files/endoflife").toURI());
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException(e);
-        }
+        return TestResources.path("/__files/endoflife");
     }
 }
