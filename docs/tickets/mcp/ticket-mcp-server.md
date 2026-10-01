@@ -64,13 +64,24 @@ Every tool that reads a repo takes `path`, so one server works for every reposit
 
 ### Definition of done
 
-- [ ] Unit tests for each tool method (inputs, filtering, limits, error messages for bad paths/coordinates)
-- [ ] Integration test that starts the server on a random port, connects an MCP client over Streamable HTTP, lists tools and calls each one against `fixtures/boot2-legacy` (remote APIs via WireMock)
-- [ ] Security tests: missing or wrong token → 401; foreign `Origin` → 403; the server listens on 127.0.0.1 only
-- [ ] `stealth mcp install` tested with the `claude` call stubbed: correct command and token when `claude` exists, printed instructions when it doesn't
-- [ ] Port-in-use exits non-zero with a clear message
-- [ ] Manually verified in Claude Code and one other MCP client (Cursor), with setup documented in README
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] Unit tests for each tool method (inputs, filtering, limits, error messages for bad paths/coordinates): `StealthToolsTest`, `DependencyCheckTest`, `RepoScansTest`, `McpTokenTest`
+- [x] Integration test that starts the server on a random port, connects an MCP client over Streamable HTTP, lists tools and calls each one against `fixtures/boot2-legacy` (remote APIs via WireMock): `McpServerIT`
+- [x] Security tests: missing or wrong token → 401; foreign `Origin` → 403; the server listens on 127.0.0.1 only (`McpServerIT`, plus foreign `Host` → 403)
+- [x] `stealth mcp install` tested with the `claude` call stubbed: correct command and token when `claude` exists, printed instructions when it doesn't (`McpCommandTest`)
+- [x] Port-in-use exits non-zero with a clear message (`McpCommandTest`)
+- [ ] Manually verified in Claude Code and one other MCP client (Cursor), with setup documented in README. *Claude Code done (headless `claude -p` against the running server: it called `repo_health` and `list_findings` and answered correctly). Cursor still to do.*
+- [x] `./mvnw verify` passes (tests + Spotless)
+
+### Notes from implementation
+
+- **Context layout:** `stealth mcp` starts the MCP server as a child Spring context of the CLI's (`McpServer.start`), so it reuses the analyzer beans and HTTP cache without moving their wiring out of `cli`. The child reads `stealth-mcp.properties` only (`spring.config.name`), and the CLI's own context excludes Spring AI's MCP auto-configuration (`StealthApplication`, guarded by `StealthApplicationTest`) so other commands stay non-web, quiet and as fast as before.
+- **Transport:** Spring AI 2.0.1 WebMVC starter, Streamable HTTP on `/mcp`, MCP SDK 2.0.0. Tools are `@McpTool` methods returning `CallToolResult` with compact JSON the tools render themselves; bad input comes back as `isError` results with a message the agent can act on.
+- **Security:** `LocalOnlyFilter` checks `Host` (DNS rebinding), `Origin` (browsers) and the bearer token (constant-time compare) before anything else. `/status` needs no token and only says a stealth server and its version are there, for `stealth mcp status` and the port-in-use message.
+- **`check_dependency`** is `core`'s new `DependencyCheck`: Maven Central versions and search for the release date, and `VulnerabilityAnalyzer.check` (the analyzer's own severity, alias merging and fixed-version logic for a single artifact).
+- **Caching:** `RepoScans` keys on HEAD plus each uncommitted/untracked file's size and mtime, an hour's TTL, 20 repositories LRU; non-git directories are scanned every time. `refresh: true` forces a scan.
+- **Fix summaries** mirror the terminal report: the upgrade named is the dependency declared at the line (e.g. `spring-boot-starter-parent` 2.7.18 → 4.1.1), not the transitive library carrying the vulnerability.
+- **Changed from the plan:** `install` keeps the existing token (`--rotate-token` replaces it) so re-running it doesn't break a running server; logs go to the console of `stealth mcp` rather than `~/.stealth/logs/mcp.log`, because Spring Boot configures logging once, in the parent context.
+- **Not done:** Cursor verification; a background service (follow-up ticket).
 
 ### Out of scope
 

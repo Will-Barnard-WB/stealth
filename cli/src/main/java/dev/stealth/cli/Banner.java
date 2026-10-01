@@ -64,7 +64,8 @@ final class Banner {
                     "Check a repository without cd-ing into it: stealth doctor ~/code/my-app",
                     "Mistyped a command? stealth suggests the closest match",
                     "stealth -V prints the version you're running",
-                    "Every command has --help, including stealth doctor --help");
+                    "Every command has --help, including stealth doctor --help",
+                    "Let Claude Code ask stealth itself: stealth mcp install, then stealth mcp");
 
     /** What the welcome box shows, and how much of it stdout's encoding can print. */
     record Details(String version, String tagline, String cwd, Glyphs glyphs) {}

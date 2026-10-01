@@ -7,7 +7,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import picocli.CommandLine;
 import picocli.CommandLine.IFactory;
 
-@SpringBootApplication
+/**
+ * The CLI's context. It never serves MCP itself: {@code stealth mcp} starts a child web context for
+ * that ({@code McpServer}), so Spring AI's MCP auto-configuration is excluded here, keeping other
+ * commands' startup and stdout clean. {@code StealthApplicationTest} fails if an upgrade adds one
+ * this list misses.
+ */
+@SpringBootApplication(
+        excludeName = {
+            "org.springframework.ai.mcp.server.common.autoconfigure.McpServerAutoConfiguration",
+            "org.springframework.ai.mcp.server.common.autoconfigure.McpServerJsonMapperAutoConfiguration",
+            "org.springframework.ai.mcp.server.common.autoconfigure.McpServerStatelessAutoConfiguration",
+            "org.springframework.ai.mcp.server.common.autoconfigure.StatelessToolCallbackConverterAutoConfiguration",
+            "org.springframework.ai.mcp.server.common.autoconfigure.ToolCallbackConverterAutoConfiguration",
+            "org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerAutoConfiguration",
+            "org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerSpecificationFactoryAutoConfiguration",
+            "org.springframework.ai.mcp.server.common.autoconfigure.annotations.StatelessServerSpecificationFactoryAutoConfiguration",
+            "org.springframework.ai.mcp.server.webmvc.autoconfigure.McpServerSseWebMvcAutoConfiguration",
+            "org.springframework.ai.mcp.server.webmvc.autoconfigure.McpServerStatelessWebMvcAutoConfiguration",
+            "org.springframework.ai.mcp.server.webmvc.autoconfigure.McpServerStreamableHttpWebMvcAutoConfiguration"
+        })
 public class StealthApplication implements CommandLineRunner, ExitCodeGenerator {
 
     private final IFactory factory;
