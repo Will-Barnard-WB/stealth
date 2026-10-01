@@ -58,7 +58,9 @@ class DoctorCommandTest {
                 .contains(
                         "hygiene",
                         "vuln failed: java.lang.IllegalStateException: OSV.dev unreachable")
-                .contains("Tech       1 low")
+                .contains("Health     100 A   incomplete: an analyzer failed")
+                .contains("Security   100 A   incomplete: an analyzer failed")
+                .contains("Tech       99  A   1 low")
                 .contains("1  (repository)   No CODEOWNERS file")
                 .contains("1 finding in 1 fix");
         assertThat(err.toString()).isEmpty();

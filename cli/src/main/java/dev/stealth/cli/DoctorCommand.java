@@ -83,15 +83,8 @@ public class DoctorCommand implements Callable<Integer> {
         offlineMode.set(offline);
         DoctorReport report =
                 runner.run(new RepoContext(root, StealthConfig.defaults()), runOnly.selection());
+        // The renderer narrows the listing to these; the score still counts every finding
         Set<Severity> severities = showOnly.severities();
-        if (!severities.isEmpty()) {
-            report =
-                    new DoctorReport(
-                            report.findings().stream()
-                                    .filter(f -> severities.contains(f.severity()))
-                                    .toList(),
-                            report.results());
-        }
 
         PrintWriter out = spec.commandLine().getOut();
         TerminalReport terminal =

@@ -18,9 +18,9 @@ import java.util.stream.Stream;
  * endoflife.date's responses for the products the fixtures use, recorded and pinned to the
  * fixtures' reference date (2026-09-29). Stored under {@code __files/endoflife/}.
  */
-final class RecordedEndOfLife {
+public final class RecordedEndOfLife {
 
-    static final String BASE_PATH = "/api/";
+    public static final String BASE_PATH = "/api/";
 
     private RecordedEndOfLife() {}
 
@@ -28,7 +28,7 @@ final class RecordedEndOfLife {
      * Serves every recorded product, and answers anything else with a 500 so a product that wasn't
      * recorded fails the test rather than silently counting as "not tracked".
      */
-    static void stubAll() {
+    public static void stubAll() {
         stubFor(any(anyUrl()).atPriority(10).willReturn(aResponse().withStatus(500)));
         Path root = root();
         try (Stream<Path> files = Files.walk(root)) {

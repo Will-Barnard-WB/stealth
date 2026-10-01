@@ -43,9 +43,9 @@ import tools.jackson.databind.node.ObjectNode;
  * <p>To re-record after changing a fixture's dependencies, run {@link #main} from the repository
  * root. It needs {@code maven-repo.zip} to cover the fixtures (see {@link SeededMavenRepository}).
  */
-final class RecordedOsv {
+public final class RecordedOsv {
 
-    static final String BASE_PATH = "/osv/";
+    public static final String BASE_PATH = "/osv/";
 
     private static final Instant REFERENCE_DATE = Instant.parse("2026-09-30T00:00:00Z");
     private static final List<Fixture> FIXTURES =
@@ -58,7 +58,7 @@ final class RecordedOsv {
      * Serves the recorded batch queries (matched on the exact request body) and advisories, and
      * answers anything else with a 500 so an unrecorded query fails the test.
      */
-    static void stubAll() {
+    public static void stubAll() {
         stubFor(any(anyUrl()).atPriority(10).willReturn(aResponse().withStatus(500)));
         Path root = root();
         try (Stream<Path> files = Files.walk(root.resolve("querybatch"))) {

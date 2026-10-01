@@ -29,12 +29,21 @@ Every doctor run produces a tech score, a security score and an overall score (0
 
 ### Definition of done
 
-- [ ] Unit tests for the formula: weights, diminishing returns, bounds (0–100), incomplete categories
-- [ ] Golden tests on fixtures: `boot4-clean` scores ≥ 95 on both categories, and `boot2-legacy` scores lower than `boot4-clean` in both categories (exact values snapshotted)
-- [ ] `FixPlanner` groups a parent upgrade's findings into one item
-- [ ] Same input always gives the same score and order (determinism test)
-- [ ] ADR-002 updated if the implementation diverges
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] Unit tests for the formula: weights, diminishing returns, bounds (0–100), incomplete categories
+- [x] Golden tests on fixtures: `boot4-clean` scores ≥ 95 on both categories, and `boot2-legacy` scores lower than `boot4-clean` in both categories (exact values snapshotted)
+- [x] `FixPlanner` groups a parent upgrade's findings into one item
+- [x] Same input always gives the same score and order (determinism test)
+- [x] ADR-002 updated if the implementation diverges
+- [x] `./mvnw verify` passes (tests + Spotless)
+
+### Notes from implementation
+
+- **`core/score`:** `ScoringEngine` (ADR-0002 exactly, `scoringVersion` 1), `HealthScore` (category scores with per-analyzer deductions, status, critical cap), `FixPlanner`. `DoctorReport.score()` and `.fixes()` expose them to renderers and, later, MCP.
+- **Incomplete vs not run:** a failed or timed-out analyzer marks its category *incomplete* (shown on the category and Health lines). A category with no analyzer run at all (e.g. `doctor --secrets`) is *not run*, and there's no overall score, since the formula needs both.
+- **Grouping:** dependency findings at the same `pom.xml` line are one fix (transitive vulnerabilities sit under the direct dependency or parent); findings with no component are a fix each. Replaces the CLI's `FixList`.
+- **Ranking divergence (ADR updated):** points gained are computed *without* the critical ceiling. With it, every fix but the last critical one gains 0 while a critical remains, so the order fell to tie-breakers (commons-lang3 ranked above guava on boot2-legacy). Points aren't shown in the terminal for the same reason.
+- **Severity filters** (`--critical`, …) now only narrow what's listed; the score always counts every finding. Before, the report was filtered first.
+- **Golden values at the reference date:** boot4-clean 100/100/100. boot2-legacy security **50** (vulnerabilities 40 capped + EOL 8 = 52, critical ceiling), tech **91** (deps 6.2, hygiene 1.7, maintenance 1.0), overall **50**. Tech 91 (an A) is generous for a neglected repo: flagged in the ADR's "Expected to change" for tuning before the launch freeze.
 
 ### Out of scope
 
