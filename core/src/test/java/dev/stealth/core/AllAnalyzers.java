@@ -38,17 +38,27 @@ public final class AllAnalyzers {
 
     private AllAnalyzers() {}
 
+    /** Each analyzer that didn't finish, with its error, for assertion messages. */
+    public static String failures(DoctorReport report) {
+        return report.results().stream()
+                .filter(r -> r.status() != AnalyzerStatus.OK)
+                .map(r -> r.analyzerId() + " " + r.status() + ": " + r.error().orElse("(no error)"))
+                .collect(java.util.stream.Collectors.joining("; "));
+    }
+
     public static AnalyzerRunner runner(
             String wireMockBase, Path cacheDirectory, MavenModelLoader loader) {
         RecordedCentral.stubAll();
         RecordedOsv.stubAll();
         RecordedEndOfLife.stubAll();
         CachedHttpClient http =
+                // A full run makes hundreds of localhost requests; on the Windows runner one can
+                // drop, so retry (as the real client does) and skip the h2c upgrade attempt
                 new CachedHttpClient(
-                        HttpClient.newHttpClient(),
+                        HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build(),
                         new HttpCache(cacheDirectory, Duration.ofHours(24), Clock.systemUTC()),
                         () -> false,
-                        1,
+                        3,
                         Duration.ZERO);
         MavenCentralClient central =
                 new MavenCentralClient(http, URI.create(wireMockBase + RecordedCentral.BASE_PATH));

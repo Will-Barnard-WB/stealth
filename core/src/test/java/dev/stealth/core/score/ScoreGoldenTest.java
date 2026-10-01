@@ -49,7 +49,9 @@ class ScoreGoldenTest {
         DoctorReport report = runner.run(Fixture.BOOT4_CLEAN.context());
         HealthScore score = report.score();
 
-        assertThat(report.results()).allMatch(r -> r.status() == AnalyzerStatus.OK);
+        assertThat(report.results())
+                .as(() -> AllAnalyzers.failures(report))
+                .allMatch(r -> r.status() == AnalyzerStatus.OK);
         assertThat(score.security().score()).isGreaterThanOrEqualTo(95);
         assertThat(score.tech().score()).isGreaterThanOrEqualTo(95);
         assertThat(score.overall()).hasValue(100);
@@ -61,6 +63,7 @@ class ScoreGoldenTest {
         HealthScore score = report.score();
 
         assertThat(report.results())
+                .as(() -> AllAnalyzers.failures(report))
                 .extracting(AnalyzerResult::status)
                 .containsOnly(AnalyzerStatus.OK);
         assertThat(score.security().score()).isEqualTo(SNAPSHOT_SECURITY);

@@ -80,7 +80,9 @@ class ReportSnapshotTest {
     }
 
     private DoctorReport run() throws InterruptedException {
-        return runner.run(Fixture.BOOT2_LEGACY.context());
+        DoctorReport report = runner.run(Fixture.BOOT2_LEGACY.context());
+        assertThat(AllAnalyzers.failures(report)).as("analyzers that didn't finish").isEmpty();
+        return report;
     }
 
     private List<Rule> rules() {
