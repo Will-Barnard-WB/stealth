@@ -35,7 +35,10 @@ public final class WorkingTreeFiles {
     public static final SharedResource<List<String>> FILES =
             context -> {
                 try {
-                    return list(context.root());
+                    // .stealth.yml's ignore applies to every analyzer that reads files
+                    return list(context.root()).stream()
+                            .filter(path -> !context.config().isIgnored(path))
+                            .toList();
                 } catch (IOException e) {
                     throw new UncheckedIOException("Couldn't list files in " + context.root(), e);
                 }

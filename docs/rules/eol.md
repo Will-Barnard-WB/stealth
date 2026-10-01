@@ -32,15 +32,15 @@ End-of-life dates differ between JDK distributions, and the release a repo *comp
 
 ```yaml
 eol:
-  javaDistribution: oracle-jdk   # default: eclipse-temurin
-  javaVersion: "17"              # the runtime, when it isn't the compile target
+  java-distribution: oracle-jdk   # default: eclipse-temurin
+  java-version: "17"              # the runtime, when it isn't the compile target
 ```
 
-`javaDistribution` is an [endoflife.date product](https://endoflife.date/) that tracks a JDK, such as `eclipse-temurin`,
+`java-distribution` (or `javaDistribution`) is an [endoflife.date product](https://endoflife.date/) that tracks a JDK, such as `eclipse-temurin`,
 `amazon-corretto`, `oracle-jdk`, `azul-zulu` or `microsoft-build-of-openjdk`. The choice matters: at the time of
 writing, Java 11 is supported until 2027-10-31 on Temurin and ended on 2023-09-30 on Oracle JDK.
 
-Without `javaVersion` the finding is worded "targets Java 11", since stealth only sees the compile target. With it, the
+Without `java-version` the finding is worded "targets Java 11", since stealth only sees the compile target. With it, the
 finding is repo-level and worded "runs on Java 11".
 
 ## eol-past-end-of-life

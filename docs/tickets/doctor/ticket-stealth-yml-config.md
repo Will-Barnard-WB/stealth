@@ -48,11 +48,19 @@ An optional `.stealth.yml` at the repo root (or passed with `--config`) supporti
 
 ### Definition of done
 
-- [ ] Loader tests: full example, empty file, missing file (defaults), unknown keys warn, invalid values fail with line numbers
-- [ ] Integration tests: `ignore` removes findings in `fixtures/with-secrets`, a severity override changes the score, `fail-under` drives the exit code
-- [ ] JSON Schema published and the example validates against it
-- [ ] README section documenting every key
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] Loader tests: full example, empty file, missing file (defaults), unknown keys warn, invalid values fail with line numbers
+- [x] Integration tests: `ignore` removes findings in `fixtures/with-secrets`, a severity override changes the score, `fail-under` drives the exit code
+- [x] JSON Schema published and the example validates against it
+- [x] README section documenting every key
+- [x] `./mvnw verify` passes (tests + Spotless)
+
+### Notes from implementation
+
+- **Format follows ADR-0004**, not the older example above (rule ids like `deps/outdated-major`, `fail-under` as a number or `overall`/`security`/`tech`). Added within version 1: `analyzers.<id>.enabled` and the analyzer thresholds (`maintenance.stale-after`, `duplication.min-tokens`/`include-tests`, `hygiene.stale-branch-after`/`large-file-bytes`); ADR-0004's keys table updated.
+- **Loader:** `StealthConfigLoader` uses snakeyaml-engine's node tree, so every warning and error carries a line number. camelCase keys are accepted (the EOL docs used `javaDistribution`).
+- **Where it applies:** `ignore` in `WorkingTreeFiles` (secrets, duplication, large files) and in Maven module discovery (an ignored module directory takes its dependencies with it), before analyzers run; severity overrides and allowlists in `AnalyzerRunner`, after them, so every analyzer gets them. Thresholds are read per run from `RepoContext.config()`; the `stealth.*` properties remain the defaults.
+- **Precedence:** `--fail-under` replaces `fail-under.overall`; category thresholds stay.
+- **Not done yet:** `--verbose` listing of allowlist entries that matched nothing (ADR-0004); no `--verbose` flag exists yet.
 
 ### Out of scope
 

@@ -9,6 +9,7 @@ import dev.stealth.core.Finding;
 import dev.stealth.core.Location;
 import dev.stealth.core.Remediation;
 import dev.stealth.core.Severity;
+import dev.stealth.core.score.FailUnderGate;
 import dev.stealth.core.score.FixPlanner;
 import dev.stealth.core.score.HealthScore;
 import dev.stealth.core.score.HealthScore.CategoryScore;
@@ -60,6 +61,18 @@ final class TerminalReport {
      *     none are left; empty if they weren't filtered
      */
     String render(Path root, DoctorReport report, boolean all, Set<Severity> severities) {
+        return render(root, report, all, severities, Optional.empty());
+    }
+
+    /**
+     * @param gate the {@code fail-under} result, shown last, when a threshold is set
+     */
+    String render(
+            Path root,
+            DoctorReport report,
+            boolean all,
+            Set<Severity> severities,
+            Optional<FailUnderGate.Result> gate) {
         List<String> lines = new ArrayList<>();
         lines.add("");
         lines.add(style("bold", "stealth doctor") + "  " + displayPath(root));
@@ -76,6 +89,9 @@ final class TerminalReport {
                                 + result.error().orElse("")
                                 + style("faint", "  (its findings are missing from this report)"));
             }
+        }
+        for (String warning : report.warnings()) {
+            lines.add("  " + style("bold,fg(214)", "warning") + "  " + warning);
         }
         lines.add("");
 
@@ -121,6 +137,7 @@ final class TerminalReport {
                                     ? none + " by the analyzers that finished."
                                     : style("fg(114)", none + ".")));
             lines.add("");
+            lines.addAll(gateLines(gate));
             return String.join(System.lineSeparator(), lines) + System.lineSeparator();
         }
 
@@ -149,6 +166,7 @@ final class TerminalReport {
         }
         lines.add("  " + style("faint", summary));
         lines.add("");
+        lines.addAll(gateLines(gate));
         return String.join(System.lineSeparator(), lines) + System.lineSeparator();
     }
 
@@ -278,6 +296,25 @@ final class TerminalReport {
         return List.of(
                 counts + " come in through it: " + severityCounts(vulnerabilities) + testOnly,
                 style("faint", components + (more > 0 ? ", +" + more + " more" : "")));
+    }
+
+    /** The {@code fail-under} verdict, then a blank line; nothing when no threshold is set. */
+    private List<String> gateLines(Optional<FailUnderGate.Result> gate) {
+        if (gate.isEmpty()) {
+            return List.of();
+        }
+        List<String> lines = new ArrayList<>();
+        FailUnderGate.Result result = gate.get();
+        String cross = style("bold,fg(203)", unicode ? "✗" : "x");
+        if (result.error().isPresent()) {
+            lines.add("  " + cross + " fail-under: " + result.error().get());
+        } else if (result.passed()) {
+            lines.add("  " + style("fg(114)", unicode ? "✓" : "ok") + " fail-under: passed");
+        } else {
+            result.failures().forEach(f -> lines.add("  " + cross + " fail-under: " + f));
+        }
+        lines.add("");
+        return lines;
     }
 
     /** "Health 50 / 100" and a line per category with its score, grade and finding counts. */

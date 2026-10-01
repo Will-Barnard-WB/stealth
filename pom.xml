@@ -48,6 +48,7 @@
         <google-java-format.version>1.36.1</google-java-format.version>
         <maven.version>3.9.16</maven.version>
         <maven-resolver.version>1.9.27</maven-resolver.version>
+        <json-schema-validator.version>3.0.8</json-schema-validator.version>
         <jgit.version>7.8.0.202609011348-r</jgit.version>
         <pmd.version>7.28.0</pmd.version>
         <jreleaser-maven-plugin.version>1.26.0</jreleaser-maven-plugin.version>
@@ -77,6 +78,12 @@
                 <version>${maven-resolver.version}</version>
             </dependency>
             <!-- Reads the repos stealth analyzes: tracked files, .gitignore, later branches and history -->
+            <!-- Tests validate JSON, SARIF and .stealth.yml output against their schemas -->
+            <dependency>
+                <groupId>com.networknt</groupId>
+                <artifactId>json-schema-validator</artifactId>
+                <version>${json-schema-validator.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.jgit</groupId>
                 <artifactId>org.eclipse.jgit</artifactId>

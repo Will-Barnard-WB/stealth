@@ -9,6 +9,7 @@ import dev.stealth.core.Remediation;
 import dev.stealth.core.RepoContext;
 import dev.stealth.core.Rule;
 import dev.stealth.core.Severity;
+import dev.stealth.core.StealthConfig;
 import dev.stealth.core.git.WorkingTreeFiles;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenModule;
@@ -144,8 +145,11 @@ public class RepoHygieneAnalyzer implements Analyzer {
                                     + " verify"));
         }
         findings.addAll(missingTests(context));
-        findings.addAll(largeFiles(context));
-        staleBranches(root).ifPresent(findings::add);
+        StealthConfig.Thresholds thresholds = context.config().thresholds();
+        findings.addAll(
+                largeFiles(context, thresholds.hygieneLargeFileBytes().orElse(largeFileBytes)));
+        staleBranches(root, thresholds.hygieneStaleBranchAfter().orElse(staleBranchAfter))
+                .ifPresent(findings::add);
         return findings;
     }
 
@@ -220,7 +224,7 @@ public class RepoHygieneAnalyzer implements Analyzer {
     }
 
     /** Files git tracks (or would track) over the size threshold. */
-    private List<Finding> largeFiles(RepoContext context) throws IOException {
+    private List<Finding> largeFiles(RepoContext context, long largeFileBytes) throws IOException {
         List<Finding> findings = new ArrayList<>();
         for (String path : context.get(WorkingTreeFiles.FILES)) {
             long size = Files.size(context.root().resolve(path));
@@ -243,7 +247,7 @@ public class RepoHygieneAnalyzer implements Analyzer {
      * One finding listing the local and remote-tracking branches whose newest commit is older than
      * the threshold, other than the checked-out and default branches.
      */
-    private Optional<Finding> staleBranches(Path root) throws IOException {
+    private Optional<Finding> staleBranches(Path root, Period staleBranchAfter) throws IOException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder().findGitDir(root.toFile());
         if (builder.getGitDir() == null) {
             return Optional.empty();

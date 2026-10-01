@@ -35,5 +35,14 @@ files bloat every clone; move them to Git LFS or an artifact store.
 
 ## Thresholds
 
-Until `.stealth.yml` can set them per repository, change them for a run with
-`-Dstealth.hygiene.stale-branch-after=P180D` and `-Dstealth.hygiene.large-file-bytes=10485760`.
+Per repository, in `.stealth.yml`:
+
+```yaml
+analyzers:
+  hygiene:
+    stale-branch-after: P180D     # default P90D
+    large-file-bytes: 10485760    # default 5 MB
+```
+
+`-Dstealth.hygiene.stale-branch-after` and `-Dstealth.hygiene.large-file-bytes` change the defaults for every repo;
+`.stealth.yml` wins over them.

@@ -8,7 +8,7 @@ fixed version to upgrade to. Category: **tech**.
 - Versions managed by an external parent or BOM (such as `spring-boot-starter-parent`) are skipped: whoever maintains
   the BOM keeps them current.
 - A few finished-not-abandoned artifacts are skipped (`javax.inject:javax.inject`, `aopalliance:aopalliance`,
-  `com.google.code.findbugs:jsr305`). `.stealth.yml` will be able to extend this list.
+  `com.google.code.findbugs:jsr305`). Accept others in `.stealth.yml` with an `allow.dependencies` entry.
 - Release dates come from Maven Central's search API. The repository's own file dates aren't used: storage migrations
   re-touch old files, so commons-collections 3.2.2 (released 2015) looks like it was published in 2025.
 - The search index lags Maven Central by days to weeks. A newest release that isn't indexed yet is recent, so it's
@@ -20,5 +20,12 @@ fixed version to upgrade to. Category: **tech**.
 
 `maintenance/no-recent-release`, default severity **low**. Dependencies in `test` scope are marked `[test scope]`.
 
-The threshold is 2 years. Until `.stealth.yml` can set it per repository, change it for a run with
-`-Dstealth.maintenance.stale-after=P3Y` (an ISO-8601 period).
+The threshold is 2 years. Change it per repository in `.stealth.yml`:
+
+```yaml
+analyzers:
+  maintenance:
+    stale-after: P3Y
+```
+
+`-Dstealth.maintenance.stale-after=P3Y` changes the default for every repo; `.stealth.yml` wins over it.

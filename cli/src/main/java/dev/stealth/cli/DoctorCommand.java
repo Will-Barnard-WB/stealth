@@ -3,15 +3,19 @@ package dev.stealth.cli;
 import dev.stealth.core.Analyzer;
 import dev.stealth.core.AnalyzerRunner;
 import dev.stealth.core.Category;
+import dev.stealth.core.ConfigException;
 import dev.stealth.core.DoctorReport;
 import dev.stealth.core.RepoContext;
 import dev.stealth.core.Severity;
 import dev.stealth.core.StealthConfig;
+import dev.stealth.core.StealthConfigLoader;
+import dev.stealth.core.score.FailUnderGate;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
@@ -57,6 +61,20 @@ public class DoctorCommand implements Callable<Integer> {
     private boolean offline;
 
     @Option(
+            names = "--config",
+            paramLabel = "FILE",
+            description = "Read this file instead of the repository's .stealth.yml.")
+    private Path configFile;
+
+    @Option(
+            names = "--fail-under",
+            paramLabel = "N",
+            description =
+                    "Exit with code 1 if the overall score is below N (0-100). Overrides"
+                            + " fail-under in .stealth.yml.")
+    private Integer failUnder;
+
+    @Option(
             names = "--all",
             description = "List every finding under its fix, and every fix, not just the top 10.")
     private boolean all;
@@ -80,9 +98,32 @@ public class DoctorCommand implements Callable<Integer> {
             return ExitCode.USAGE;
         }
 
+        PrintWriter err = spec.commandLine().getErr();
+        if (failUnder != null && (failUnder < 0 || failUnder > 100)) {
+            err.println("stealth doctor: --fail-under must be between 0 and 100, got " + failUnder);
+            return ExitCode.USAGE;
+        }
+        StealthConfigLoader.Loaded loaded;
+        try {
+            loaded = loadConfig(root);
+        } catch (ConfigException e) {
+            err.println("stealth doctor: " + e.getMessage());
+            return ExitCode.USAGE;
+        }
+        StealthConfig config = loaded.config();
+
         offlineMode.set(offline);
         DoctorReport report =
-                runner.run(new RepoContext(root, StealthConfig.defaults()), runOnly.selection());
+                runner.run(new RepoContext(root, config), runOnly.selection())
+                        .withWarnings(loaded.warnings());
+
+        // --fail-under replaces the overall threshold; .stealth.yml's category thresholds stay
+        StealthConfig.FailUnder thresholds =
+                failUnder != null ? config.failUnder().withOverall(failUnder) : config.failUnder();
+        Optional<FailUnderGate.Result> gate =
+                thresholds.isSet()
+                        ? Optional.of(FailUnderGate.check(report.score(), thresholds))
+                        : Optional.empty();
         // The renderer narrows the listing to these; the score still counts every finding
         Set<Severity> severities = showOnly.severities();
 
@@ -91,9 +132,23 @@ public class DoctorCommand implements Callable<Integer> {
                 new TerminalReport(
                         spec.commandLine().getColorScheme().ansi(),
                         StealthCli.stdoutCanPrint(TerminalReport.UNICODE_SYMBOLS));
-        out.print(terminal.render(root, report, all, severities));
+        out.print(terminal.render(root, report, all, severities, gate));
         out.flush();
-        return ExitCode.OK;
+        return gate.map(FailUnderGate.Result::exitCode).orElse(ExitCode.OK);
+    }
+
+    private StealthConfigLoader.Loaded loadConfig(Path root) throws ConfigException {
+        Set<String> rules = new HashSet<>();
+        Set<String> analyzers = new HashSet<>();
+        for (Analyzer analyzer : runner.analyzers()) {
+            analyzers.add(analyzer.id());
+            analyzer.rules().forEach(rule -> rules.add(rule.id()));
+        }
+        if (configFile != null) {
+            return StealthConfigLoader.loadFile(
+                    configFile, configFile.toString(), rules, analyzers);
+        }
+        return StealthConfigLoader.load(root, rules, analyzers);
     }
 
     /** Which analyzers to run; none set runs them all. Each flag adds to the others. */

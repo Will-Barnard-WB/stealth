@@ -12,6 +12,7 @@ import dev.stealth.core.RepoContext;
 import dev.stealth.core.Severity;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
@@ -161,6 +162,57 @@ class DoctorCommandTest {
                 .contains("Usage: doctor [OPTIONS] [PATH]")
                 .contains("Run only:", "--secrets", "--security")
                 .contains("Show only:", "--critical", "--info");
+    }
+
+    @Test
+    void execute_failUnderInStealthYml_exitsOneBelowTheThreshold() throws Exception {
+        Files.writeString(repo.resolve(".stealth.yml"), "version: 1\nfail-under:\n  tech: 100\n");
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        int exitCode = execute(List.of(hygiene), repo.toString());
+
+        assertThat(exitCode).isEqualTo(1);
+        assertThat(out.toString()).contains("fail-under: tech score 99 is below 100");
+    }
+
+    @Test
+    void execute_failUnderOption_overridesTheOverallThresholdInStealthYml() throws Exception {
+        Files.writeString(repo.resolve(".stealth.yml"), "version: 1\nfail-under: 100\n");
+        // One high tech finding: tech 92, overall 0.6 × 100 + 0.4 × 92 = 96.8, so 97
+        Analyzer hygiene =
+                analyzer("hygiene", Category.TECH, List.of(finding(Severity.HIGH, "High problem")));
+        Analyzer vuln = analyzer("vuln", Category.SECURITY, List.of());
+
+        assertThat(execute(List.of(hygiene, vuln), repo.toString())).isEqualTo(1);
+        assertThat(execute(List.of(hygiene, vuln), "--fail-under", "90", repo.toString())).isZero();
+    }
+
+    @Test
+    void execute_invalidStealthYml_exitsTwoNamingTheLine() throws Exception {
+        Files.writeString(repo.resolve(".stealth.yml"), "version: 1\nfail-under: 101\n");
+
+        int exitCode = execute(List.of(), repo.toString());
+
+        assertThat(exitCode).isEqualTo(CommandLine.ExitCode.USAGE);
+        assertThat(err.toString())
+                .contains(
+                        "stealth doctor: .stealth.yml:2: fail-under must be between 0 and 100, got"
+                                + " 101");
+    }
+
+    @Test
+    void execute_configOption_readsThatFileAndShowsItsWarnings() throws Exception {
+        Path config = repo.resolve("ci-stealth.yml");
+        Files.writeString(
+                config, "version: 1\nignroe: []\nseverity:\n  hygiene/missing-codeowners: off\n");
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        execute(List.of(hygiene), "--config", config.toString(), repo.toString());
+
+        assertThat(out.toString())
+                .contains(
+                        "warning  " + config + ":2: unknown key 'ignroe' (did you mean 'ignore'?)")
+                .contains("No problems found.");
     }
 
     private int execute(List<Analyzer> analyzers, String... args) {

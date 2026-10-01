@@ -82,6 +82,78 @@ scoop install stealth
 
 Or download the `.zip` from [GitHub Releases](https://github.com/Will-Barnard-WB/stealth/releases), unpack it and add `bin/` to your `PATH`.
 
+## Configuration: `.stealth.yml`
+
+An optional `.stealth.yml` at the repository root tunes `stealth doctor` for that repo. It's committed, so changes to it
+are reviewed like code. `stealth doctor --config FILE` reads another file instead. The full format is
+[ADR-0004](docs/adr/0004-stealth-yml-format.md), and [`docs/schema/stealth-yml.schema.json`](docs/schema/stealth-yml.schema.json)
+gives editors autocompletion (in VS Code with the YAML extension, add `# yaml-language-server: $schema=<url>` at the top).
+
+```yaml
+version: 1
+
+# Paths no analyzer looks at: gitignore-style globs, relative to the repo root.
+# A glob matching a Maven module directory excludes that module and its dependencies.
+ignore:
+  - "legacy/**"
+  - "**/generated/**"
+
+# Override a rule's severity (critical, high, medium, low, info), or turn it off.
+severity:
+  deps/outdated-patch: off
+  duplication/cpd: info
+
+# Accepted findings. Each entry needs a reason; expires (UTC) is optional.
+allow:
+  secrets:
+    - path: "src/test/resources/**"
+      reason: Test fixtures, not real keys
+  dependencies:
+    - component: "pkg:maven/commons-collections/commons-collections"   # no @version = any version
+      rules: [maintenance/no-recent-release]
+      reason: Only used by the legacy importer, being removed
+      expires: 2026-12-31
+    - advisory: GHSA-599f-7c49-w659                                    # or a CVE alias
+      reason: Not reachable from untrusted input
+      expires: 2026-11-30
+
+# Per-analyzer settings. Every analyzer accepts enabled: false.
+analyzers:
+  maintenance: { stale-after: P3Y }                    # default P2Y
+  duplication: { min-tokens: 150, include-tests: true } # defaults 100, false
+  hygiene: { stale-branch-after: P180D, large-file-bytes: 10485760 }  # defaults P90D, 5 MB
+  secrets: { enabled: true }
+
+# Which JDK's end-of-life dates apply, and the Java the repo runs on if it isn't the compile target.
+eol:
+  java-distribution: oracle-jdk   # default eclipse-temurin
+  java-version: "17"
+
+# CI gate: exit code 1 when a score is below its minimum. A single number applies to the overall score.
+fail-under:
+  overall: 70
+  security: 80
+```
+
+| Key | Meaning |
+|---|---|
+| `version` | Format version, `1`. Missing is read as 1 with a warning; a higher version needs a newer stealth. |
+| `ignore` | Globs of paths excluded from every analyzer, before they run. |
+| `severity` | Rule id → `critical`, `high`, `medium`, `low`, `info` or `off`. Rule ids are listed in [`docs/rules/`](docs/rules). |
+| `allow.secrets` | Accepted secrets, by `path` glob and/or `fingerprint`, optionally limited to `rules`. |
+| `allow.dependencies` | Accepted dependency findings, by `component` (Package URL) and/or `advisory` (id or alias), optionally limited to `rules`. |
+| `allow.*[].reason` / `expires` | Why it's accepted, and the last day it applies. Expired entries stop applying and print a warning. |
+| `analyzers.<id>.enabled` | `false` turns an analyzer off for this repo. |
+| `analyzers.maintenance.stale-after` | How old the newest release can be (ISO-8601 period). |
+| `analyzers.duplication.min-tokens` / `include-tests` | Smallest duplicated block reported; whether `src/test/java` is scanned. |
+| `analyzers.hygiene.stale-branch-after` / `large-file-bytes` | When a branch counts as stale; when a file counts as large. |
+| `eol.java-distribution` / `java-version` | See [docs/rules/eol.md](docs/rules/eol.md). |
+| `fail-under` | Minimum overall score, or a map of `overall` / `security` / `tech`. `--fail-under N` replaces `overall`. |
+
+Unknown keys and rule ids print a warning with the line number (and a "did you mean"), so a newer file still works with
+an older stealth. An invalid value for a known key, such as `fail-under: 120`, stops the run with exit code 2, so a broken
+CI gate can't pass by accident. camelCase spellings (`javaDistribution`) are accepted too.
+
 ## Contributing
 The project is at a very early stage. See [CONTRIBUTING.md](CONTRIBUTING.md), and the roadmap for where help is useful.
 
