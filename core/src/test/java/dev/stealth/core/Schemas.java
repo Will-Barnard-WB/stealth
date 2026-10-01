@@ -19,7 +19,13 @@ public final class Schemas {
 
     /** Validation errors for {@code document} (JSON or YAML) against {@code docs/schema/<name>}. */
     public static List<String> validate(String name, String document, InputFormat format) {
-        try (InputStream schema = Files.newInputStream(docs().resolve("schema").resolve(name))) {
+        return validate(docs().resolve("schema").resolve(name), document, format);
+    }
+
+    /** Validation errors for {@code document} against the schema at {@code schemaFile}. */
+    public static List<String> validate(Path schemaFile, String document, InputFormat format) {
+        try (InputStream schema = Files.newInputStream(schemaFile)) {
+            // Schemas that name their draft (SARIF's is draft-04) are read as that draft
             Schema compiled =
                     SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12)
                             .getSchema(schema, InputFormat.JSON);

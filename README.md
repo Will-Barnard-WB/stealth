@@ -82,6 +82,40 @@ scoop install stealth
 
 Or download the `.zip` from [GitHub Releases](https://github.com/Will-Barnard-WB/stealth/releases), unpack it and add `bin/` to your `PATH`.
 
+## Output formats and the CI gate
+
+```bash
+stealth doctor                                   # terminal report: scores and the top fixes
+stealth doctor --json > stealth.json             # the whole report, for scripts and agents
+stealth doctor --format sarif -o stealth.sarif   # for GitHub code scanning; terminal report still on stdout
+stealth doctor --fail-under 70                   # exit 1 if the overall score is below 70
+```
+
+| | terminal | `--json` | `--format sarif` |
+|---|---|---|---|
+| For | People | Scripts, agents, platform upload | GitHub code scanning (and other SARIF viewers) |
+| Contains | Scores, the top fixes (`--all` for every one) | Scores with deductions, every fix and finding, analyzer statuses, warnings | Findings and their rules, the score in `run.properties` |
+| Stable shape | No | [`docs/schema/doctor-report.schema.json`](docs/schema/doctor-report.schema.json), `schemaVersion: 1` | SARIF 2.1.0, mapped as [ADR-0003](docs/adr/0003-sarif-mapping.md) says |
+
+Paths in JSON and SARIF are relative to the repository root, with forward slashes on every OS. The Show only flags
+(`--critical`, `--high`, …) narrow the terminal list only; JSON and SARIF always have every finding.
+
+**Exit codes:** `0` the run finished (and passed any `fail-under`); `1` a score is below its `fail-under` threshold;
+`2` usage or configuration error, or a `fail-under` that can't be judged (for example `--fail-under` with `--hygiene`,
+which leaves the security score out). An analyzer that fails or times out doesn't change the exit code on its own;
+the report says which one and that its findings are missing.
+
+To upload to GitHub code scanning from a workflow:
+
+```yaml
+- run: stealth doctor --format sarif --output stealth.sarif --fail-under 70
+- uses: github/codeql-action/upload-sarif@v4
+  if: always()
+  with:
+    sarif_file: stealth.sarif
+    category: stealth
+```
+
 ## Configuration: `.stealth.yml`
 
 An optional `.stealth.yml` at the repository root tunes `stealth doctor` for that repo. It's committed, so changes to it

@@ -215,6 +215,85 @@ class DoctorCommandTest {
                 .contains("No problems found.");
     }
 
+    @Test
+    void execute_json_printsTheReportAsJson() {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        int exitCode = execute(List.of(hygiene), "--json", repo.toString());
+
+        assertThat(exitCode).isZero();
+        assertThat(out.toString())
+                .startsWith("{")
+                .contains("\"schemaVersion\": 1", "\"ruleId\": \"hygiene/missing-codeowners\"");
+    }
+
+    @Test
+    void execute_formatSarifWithAGateItCantJudge_printsSarifAndTheErrorOnStderrAndExitsTwo() {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        int exitCode =
+                execute(
+                        List.of(hygiene),
+                        "--format",
+                        "SARIF",
+                        "--fail-under",
+                        "100",
+                        "--tech",
+                        repo.toString());
+
+        assertThat(exitCode).isEqualTo(2);
+        assertThat(out.toString()).contains("\"version\": \"2.1.0\"", "\"stealth/v1\"");
+        assertThat(err.toString())
+                .contains("fail-under: the overall score needs a run of every analyzer");
+    }
+
+    @Test
+    void execute_outputFile_writesTheFormatThereAndTheTerminalReportToStdout() throws Exception {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+        Path sarif = repo.resolve("reports/stealth.sarif");
+
+        int exitCode =
+                execute(
+                        List.of(hygiene),
+                        "--format",
+                        "sarif",
+                        "--output",
+                        sarif.toString(),
+                        repo.toString());
+
+        assertThat(exitCode).isZero();
+        assertThat(Files.readString(sarif)).contains("\"hygiene/missing-codeowners\"");
+        assertThat(out.toString()).contains("Fix these first").doesNotContain("\"version\"");
+        assertThat(err.toString()).contains("wrote sarif report to " + sarif);
+    }
+
+    @Test
+    void execute_terminalToOutputFile_writesPlainText() throws Exception {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+        Path report = repo.resolve("report.txt");
+
+        execute(List.of(hygiene), "-o", report.toString(), repo.toString());
+
+        assertThat(Files.readString(report)).contains("Fix these first").doesNotContain("\u001B[");
+        assertThat(out.toString()).isEmpty();
+    }
+
+    @Test
+    void execute_jsonAndAnotherFormat_isAUsageError() {
+        int exitCode = execute(List.of(), "--json", "--format", "sarif", repo.toString());
+
+        assertThat(exitCode).isEqualTo(CommandLine.ExitCode.USAGE);
+        assertThat(err.toString()).contains("--json and --format sarif disagree");
+    }
+
+    @Test
+    void execute_unknownFormat_isAUsageError() {
+        int exitCode = execute(List.of(), "--format", "html", repo.toString());
+
+        assertThat(exitCode).isEqualTo(CommandLine.ExitCode.USAGE);
+        assertThat(err.toString()).contains("expected terminal, json or sarif, got 'html'");
+    }
+
     private int execute(List<Analyzer> analyzers, String... args) {
         CommandLine commandLine =
                 new CommandLine(

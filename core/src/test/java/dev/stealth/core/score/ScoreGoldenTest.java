@@ -4,37 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import dev.stealth.core.AllAnalyzers;
 import dev.stealth.core.AnalyzerResult;
 import dev.stealth.core.AnalyzerRunner;
 import dev.stealth.core.AnalyzerStatus;
 import dev.stealth.core.DoctorReport;
 import dev.stealth.core.Fixture;
-import dev.stealth.core.deps.DependencyFreshnessAnalyzer;
-import dev.stealth.core.deps.MaintenanceAnalyzer;
-import dev.stealth.core.deps.MavenCentralClient;
-import dev.stealth.core.deps.MavenCentralSearch;
-import dev.stealth.core.deps.RecordedCentral;
-import dev.stealth.core.duplication.DuplicationAnalyzer;
-import dev.stealth.core.eol.EndOfLifeAnalyzer;
-import dev.stealth.core.eol.EndOfLifeClient;
-import dev.stealth.core.eol.RecordedEndOfLife;
-import dev.stealth.core.http.CachedHttpClient;
-import dev.stealth.core.http.HttpCache;
-import dev.stealth.core.hygiene.RepoHygieneAnalyzer;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.SeededMavenRepository;
-import dev.stealth.core.secrets.SecretsAnalyzer;
-import dev.stealth.core.vuln.OsvClient;
-import dev.stealth.core.vuln.RecordedOsv;
-import dev.stealth.core.vuln.VulnerabilityAnalyzer;
-import java.net.URI;
-import java.net.http.HttpClient;
 import java.nio.file.Path;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,9 +25,6 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @WireMockTest
 class ScoreGoldenTest {
-
-    private static final Clock REFERENCE_DATE =
-            Clock.fixed(Instant.parse("2026-09-29T12:00:00Z"), ZoneOffset.UTC);
 
     @TempDir static Path seededRepository;
 
@@ -66,49 +41,7 @@ class ScoreGoldenTest {
 
     @BeforeEach
     void setUp(WireMockRuntimeInfo wireMock) {
-        RecordedCentral.stubAll();
-        RecordedOsv.stubAll();
-        RecordedEndOfLife.stubAll();
-        String base = wireMock.getHttpBaseUrl();
-        CachedHttpClient http =
-                new CachedHttpClient(
-                        HttpClient.newHttpClient(),
-                        new HttpCache(cacheDirectory, Duration.ofHours(24), Clock.systemUTC()),
-                        () -> false,
-                        1,
-                        Duration.ZERO);
-        MavenCentralClient central =
-                new MavenCentralClient(http, URI.create(base + RecordedCentral.BASE_PATH));
-        runner =
-                new AnalyzerRunner(
-                        List.of(
-                                new DependencyFreshnessAnalyzer(loader, central),
-                                new VulnerabilityAnalyzer(
-                                        loader,
-                                        new OsvClient(
-                                                http, URI.create(base + RecordedOsv.BASE_PATH))),
-                                new MaintenanceAnalyzer(
-                                        loader,
-                                        central,
-                                        new MavenCentralSearch(
-                                                http,
-                                                URI.create(base + RecordedCentral.SEARCH_PATH)),
-                                        MaintenanceAnalyzer.DEFAULT_STALE_AFTER,
-                                        REFERENCE_DATE),
-                                new EndOfLifeAnalyzer(
-                                        loader,
-                                        new EndOfLifeClient(
-                                                http,
-                                                URI.create(base + RecordedEndOfLife.BASE_PATH)),
-                                        REFERENCE_DATE),
-                                new SecretsAnalyzer(REFERENCE_DATE),
-                                new DuplicationAnalyzer(),
-                                new RepoHygieneAnalyzer(
-                                        loader,
-                                        RepoHygieneAnalyzer.DEFAULT_STALE_BRANCH_AFTER,
-                                        RepoHygieneAnalyzer.DEFAULT_LARGE_FILE_BYTES,
-                                        REFERENCE_DATE)),
-                        Duration.ofSeconds(120));
+        runner = AllAnalyzers.runner(wireMock.getHttpBaseUrl(), cacheDirectory, loader);
     }
 
     @Test

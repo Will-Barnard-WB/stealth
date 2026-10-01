@@ -9,12 +9,20 @@ import dev.stealth.core.RepoContext;
 import dev.stealth.core.Severity;
 import dev.stealth.core.StealthConfig;
 import dev.stealth.core.StealthConfigLoader;
+import dev.stealth.core.report.JsonReport;
+import dev.stealth.core.report.SarifReport;
 import dev.stealth.core.score.FailUnderGate;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -23,10 +31,13 @@ import org.springframework.stereotype.Component;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ExitCode;
+import picocli.CommandLine.Help.Ansi;
+import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
+import picocli.CommandLine.TypeConversionException;
 
 /**
  * {@code stealth doctor [path]}: runs every analyzer and prints the fixes, most important first.
@@ -75,6 +86,26 @@ public class DoctorCommand implements Callable<Integer> {
     private Integer failUnder;
 
     @Option(
+            names = "--format",
+            paramLabel = "FORMAT",
+            converter = Format.Converter.class,
+            description =
+                    "terminal (default), json, or sarif for GitHub code scanning. JSON and SARIF"
+                            + " list every finding; the Show only flags narrow the terminal list.")
+    private Format format;
+
+    @Option(names = "--json", description = "Same as --format json.")
+    private boolean json;
+
+    @Option(
+            names = {"-o", "--output"},
+            paramLabel = "FILE",
+            description =
+                    "Write the report to FILE. With json or sarif, the terminal report still goes"
+                            + " to stdout, for CI logs.")
+    private Path output;
+
+    @Option(
             names = "--all",
             description = "List every finding under its fix, and every fix, not just the top 10.")
     private boolean all;
@@ -99,6 +130,11 @@ public class DoctorCommand implements Callable<Integer> {
         }
 
         PrintWriter err = spec.commandLine().getErr();
+        if (json && format != null && format != Format.JSON) {
+            err.println("stealth doctor: --json and --format " + format + " disagree; use one");
+            return ExitCode.USAGE;
+        }
+        Format chosen = json ? Format.JSON : Objects.requireNonNullElse(format, Format.TERMINAL);
         if (failUnder != null && (failUnder < 0 || failUnder > 100)) {
             err.println("stealth doctor: --fail-under must be between 0 and 100, got " + failUnder);
             return ExitCode.USAGE;
@@ -132,9 +168,98 @@ public class DoctorCommand implements Callable<Integer> {
                 new TerminalReport(
                         spec.commandLine().getColorScheme().ansi(),
                         StealthCli.stdoutCanPrint(TerminalReport.UNICODE_SYMBOLS));
-        out.print(terminal.render(root, report, all, severities, gate));
-        out.flush();
+        String rendered =
+                switch (chosen) {
+                    case TERMINAL ->
+                            output == null
+                                    ? terminal.render(root, report, all, severities, gate)
+                                    : new TerminalReport(Ansi.OFF, true)
+                                            .render(root, report, all, severities, gate);
+                    case JSON -> JsonReport.render(report, ManifestVersionProvider.version(), gate);
+                    case SARIF ->
+                            SarifReport.render(
+                                    report,
+                                    runner.analyzers().stream()
+                                            .flatMap(a -> a.rules().stream())
+                                            .toList(),
+                                    ManifestVersionProvider.version(),
+                                    Files.isRegularFile(root.resolve("pom.xml"))
+                                            ? Optional.of("pom.xml")
+                                            : Optional.empty());
+                };
+
+        if (output == null) {
+            out.print(rendered);
+            out.flush();
+            if (chosen == Format.SARIF) {
+                // SARIF has nowhere for these, and stdout is the file
+                report.warnings().forEach(w -> err.println("stealth doctor: warning: " + w));
+                gate.ifPresent(g -> err.print(String.join(System.lineSeparator(), gateText(g))));
+                err.flush();
+            }
+        } else {
+            try {
+                Path parent = output.toAbsolutePath().getParent();
+                if (parent != null) {
+                    Files.createDirectories(parent);
+                }
+                Files.writeString(output, rendered, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                err.println("stealth doctor: can't write " + output + ": " + e.getMessage());
+                return ExitCode.USAGE;
+            }
+            if (chosen != Format.TERMINAL) {
+                out.print(terminal.render(root, report, all, severities, gate));
+            }
+            out.flush();
+            err.println("stealth doctor: wrote " + chosen + " report to " + output);
+            err.flush();
+        }
         return gate.map(FailUnderGate.Result::exitCode).orElse(ExitCode.OK);
+    }
+
+    private static List<String> gateText(FailUnderGate.Result gate) {
+        List<String> lines = new ArrayList<>();
+        gate.error()
+                .ifPresent(
+                        e ->
+                                lines.add(
+                                        "stealth doctor: fail-under: "
+                                                + e
+                                                + System.lineSeparator()));
+        gate.failures()
+                .forEach(
+                        f ->
+                                lines.add(
+                                        "stealth doctor: fail-under: "
+                                                + f
+                                                + System.lineSeparator()));
+        return lines;
+    }
+
+    /** Report formats; lowercase on the command line. */
+    enum Format {
+        TERMINAL,
+        JSON,
+        SARIF;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase(Locale.ROOT);
+        }
+
+        static class Converter implements ITypeConverter<Format> {
+            @Override
+            public Format convert(String value) {
+                for (Format format : values()) {
+                    if (format.toString().equalsIgnoreCase(value)) {
+                        return format;
+                    }
+                }
+                throw new TypeConversionException(
+                        "expected terminal, json or sarif, got '" + value + "'");
+            }
+        }
     }
 
     private StealthConfigLoader.Loaded loadConfig(Path root) throws ConfigException {

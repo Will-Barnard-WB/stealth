@@ -1,0 +1,3017 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "stealth",
+    "version": "test"
+  },
+  "score": {
+    "overall": 50,
+    "grade": "D",
+    "overallCapped": true,
+    "scoringVersion": 1,
+    "security": {
+      "status": "complete",
+      "score": 50,
+      "grade": "D",
+      "capped": true,
+      "analyzers": [
+        "vuln",
+        "eol",
+        "secrets"
+      ],
+      "deductions": [
+        {
+          "analyzer": "vuln",
+          "findings": 104,
+          "points": 40.0,
+          "capped": true
+        },
+        {
+          "analyzer": "eol",
+          "findings": 1,
+          "points": 8.0,
+          "capped": false
+        }
+      ]
+    },
+    "tech": {
+      "status": "complete",
+      "score": 91,
+      "grade": "A",
+      "capped": false,
+      "analyzers": [
+        "deps",
+        "maintenance",
+        "duplication",
+        "hygiene"
+      ],
+      "deductions": [
+        {
+          "analyzer": "deps",
+          "findings": 4,
+          "points": 6.2,
+          "capped": false
+        },
+        {
+          "analyzer": "hygiene",
+          "findings": 2,
+          "points": 1.71,
+          "capped": false
+        },
+        {
+          "analyzer": "maintenance",
+          "findings": 1,
+          "points": 1.0,
+          "capped": false
+        }
+      ]
+    }
+  },
+  "fixes": [
+    {
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "points": 17.95,
+      "findings": [
+        "v1:3a19e3fa7f567431b1bf20e09bb929c2bf5a3f46b075984cfd1d710654fb6a16",
+        "v1:44a64c04853da3642c82b2d3f8cf6ef4f05ec7883966f99ecd5f68a64a199a18",
+        "v1:5d2794744d46b1d08ab2c3881682d6fb47a0cdbec814bfde04add039860041ec",
+        "v1:6fcf4773f3a47e113568dbb5692db6a8e178485a2803d5c480531be12b486b93",
+        "v1:a7d393e7f7eac1f1c7104630f3ec323b36ddb7ead2b2dc36d397d301f55dc825",
+        "v1:b7af076d6edc6fb9fb0cc517d24232d0e2e36871ceec2acab3907cf35c67fd0e",
+        "v1:c12decf9e9a1edb474e78f6c74cb02d6bc85b9f48066f15b3c97b5426a25ccce",
+        "v1:c47bca2c2002acbab82038ec820406c8a7a50a49303d31572a54060b8553acba",
+        "v1:cca02272275fde7a632a5ed61507a3344b5575b49e254e37f7ea81f89fad9b9f",
+        "v1:d0e7127a0e4f370c41d5993340728b7f1333beec2db0711f785603ca83dc8103",
+        "v1:ff574d9dbdf7ffca0561e40b1e7dc710985b8a56bc079f97777571c55849be13",
+        "v1:495e785bee2237471c9a7abcba1dcdb3424a0547c2f76f13fe9b048a58e631b6",
+        "v1:0621e1ce9b39ac208c3c2a152373671fd9d02b4ce2da9259981d5723f063bdd9",
+        "v1:0feea032a48a5df6f0e47fa03759368b13ecd97a8b8be468d56fc4de3a321d78",
+        "v1:27684d77fd571e56e5cf2a216c05c7c83b15fbe75856b34fa0a234ba989f321a",
+        "v1:2853454c8bc9f560430b1b6ff4da6a6134cda9f3a41169ce9cbfea52d07b6235",
+        "v1:29e7be9877a3de735f7271bf4883ea52188e59b58011a640403b01067ceb2a7a",
+        "v1:2fa0f75c353ad25c08d123a755132ad845762b29969e7302546df74b4e7d3c6f",
+        "v1:3b39cf5326debb8e0998ae09ae79b6d7e2d6cd8aaff2330889026ca8b14f7287",
+        "v1:3f4a2353ed16e7d96061642905872167afd3a1a0e160d677982217e378ab87e8",
+        "v1:4c74c67ef69c6fa418a5068b6030fb995ca14f48067600834767336e2cc9e021",
+        "v1:518f7f5b4c4f1629acdf586671a095a146785e89a093e3acca5b040d2d8e6b21",
+        "v1:53718878b6c2b1892d0b71518588fd903d140b8ab7b1f0bb077f8096fe9e6f48",
+        "v1:55362a0b53249f3ccbc814d9e2d7f360e9c51e685c4da658e4128d8800c0497d",
+        "v1:58cb359e9ca43ea96578c617bb8c99db2cf402f61a446e62a58bca73d4515ad3",
+        "v1:5ccab6b5f6adf308f24b69d7d3d60b59f5ee2eccaf83d478a78e941cb8eeda5d",
+        "v1:62e70f9fe1424a76a5e44b7ab688b9ee1af01252b746fbcc1c638a719f1040a6",
+        "v1:630ac4f5e357a7074095645d0ab6bbf1c853c792c57ab2b0182b1beb4e264ab6",
+        "v1:6796511f133acb0c850d60e14220d40434e287a324713617e395a3e3fa4f74e4",
+        "v1:6b52ea61e15ef86219233bb5f88b87bdd31e720a061644a0db14ba3050a47177",
+        "v1:74bfe544498bafa8eb77431a913b4068911d24c6942fbd45a84cd8ef8663e697",
+        "v1:791a3ba60c3039b5f354370de5e15b2d62d9d08bb1c831e69a42332dfc6193c1",
+        "v1:7ef7f0bc03151ce90dafa6b0f56104f2cbb1df02c1d2775450d34e10afb63d08",
+        "v1:896696658496c0f0a4ed590bdf71c050e9d7ba7df4fe02fb2fbe774eab882654",
+        "v1:8e154f63965ea1dbb28d13f1de7cc1e343b301e50938368cb6cd22f3c1da728b",
+        "v1:92540af8e7b58906699356d40b8edfda65bcb8245fe6aa19fe81c00eea316adf",
+        "v1:a27a7924cf796f942a1e3d7cba261096a3f0af7d025ebf21c12eca0426888f00",
+        "v1:afc367c2dd377592ff446d62433a9a3cfa7ed98e277b84a488fa7faeeae93d14",
+        "v1:b9ebbd6e0594df8fdca683c01f93a88f87802fbc45e1f9cf12611d1fef2b3772",
+        "v1:bcf6e0825756e0b3a22e8c7338ee4e5f7ae7789fb46ef8c13a688787917a2ef2",
+        "v1:cc1005cc8f3293416f989b4a3a7373b573d1e9a8c0475825fc1e49c5572a09f5",
+        "v1:cfdb28dddc3b4494d8912f3392075fb79e86a226219b8b881e9d8865400212e6",
+        "v1:d388854aae5baa1b4eae98ad5c39e32cd8cf1f845709179fe3363afd4aa858ac",
+        "v1:dc097eb535c286cb9cbd4858b45fcd9b67d827c03ff84792dcedc53a9821d695",
+        "v1:de253792a293306fae3ed4590678abf15e1b1ddfd56949963ece4f15385482f9",
+        "v1:e033c8eff7d1a6dd2efd42589682326ea53130758b5bba742beaaf446e638ced",
+        "v1:eef5a6dd422d1b25583a2e1ae8c27c7d0396284dcfcecf06e297533e659e558e",
+        "v1:efdff9d81e222c8423ffeaf874c674e79b5a1d9d85f25865df7ba2996d8c43b2",
+        "v1:f63bbc4b32ce93769a014ab0192eca79239330b1d3fb98fd941bd63490d8598c",
+        "v1:fb2fd2ab7a4ebaf9c1058bfd25c36a58897c24c419c97d583ec1cc983eb9a6ca",
+        "v1:ff407474deed5c86849fa7b54010964eb91fddd59ead9d14ad656f41d483904a",
+        "v1:ff7f4d00fe9a75e8e7ae76607ce018ffe967b7131e779cdcd840fd68ef2a628e",
+        "v1:ee62b6880a54625e8f204461328049415af622f21ffb805d256cc36d0cfa0a37",
+        "v1:030420dab515dd070812c295f32d771ffb27bf837fa4a786c3bb5d95dae1f52f",
+        "v1:03d22ddb9b9c557c30b4fe90a6b97268fba677ec3983cb2043c15e1442236614",
+        "v1:0a930d83be8737af1596130508c53d6e3a52f0ce06487f5d07fc608ed390c55f",
+        "v1:0b4a717cad26d6a6f7ee804f5e622786b40c5d3a2290760022c02d7a9ae82396",
+        "v1:0be8790f54bed57e66fd25cd9cf062818f0057fe15d8ccd30d1ee3f768c0bdb6",
+        "v1:16845ac6e5b3707a4a5cb8a81d24e74c11f130e3540cc13022bd4ef395fd5d22",
+        "v1:1c42d01213eab90fa55b2e9ea283e97345d5e740c0ebc7d1ed5677b2fde42ef2",
+        "v1:1e04f1df6d33bdbbbe928de46c693d0d4212fbe39bb7eb668081580e00b57684",
+        "v1:2816e63a57260092d3071789531d8eb4228cf17fc30d9855963cd9228c96a9bb",
+        "v1:2848a5dda14303d1c72ee6db1ed16b78aa9c8357ead9c4dddbac0ff10727399f",
+        "v1:2d96ccc2a3461ce09d331e910d26ceb7cbbe9c6b55fa8655b0fb4a20ed037079",
+        "v1:352bda1671254d528316ede8da8d16dc4caec792a612d0152540362fa02a7f53",
+        "v1:3639ce9f6fbe8400859450a29f731f1102eb66fd5ae754575bdea24abfd8cb43",
+        "v1:393645314c70ff44d70234fe27fd9b4b5fb7ebc40de80094e86c6c249ae27639",
+        "v1:3ee62a4eb5fadcd6023edadd98d4ac217d276b6df384eb6c44c9b89bb722850f",
+        "v1:5449e163fed290df77d21ef028b9c70f3160250f9248eec1d5f685087704668c",
+        "v1:5c85b29040ce43c9ea4e712252e1fed73ab04aa9a1f38025d811a47add7f291a",
+        "v1:5cd5035757667854239cb1ed18f29d16094134853a12eac2f76946f338a78a32",
+        "v1:61251aba9e3e0f85250f5418a98406afe2f6fcf31cd1a4a3e09a53ef6551fe97",
+        "v1:649ad9c256b8626ba26155a978a4e6a20afddd87674ae94bf6e7aa82f6a516a2",
+        "v1:6a4eeb77233b5b9b2793456d2def5f04c510358b7ff98f5bc8256b86d8ac4c39",
+        "v1:6b16545c2bd4faa4e23e06ee34582bfa68f94b70ece4faa81b7eef969dc17cad",
+        "v1:734becafe06a73e8c1a09a9fb3387292a7edc54b3ec85a6e15dd4f59dce34e44",
+        "v1:7fcdf0bedbb348c78a95f02839d9033bf94016334d62df222ba21ea456ff6774",
+        "v1:94e5417f8e600144eb566e80177ef1265ec3ae58073ee8924149faab2989d423",
+        "v1:977f0a13c79aa13302238a1cefb0d830fe3cb59683ead04e9b626f28cc3697a6",
+        "v1:b2f42cf5b042130d94a6e24274024feaf29292e6a04dfec5d25cb08e9962df35",
+        "v1:bd070d5b792743d0bc76accfecbc729a01cb975e45ae20bd5dbc3109843fd13c",
+        "v1:bee5db4f1f432a6067a1315b94b5ea6e5676dc3213b9119df50eb72007f1ea1c",
+        "v1:d3a2ad6f554f9dc4292d20035d59215634e26f322f3ce1ea32fbe043d52be71c",
+        "v1:d55db4f28969c4ceea76cbc5026f2db97e620488e168a174c723ed79ee7117b1",
+        "v1:e55780d15b05bb5a48e6b9bab6b67b38e781a5cbb7b7149920a09fba8767b60d",
+        "v1:e66e4763db675dcae17c4fe5f8d4385bc5b111dfdc194bbdf76dc3d8d11b1b2c",
+        "v1:ea19404cfe4e4be26f127a32a4b86df29da5ae4e8f55897e5ac8b1e97351e7dc",
+        "v1:eb8e46c2979f8f1c2060cbfdaa74d2626a7aac5516042d44e971be8e47c82914",
+        "v1:f8697c6e6f1d224e5bdb0ac3a26dc8452b77d8dfe201ce7def67930b1dcf3810",
+        "v1:07e22389a91bb3c641ab167107ae80f8cd917e865b0ceaf876ad8789c79a3bc8",
+        "v1:082b6dc52da84dfa9ce0ff9f76944e6b5b756b95010c397c6a2b2cf122e450c7",
+        "v1:11073376ce0233e1bf7b0d25ed49d9cb548be222f7643d09c51c33e51729557e",
+        "v1:17a63e44a839513450180b519b35a194b3e38b0df8da029f2e5882fc33182c15",
+        "v1:3e6ea7bb996e53b4242ed1503ee058620ad9540efc4c2f4c70dff9803bf854d9",
+        "v1:55f329fc05f6bb41c4d9744bad13596e8559e03b8b23dd378be9e2eed6674a89",
+        "v1:5faa58f6c1124bf9fab01ca81bbce4a779f23536400679c888e29bbcf2a56601",
+        "v1:7336480c34316d0d429dfef6db3ad75fc41f17902e0669490786a7945c977c41",
+        "v1:75f9d59552407d26cc587ac6680a8d7d6b2a68d10381fc4f0770d61d34958432",
+        "v1:8b9af0f117162c431be3811da611b384a97ea764d84dcece327acb2f3fee5e35",
+        "v1:988b4892d48227c19c1f61add2af1ef3c9b26a416d25eb5756401c8e62758e8f",
+        "v1:a272f92dc9f0b0e37f3cadc485f63b220a56464639018cdb33c59a6e910ae143",
+        "v1:f7970c7044cd603c2b02a2806e8d2b67fc48275d6ab7af3a27e8a3606ca92ee1"
+      ]
+    },
+    {
+      "location": {
+        "path": "pom.xml",
+        "line": 40,
+        "module": ""
+      },
+      "points": 0.2,
+      "findings": [
+        "v1:bb6418be4ba3a4ff4e8db661cfb893e16e9b49ec9ac0b41d4cbe1781493539f0",
+        "v1:70e62c2fca55c201185e34f08dff42251346d583745ac72aec8eed630f5074e2"
+      ]
+    },
+    {
+      "location": {
+        "path": "pom.xml",
+        "line": 35,
+        "module": ""
+      },
+      "points": 0.77,
+      "findings": [
+        "v1:3083868abdb81c9018ab0a7bf0003c65973f80adb0babfc5f63aed5f77b389b5",
+        "v1:a69f50d96afed6d29ac95abf1a12b0c5d1dc5d3b71f8262f1a48b12abb002b06",
+        "v1:300fb9e827e8c8350db04ef516d717dd6532b665bf5330dab5e52bfce33a4981"
+      ]
+    },
+    {
+      "location": {
+        "path": "pom.xml",
+        "line": 30,
+        "module": ""
+      },
+      "points": 0.2,
+      "findings": [
+        "v1:1691b14aebe67f0a7b0698051ea3f75dd0892a901182b64f600c0cb4dabd804c",
+        "v1:3ffc0d325225062f0d480eea4aea9174b13975da2251a14d9842524de5384071"
+      ]
+    },
+    {
+      "location": {
+        "path": "pom.xml",
+        "line": 45,
+        "module": ""
+      },
+      "points": 0.4,
+      "findings": [
+        "v1:b845ed60dbcb43cadceb76f205ec5767c8010a082f1fded76caf8c5fb3eda51a"
+      ]
+    },
+    {
+      "location": {
+        "path": null
+      },
+      "points": 0.28,
+      "findings": [
+        "v1:7537d6163664942a7f20ae14ce2387887d4fab9aaa6aa7371a3a6da02ced0c5a"
+      ]
+    },
+    {
+      "location": {
+        "path": null
+      },
+      "points": 0.28,
+      "findings": [
+        "v1:c8a8dcb63d49518bb66739bb47191c8cfa4b98eb3f5b37333ae9eda9dc980d17"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "ruleId": "deps/outdated-major",
+      "category": "tech",
+      "severity": "medium",
+      "message": "org.springframework.boot:spring-boot-starter-parent 2.7.18 is outdated: 4.1.1 is available (manages 2 of the module's dependencies)",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework.boot/spring-boot-starter-parent@2.7.18",
+      "remediation": {
+        "fixedVersion": "4.1.1",
+        "description": "Upgrade to 4.1.1"
+      },
+      "fingerprint": "v1:ee62b6880a54625e8f204461328049415af622f21ffb805d256cc36d0cfa0a37"
+    },
+    {
+      "ruleId": "deps/outdated-minor",
+      "category": "tech",
+      "severity": "low",
+      "message": "org.apache.commons:commons-lang3 3.9 is outdated: 3.21.0 is available",
+      "location": {
+        "path": "pom.xml",
+        "line": 30,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.commons/commons-lang3@3.9",
+      "remediation": {
+        "fixedVersion": "3.21.0",
+        "description": "Upgrade to 3.21.0"
+      },
+      "fingerprint": "v1:3ffc0d325225062f0d480eea4aea9174b13975da2251a14d9842524de5384071"
+    },
+    {
+      "ruleId": "deps/outdated-major",
+      "category": "tech",
+      "severity": "medium",
+      "message": "com.google.guava:guava 30.1-jre is outdated: 33.7.2-jre is available",
+      "location": {
+        "path": "pom.xml",
+        "line": 35,
+        "module": ""
+      },
+      "component": "pkg:maven/com.google.guava/guava@30.1-jre",
+      "remediation": {
+        "fixedVersion": "33.7.2-jre",
+        "description": "Upgrade to 33.7.2-jre"
+      },
+      "fingerprint": "v1:3083868abdb81c9018ab0a7bf0003c65973f80adb0babfc5f63aed5f77b389b5"
+    },
+    {
+      "ruleId": "deps/outdated-minor",
+      "category": "tech",
+      "severity": "low",
+      "message": "org.apache.commons:commons-text 1.9 is outdated: 1.15.0 is available",
+      "location": {
+        "path": "pom.xml",
+        "line": 40,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.commons/commons-text@1.9",
+      "remediation": {
+        "fixedVersion": "1.15.0",
+        "description": "Upgrade to 1.15.0"
+      },
+      "fingerprint": "v1:70e62c2fca55c201185e34f08dff42251346d583745ac72aec8eed630f5074e2"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.commons:commons-lang3 3.9: GHSA-j288-q9x7-2f5v (CVE-2025-48924) Apache Commons Lang is vulnerable to Uncontrolled Recursion when processing lon…; fixed in 3.18.0",
+      "location": {
+        "path": "pom.xml",
+        "line": 30,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.commons/commons-lang3@3.9",
+      "advisory": {
+        "id": "GHSA-j288-q9x7-2f5v",
+        "aliases": [
+          "CVE-2025-48924"
+        ],
+        "cvssScore": 6.5,
+        "url": "https://osv.dev/vulnerability/GHSA-j288-q9x7-2f5v"
+      },
+      "remediation": {
+        "fixedVersion": "3.18.0",
+        "description": "Upgrade org.apache.commons:commons-lang3 to 3.18.0"
+      },
+      "fingerprint": "v1:1691b14aebe67f0a7b0698051ea3f75dd0892a901182b64f600c0cb4dabd804c"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "com.google.guava:guava 30.1-jre: GHSA-5mg8-w23w-74h3 (CVE-2020-8908) Information Disclosure in Guava; fixed in 32.0.0-jre",
+      "location": {
+        "path": "pom.xml",
+        "line": 35,
+        "module": ""
+      },
+      "component": "pkg:maven/com.google.guava/guava@30.1-jre",
+      "advisory": {
+        "id": "GHSA-5mg8-w23w-74h3",
+        "aliases": [
+          "CVE-2020-8908",
+          "SNYK-JAVA-COMGOOGLEGUAVA-1015415"
+        ],
+        "cvssScore": 3.3,
+        "url": "https://osv.dev/vulnerability/GHSA-5mg8-w23w-74h3"
+      },
+      "remediation": {
+        "fixedVersion": "32.0.0-jre",
+        "description": "Upgrade com.google.guava:guava to 32.0.0-jre"
+      },
+      "fingerprint": "v1:300fb9e827e8c8350db04ef516d717dd6532b665bf5330dab5e52bfce33a4981"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "com.google.guava:guava 30.1-jre: GHSA-7g45-4rm6-3mm3 (CVE-2023-2976) Guava vulnerable to insecure use of temporary directory; fixed in 32.0.0-jre",
+      "location": {
+        "path": "pom.xml",
+        "line": 35,
+        "module": ""
+      },
+      "component": "pkg:maven/com.google.guava/guava@30.1-jre",
+      "advisory": {
+        "id": "GHSA-7g45-4rm6-3mm3",
+        "aliases": [
+          "CVE-2023-2976"
+        ],
+        "cvssScore": 5.5,
+        "url": "https://osv.dev/vulnerability/GHSA-7g45-4rm6-3mm3"
+      },
+      "remediation": {
+        "fixedVersion": "32.0.0-jre",
+        "description": "Upgrade com.google.guava:guava to 32.0.0-jre"
+      },
+      "fingerprint": "v1:a69f50d96afed6d29ac95abf1a12b0c5d1dc5d3b71f8262f1a48b12abb002b06"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.commons:commons-text 1.9: GHSA-599f-7c49-w659 (CVE-2022-42889) Arbitrary code execution in Apache Commons Text; fixed in 1.10.0",
+      "location": {
+        "path": "pom.xml",
+        "line": 40,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.commons/commons-text@1.9",
+      "advisory": {
+        "id": "GHSA-599f-7c49-w659",
+        "aliases": [
+          "CVE-2022-42889"
+        ],
+        "cvssScore": 9.8,
+        "url": "https://osv.dev/vulnerability/GHSA-599f-7c49-w659"
+      },
+      "remediation": {
+        "fixedVersion": "1.10.0",
+        "description": "Upgrade org.apache.commons:commons-text to 1.10.0"
+      },
+      "fingerprint": "v1:bb6418be4ba3a4ff4e8db661cfb893e16e9b49ec9ac0b41d4cbe1781493539f0"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-web 5.3.31: GHSA-2rmj-mq67-h97g (CVE-2024-38809) Spring Framework DoS via conditional HTTP request; fixed in 5.3.38; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-web@5.3.31",
+      "advisory": {
+        "id": "GHSA-2rmj-mq67-h97g",
+        "aliases": [
+          "CVE-2024-38809"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-2rmj-mq67-h97g"
+      },
+      "remediation": {
+        "fixedVersion": "5.3.38",
+        "description": "Upgrade org.springframework:spring-web to 5.3.38"
+      },
+      "fingerprint": "v1:6b16545c2bd4faa4e23e06ee34582bfa68f94b70ece4faa81b7eef969dc17cad"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-web 5.3.31: GHSA-2wrp-6fg6-hmc5 (CVE-2024-22262) Spring Framework URL Parsing with Host Validation; fixed in 5.3.34; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-web@5.3.31",
+      "advisory": {
+        "id": "GHSA-2wrp-6fg6-hmc5",
+        "aliases": [
+          "CVE-2024-22262"
+        ],
+        "cvssScore": 8.1,
+        "url": "https://osv.dev/vulnerability/GHSA-2wrp-6fg6-hmc5"
+      },
+      "remediation": {
+        "fixedVersion": "5.3.34",
+        "description": "Upgrade org.springframework:spring-web to 5.3.34"
+      },
+      "fingerprint": "v1:8e154f63965ea1dbb28d13f1de7cc1e343b301e50938368cb6cd22f3c1da728b"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-web 5.3.31: GHSA-4gc7-5j7h-4qph (CVE-2024-38820) Spring Framework DataBinder Case Sensitive Match Exception; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-web@5.3.31",
+      "advisory": {
+        "id": "GHSA-4gc7-5j7h-4qph",
+        "aliases": [
+          "CVE-2024-38820"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-4gc7-5j7h-4qph"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:5449e163fed290df77d21ef028b9c70f3160250f9248eec1d5f685087704668c"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.springframework:spring-web 5.3.31: GHSA-4wrc-f8pq-fpqp (CVE-2016-1000027) Pivotal Spring Framework contains unsafe Java deserialization methods; fixed in 6.0.0; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-web@5.3.31",
+      "advisory": {
+        "id": "GHSA-4wrc-f8pq-fpqp",
+        "aliases": [
+          "CVE-2016-1000027"
+        ],
+        "cvssScore": 9.8,
+        "url": "https://osv.dev/vulnerability/GHSA-4wrc-f8pq-fpqp"
+      },
+      "remediation": {
+        "fixedVersion": "6.0.0",
+        "description": "Upgrade org.springframework:spring-web to 6.0.0"
+      },
+      "fingerprint": "v1:cca02272275fde7a632a5ed61507a3344b5575b49e254e37f7ea81f89fad9b9f"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-web 5.3.31: GHSA-ccgv-vj62-xf9h (CVE-2024-22243) Spring Web vulnerable to Open Redirect or Server Side Request Forgery; fixed in 5.3.32; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-web@5.3.31",
+      "advisory": {
+        "id": "GHSA-ccgv-vj62-xf9h",
+        "aliases": [
+          "CVE-2024-22243"
+        ],
+        "cvssScore": 8.1,
+        "url": "https://osv.dev/vulnerability/GHSA-ccgv-vj62-xf9h"
+      },
+      "remediation": {
+        "fixedVersion": "5.3.32",
+        "description": "Upgrade org.springframework:spring-web to 5.3.32"
+      },
+      "fingerprint": "v1:27684d77fd571e56e5cf2a216c05c7c83b15fbe75856b34fa0a234ba989f321a"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-web 5.3.31: GHSA-hgjh-9rj2-g67j (CVE-2024-22259) Spring Framework URL Parsing with Host Validation Vulnerability; fixed in 5.3.33; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-web@5.3.31",
+      "advisory": {
+        "id": "GHSA-hgjh-9rj2-g67j",
+        "aliases": [
+          "CVE-2024-22259"
+        ],
+        "cvssScore": 8.1,
+        "url": "https://osv.dev/vulnerability/GHSA-hgjh-9rj2-g67j"
+      },
+      "remediation": {
+        "fixedVersion": "5.3.33",
+        "description": "Upgrade org.springframework:spring-web to 5.3.33"
+      },
+      "fingerprint": "v1:518f7f5b4c4f1629acdf586671a095a146785e89a093e3acca5b040d2d8e6b21"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-3chg-m5w7-qfv5 (CVE-2026-41845) Spring Framework Cross-site Scripting via JavaScriptUtils; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-3chg-m5w7-qfv5",
+        "aliases": [
+          "CVE-2026-41845"
+        ],
+        "cvssScore": 7.1,
+        "url": "https://osv.dev/vulnerability/GHSA-3chg-m5w7-qfv5"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:e033c8eff7d1a6dd2efd42589682326ea53130758b5bba742beaaf446e638ced"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-4773-3jfm-qmx3 (CVE-2026-22737) Spring Framework Improper Path Limitation with Script View Templates; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-4773-3jfm-qmx3",
+        "aliases": [
+          "CVE-2026-22737"
+        ],
+        "cvssScore": 5.9,
+        "url": "https://osv.dev/vulnerability/GHSA-4773-3jfm-qmx3"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:2848a5dda14303d1c72ee6db1ed16b78aa9c8357ead9c4dddbac0ff10727399f"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-6hcq-hmm3-jj3c (CVE-2026-22735) Spring MVC and WebFlux has Server Sent Event stream corruption; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-6hcq-hmm3-jj3c",
+        "aliases": [
+          "CVE-2026-22735"
+        ],
+        "cvssScore": 2.6,
+        "url": "https://osv.dev/vulnerability/GHSA-6hcq-hmm3-jj3c"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:3e6ea7bb996e53b4242ed1503ee058620ad9540efc4c2f4c70dff9803bf854d9"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-6p4f-wcwh-5vvm (CVE-2026-22745) Spring MVC and WebFlux applications are vulnerable to Denial of Service attacks…; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-6p4f-wcwh-5vvm",
+        "aliases": [
+          "CVE-2026-22745"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-6p4f-wcwh-5vvm"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:bee5db4f1f432a6067a1315b94b5ea6e5676dc3213b9119df50eb72007f1ea1c"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-72pg-x5f8-j25j (CVE-2026-41843) Spring Framework Path Traversal via Versioned Static Resources in Spring MVC an…; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-72pg-x5f8-j25j",
+        "aliases": [
+          "CVE-2026-41843"
+        ],
+        "cvssScore": 5.9,
+        "url": "https://osv.dev/vulnerability/GHSA-72pg-x5f8-j25j"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:ea19404cfe4e4be26f127a32a4b86df29da5ae4e8f55897e5ac8b1e97351e7dc"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-957g-f97v-vppc (CVE-2026-41846) Spring Framework Cross-site Scripting via JSP Form Tags; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-957g-f97v-vppc",
+        "aliases": [
+          "CVE-2026-41846"
+        ],
+        "cvssScore": 5.9,
+        "url": "https://osv.dev/vulnerability/GHSA-957g-f97v-vppc"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:eb8e46c2979f8f1c2060cbfdaa74d2626a7aac5516042d44e971be8e47c82914"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-cjpg-rgq5-fr37 (CVE-2026-41853) Spring Framework Multipart Request Smuggling in Spring MVC and WebFlux; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-cjpg-rgq5-fr37",
+        "aliases": [
+          "CVE-2026-41853"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-cjpg-rgq5-fr37"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:649ad9c256b8626ba26155a978a4e6a20afddd87674ae94bf6e7aa82f6a516a2"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-cx7f-g6mp-7hqm (CVE-2024-38816) Path traversal vulnerability in functional web frameworks; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-cx7f-g6mp-7hqm",
+        "aliases": [
+          "CVE-2024-38816"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-cx7f-g6mp-7hqm"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:fb2fd2ab7a4ebaf9c1058bfd25c36a58897c24c419c97d583ec1cc983eb9a6ca"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-g5vr-rgqm-vf78 (CVE-2024-38819) Spring Framework Path Traversal vulnerability; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-g5vr-rgqm-vf78",
+        "aliases": [
+          "CVE-2024-38819"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-g5vr-rgqm-vf78"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:62e70f9fe1424a76a5e44b7ab688b9ee1af01252b746fbcc1c638a719f1040a6"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-h3qp-gqrc-q736 (CVE-2026-41844) Spring Framework Open Redirect in Spring MVC and WebFlux; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-h3qp-gqrc-q736",
+        "aliases": [
+          "CVE-2026-41844"
+        ],
+        "cvssScore": 4.2,
+        "url": "https://osv.dev/vulnerability/GHSA-h3qp-gqrc-q736"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:3639ce9f6fbe8400859450a29f731f1102eb66fd5ae754575bdea24abfd8cb43"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-mq64-j8f9-9gcj (CVE-2026-41841) Spring Framework Information Disclosure via Static Resource Cache in Spring MVC…; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-mq64-j8f9-9gcj",
+        "aliases": [
+          "CVE-2026-41841"
+        ],
+        "cvssScore": 5.9,
+        "url": "https://osv.dev/vulnerability/GHSA-mq64-j8f9-9gcj"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:03d22ddb9b9c557c30b4fe90a6b97268fba677ec3983cb2043c15e1442236614"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-r936-gwx5-v52f (CVE-2025-41242) Spring Framework MVC Applications Path Traversal Vulnerability; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-r936-gwx5-v52f",
+        "aliases": [
+          "CVE-2025-41242"
+        ],
+        "cvssScore": 5.9,
+        "url": "https://osv.dev/vulnerability/GHSA-r936-gwx5-v52f"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:61251aba9e3e0f85250f5418a98406afe2f6fcf31cd1a4a3e09a53ef6551fe97"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-w3c8-7r8f-9jp8 (CVE-2024-38828) Spring MVC controller vulnerable to a DoS attack; fixed in 5.3.42; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-w3c8-7r8f-9jp8",
+        "aliases": [
+          "CVE-2024-38828"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-w3c8-7r8f-9jp8"
+      },
+      "remediation": {
+        "fixedVersion": "5.3.42",
+        "description": "Upgrade org.springframework:spring-webmvc to 5.3.42"
+      },
+      "fingerprint": "v1:e55780d15b05bb5a48e6b9bab6b67b38e781a5cbb7b7149920a09fba8767b60d"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-wg35-8jpf-2xv3 (CVE-2026-22741) Spring MVC and WebFlux applications are vulnerable to cache poisoning when reso…; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-wg35-8jpf-2xv3",
+        "aliases": [
+          "CVE-2026-22741"
+        ],
+        "cvssScore": 3.1,
+        "url": "https://osv.dev/vulnerability/GHSA-wg35-8jpf-2xv3"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:17a63e44a839513450180b519b35a194b3e38b0df8da029f2e5882fc33182c15"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-webmvc 5.3.31: GHSA-x23c-287f-qqv5 (CVE-2026-41842) Spring Framework Denial of Service via Versioned Resources in Spring MVC and We…; no fixed version published; via spring-boot-starter-web",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-webmvc@5.3.31",
+      "advisory": {
+        "id": "GHSA-x23c-287f-qqv5",
+        "aliases": [
+          "CVE-2026-41842"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-x23c-287f-qqv5"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:cfdb28dddc3b4494d8912f3392075fb79e86a226219b8b881e9d8865400212e6"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "com.jayway.jsonpath:json-path 2.7.0: GHSA-pfh2-hfmq-phg5 (CVE-2023-51074) json-path Out-of-bounds Write vulnerability; fixed in 2.9.0; via spring-boot-starter-test [test scope]",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.jayway.jsonpath/json-path@2.7.0",
+      "advisory": {
+        "id": "GHSA-pfh2-hfmq-phg5",
+        "aliases": [
+          "CVE-2023-51074"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-pfh2-hfmq-phg5"
+      },
+      "remediation": {
+        "fixedVersion": "2.9.0",
+        "description": "Upgrade com.jayway.jsonpath:json-path to 2.9.0"
+      },
+      "fingerprint": "v1:0b4a717cad26d6a6f7ee804f5e622786b40c5d3a2290760022c02d7a9ae82396"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.assertj:assertj-core 3.22.0: GHSA-rqfh-9r24-8c9r (CVE-2026-24400) AssertJ has XML External Entity (XXE) vulnerability when parsing untrusted XML …; fixed in 3.27.7; via spring-boot-starter-test [test scope]",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.assertj/assertj-core@3.22.0",
+      "advisory": {
+        "id": "GHSA-rqfh-9r24-8c9r",
+        "aliases": [
+          "CVE-2026-24400"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-rqfh-9r24-8c9r"
+      },
+      "remediation": {
+        "fixedVersion": "3.27.7",
+        "description": "Upgrade org.assertj:assertj-core to 3.27.7"
+      },
+      "fingerprint": "v1:53718878b6c2b1892d0b71518588fd903d140b8ab7b1f0bb077f8096fe9e6f48"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.springframework:spring-core 5.3.31: GHSA-659m-px2c-25wj (CVE-2026-41848) Spring Framework Denial of Service via AntPathMatcher; no fixed version published; via spring-boot-starter-test",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-core@5.3.31",
+      "advisory": {
+        "id": "GHSA-659m-px2c-25wj",
+        "aliases": [
+          "CVE-2026-41848"
+        ],
+        "cvssScore": 3.7,
+        "url": "https://osv.dev/vulnerability/GHSA-659m-px2c-25wj"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:7336480c34316d0d429dfef6db3ad75fc41f17902e0669490786a7945c977c41"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-core 5.3.31: GHSA-jmp9-x22r-554x (CVE-2025-41249) Spring Framework annotation detection mechanism may result in improper authoriz…; no fixed version published; via spring-boot-starter-test",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-core@5.3.31",
+      "advisory": {
+        "id": "GHSA-jmp9-x22r-554x",
+        "aliases": [
+          "CVE-2025-41249"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-jmp9-x22r-554x"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:55362a0b53249f3ccbc814d9e2d7f360e9c51e685c4da658e4128d8800c0497d"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.xmlunit:xmlunit-core 2.9.1: GHSA-chfm-68vv-pvw5 (CVE-2024-31573) XMLUnit for Java has Insecure Defaults when Processing XSLT Stylesheets; fixed in 2.10.0; via spring-boot-starter-test [test scope]",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.xmlunit/xmlunit-core@2.9.1",
+      "advisory": {
+        "id": "GHSA-chfm-68vv-pvw5",
+        "aliases": [
+          "CVE-2024-31573"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-chfm-68vv-pvw5"
+      },
+      "remediation": {
+        "fixedVersion": "2.10.0",
+        "description": "Upgrade org.xmlunit:xmlunit-core to 2.10.0"
+      },
+      "fingerprint": "v1:75f9d59552407d26cc587ac6680a8d7d6b2a68d10381fc4f0770d61d34958432"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework.boot:spring-boot 2.7.18: GHSA-rc42-6c7j-7h5r (CVE-2025-22235) Spring Boot EndpointRequest.to() creates wrong matcher if actuator endpoint is …; no fixed version published; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework.boot/spring-boot@2.7.18",
+      "advisory": {
+        "id": "GHSA-rc42-6c7j-7h5r",
+        "aliases": [
+          "CVE-2025-22235"
+        ],
+        "cvssScore": 7.3,
+        "url": "https://osv.dev/vulnerability/GHSA-rc42-6c7j-7h5r"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:2fa0f75c353ad25c08d123a755132ad845762b29969e7302546df74b4e7d3c6f"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework.boot:spring-boot 2.7.18: GHSA-wwpq-f5c3-7hvx (CVE-2026-40973) Spring Boot accepts predictable temp directory without ownership verification; no fixed version published; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework.boot/spring-boot@2.7.18",
+      "advisory": {
+        "id": "GHSA-wwpq-f5c3-7hvx",
+        "aliases": [
+          "CVE-2026-40973"
+        ],
+        "cvssScore": 7.0,
+        "url": "https://osv.dev/vulnerability/GHSA-wwpq-f5c3-7hvx"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:eef5a6dd422d1b25583a2e1ae8c27c7d0396284dcfcecf06e297533e659e558e"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework.boot:spring-boot-autoconfigure 2.7.18: GHSA-ggg2-9786-hwc8 (CVE-2026-41001) Spring Boot: Predictable Temp Directory in Artemis Auto-configuration; no fixed version published; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework.boot/spring-boot-autoconfigure@2.7.18",
+      "advisory": {
+        "id": "GHSA-ggg2-9786-hwc8",
+        "aliases": [
+          "CVE-2026-41001"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-ggg2-9786-hwc8"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:6a4eeb77233b5b9b2793456d2def5f04c510358b7ff98f5bc8256b86d8ac4c39"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.yaml:snakeyaml 1.30: GHSA-3mc7-4q67-w48m (CVE-2022-25857) Uncontrolled Resource Consumption in snakeyaml; fixed in 1.31; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "advisory": {
+        "id": "GHSA-3mc7-4q67-w48m",
+        "aliases": [
+          "CVE-2022-25857"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-3mc7-4q67-w48m"
+      },
+      "remediation": {
+        "fixedVersion": "1.31",
+        "description": "Upgrade org.yaml:snakeyaml to 1.31"
+      },
+      "fingerprint": "v1:791a3ba60c3039b5f354370de5e15b2d62d9d08bb1c831e69a42332dfc6193c1"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.yaml:snakeyaml 1.30: GHSA-98wm-3w3q-mw94 (CVE-2022-38751) snakeYAML before 1.31 vulnerable to Denial of Service due to Out-of-bounds Write; fixed in 1.31; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "advisory": {
+        "id": "GHSA-98wm-3w3q-mw94",
+        "aliases": [
+          "CVE-2022-38751"
+        ],
+        "cvssScore": 6.5,
+        "url": "https://osv.dev/vulnerability/GHSA-98wm-3w3q-mw94"
+      },
+      "remediation": {
+        "fixedVersion": "1.31",
+        "description": "Upgrade org.yaml:snakeyaml to 1.31"
+      },
+      "fingerprint": "v1:94e5417f8e600144eb566e80177ef1265ec3ae58073ee8924149faab2989d423"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.yaml:snakeyaml 1.30: GHSA-9w3m-gqgf-c4p9 (CVE-2022-38752) snakeYAML before 1.32 vulnerable to Denial of Service due to Out-of-bounds Write; fixed in 1.32; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "advisory": {
+        "id": "GHSA-9w3m-gqgf-c4p9",
+        "aliases": [
+          "CVE-2022-38752"
+        ],
+        "cvssScore": 6.5,
+        "url": "https://osv.dev/vulnerability/GHSA-9w3m-gqgf-c4p9"
+      },
+      "remediation": {
+        "fixedVersion": "1.32",
+        "description": "Upgrade org.yaml:snakeyaml to 1.32"
+      },
+      "fingerprint": "v1:e66e4763db675dcae17c4fe5f8d4385bc5b111dfdc194bbdf76dc3d8d11b1b2c"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.yaml:snakeyaml 1.30: GHSA-c4r9-r8fh-9vj2 (CVE-2022-38749) snakeYAML before 1.31 vulnerable to Denial of Service due to Out-of-bounds Write; fixed in 1.31; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "advisory": {
+        "id": "GHSA-c4r9-r8fh-9vj2",
+        "aliases": [
+          "CVE-2022-38749"
+        ],
+        "cvssScore": 6.5,
+        "url": "https://osv.dev/vulnerability/GHSA-c4r9-r8fh-9vj2"
+      },
+      "remediation": {
+        "fixedVersion": "1.31",
+        "description": "Upgrade org.yaml:snakeyaml to 1.31"
+      },
+      "fingerprint": "v1:0be8790f54bed57e66fd25cd9cf062818f0057fe15d8ccd30d1ee3f768c0bdb6"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.yaml:snakeyaml 1.30: GHSA-hhhw-99gj-p3c3 (CVE-2022-38750) snakeYAML before 1.31 vulnerable to Denial of Service due to Out-of-bounds Write; fixed in 1.31; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "advisory": {
+        "id": "GHSA-hhhw-99gj-p3c3",
+        "aliases": [
+          "CVE-2022-38750"
+        ],
+        "cvssScore": 5.5,
+        "url": "https://osv.dev/vulnerability/GHSA-hhhw-99gj-p3c3"
+      },
+      "remediation": {
+        "fixedVersion": "1.31",
+        "description": "Upgrade org.yaml:snakeyaml to 1.31"
+      },
+      "fingerprint": "v1:2816e63a57260092d3071789531d8eb4228cf17fc30d9855963cd9228c96a9bb"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.yaml:snakeyaml 1.30: GHSA-mjmj-j48q-9wg2 (CVE-2022-1471) SnakeYaml Constructor Deserialization Remote Code Execution; fixed in 2.0; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "advisory": {
+        "id": "GHSA-mjmj-j48q-9wg2",
+        "aliases": [
+          "CVE-2022-1471"
+        ],
+        "cvssScore": 8.3,
+        "url": "https://osv.dev/vulnerability/GHSA-mjmj-j48q-9wg2"
+      },
+      "remediation": {
+        "fixedVersion": "2.0",
+        "description": "Upgrade org.yaml:snakeyaml to 2.0"
+      },
+      "fingerprint": "v1:f63bbc4b32ce93769a014ab0192eca79239330b1d3fb98fd941bd63490d8598c"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.yaml:snakeyaml 1.30: GHSA-w37g-rhq8-7m4j (CVE-2022-41854) Snakeyaml vulnerable to Stack overflow leading to denial of service; fixed in 1.32; via spring-boot-starter-web > spring-boot-starter",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.yaml/snakeyaml@1.30",
+      "advisory": {
+        "id": "GHSA-w37g-rhq8-7m4j",
+        "aliases": [
+          "CVE-2022-41854"
+        ],
+        "cvssScore": 6.5,
+        "url": "https://osv.dev/vulnerability/GHSA-w37g-rhq8-7m4j"
+      },
+      "remediation": {
+        "fixedVersion": "1.32",
+        "description": "Upgrade org.yaml:snakeyaml to 1.32"
+      },
+      "fingerprint": "v1:734becafe06a73e8c1a09a9fb3387292a7edc54b3ec85a6e15dd4f59dce34e44"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-3wrr-7qpf-2prh (CVE-2026-50193) jackson-databind: Deeply nested JsonNode throws StackOverflowError for toString…; fixed in 2.14.0; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-3wrr-7qpf-2prh",
+        "aliases": [
+          "CVE-2026-50193"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-3wrr-7qpf-2prh"
+      },
+      "remediation": {
+        "fixedVersion": "2.14.0",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.14.0"
+      },
+      "fingerprint": "v1:ff7f4d00fe9a75e8e7ae76607ce018ffe967b7131e779cdcd840fd68ef2a628e"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-5jmj-h7xm-6q6v (CVE-2026-54515) jackson-databind has case-insensitive deserialization bypasses per-property @Js…; fixed in 2.18.9; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-5jmj-h7xm-6q6v",
+        "aliases": [
+          "CVE-2026-54515"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-5jmj-h7xm-6q6v"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.9",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.18.9"
+      },
+      "fingerprint": "v1:3ee62a4eb5fadcd6023edadd98d4ac217d276b6df384eb6c44c9b89bb722850f"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-gx83-3vf8-gh7j (CVE-2026-83557) jackson-databind: Comparable missing from DefaultBaseTypeLimitingValidator's un…; fixed in 2.18.10; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-gx83-3vf8-gh7j",
+        "aliases": [
+          "CVE-2026-83557"
+        ],
+        "cvssScore": 5.6,
+        "url": "https://osv.dev/vulnerability/GHSA-gx83-3vf8-gh7j"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.10",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.18.10"
+      },
+      "fingerprint": "v1:352bda1671254d528316ede8da8d16dc4caec792a612d0152540362fa02a7f53"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-hgj6-7826-r7m5 (CVE-2026-54514) jackson-databind: InetSocketAddress deserialization triggers eager DNS resoluti…; fixed in 2.18.8; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-hgj6-7826-r7m5",
+        "aliases": [
+          "CVE-2026-54514"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-hgj6-7826-r7m5"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.8",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.18.8"
+      },
+      "fingerprint": "v1:b2f42cf5b042130d94a6e24274024feaf29292e6a04dfec5d25cb08e9962df35"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-j3rv-43j4-c7qm (CVE-2026-54512) jackson-databind has a PolymorphicTypeValidator bypass via generic type paramet…; fixed in 2.18.8; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-j3rv-43j4-c7qm",
+        "aliases": [
+          "CVE-2026-54512"
+        ],
+        "cvssScore": 8.1,
+        "url": "https://osv.dev/vulnerability/GHSA-j3rv-43j4-c7qm"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.8",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.18.8"
+      },
+      "fingerprint": "v1:b9ebbd6e0594df8fdca683c01f93a88f87802fbc45e1f9cf12611d1fef2b3772"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-rmj7-2vxq-3g9f (CVE-2026-54513) jackson-databind has an array subtype allowlist bypass in BasicPolymorphicTypeV…; fixed in 2.18.8; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-rmj7-2vxq-3g9f",
+        "aliases": [
+          "CVE-2026-54513"
+        ],
+        "cvssScore": 8.1,
+        "url": "https://osv.dev/vulnerability/GHSA-rmj7-2vxq-3g9f"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.8",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.18.8"
+      },
+      "fingerprint": "v1:afc367c2dd377592ff446d62433a9a3cfa7ed98e277b84a488fa7faeeae93d14"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-vvgp-rfg2-7rr6 (CVE-2026-77310) jackson-databind: Incomplete fix for CVE-2026-54514: eager DNS resolution (SSRF…; fixed in 2.18.9; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-vvgp-rfg2-7rr6",
+        "aliases": [
+          "CVE-2026-77310"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-vvgp-rfg2-7rr6"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.9",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.18.9"
+      },
+      "fingerprint": "v1:5c85b29040ce43c9ea4e712252e1fed73ab04aa9a1f38025d811a47add7f291a"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "com.fasterxml.jackson.core:jackson-databind 2.13.5: GHSA-wjgm-6hv5-3cvf (CVE-2026-19032) jackson-databind: Path Deserialization Missing Scheme Allowlist for FileSystemP…; fixed in 2.18.10; via spring-boot-starter-web > spring-boot-starter-json",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.5",
+      "advisory": {
+        "id": "GHSA-wjgm-6hv5-3cvf",
+        "aliases": [
+          "CVE-2026-19032"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-wjgm-6hv5-3cvf"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.10",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-databind to 2.18.10"
+      },
+      "fingerprint": "v1:bd070d5b792743d0bc76accfecbc729a01cb975e45ae20bd5dbc3109843fd13c"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-23hv-mwm6-g8jf (CVE-2025-55668) Apache Tomcat Session Fixation vulnerability; fixed in 9.0.106; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-23hv-mwm6-g8jf",
+        "aliases": [
+          "BIT-tomcat-2025-55668",
+          "CVE-2025-55668"
+        ],
+        "cvssScore": 6.5,
+        "url": "https://osv.dev/vulnerability/GHSA-23hv-mwm6-g8jf"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.106",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.106"
+      },
+      "fingerprint": "v1:2d96ccc2a3461ce09d331e910d26ceb7cbbe9c6b55fa8655b0fb4a20ed037079"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-25xr-qj8w-c4vf (CVE-2025-53506) Apache Tomcat Coyote vulnerable to Denial of Service via excessive HTTP/2 strea…; fixed in 9.0.107; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-25xr-qj8w-c4vf",
+        "aliases": [
+          "BIT-tomcat-2025-53506",
+          "CVE-2025-53506"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-25xr-qj8w-c4vf"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.107",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.107"
+      },
+      "fingerprint": "v1:896696658496c0f0a4ed590bdf71c050e9d7ba7df4fe02fb2fbe774eab882654"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-27hp-xhwr-wr2m (CVE-2024-56337) Apache Tomcat Time-of-check Time-of-use (TOCTOU) Race Condition vulnerability; fixed in 9.0.98; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-27hp-xhwr-wr2m",
+        "aliases": [
+          "BIT-tomcat-2024-56337",
+          "CVE-2024-56337"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-27hp-xhwr-wr2m"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.98",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.98"
+      },
+      "fingerprint": "v1:a27a7924cf796f942a1e3d7cba261096a3f0af7d025ebf21c12eca0426888f00"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-3p2h-wqq4-wf4h (CVE-2025-31650) Apache Tomcat Denial of Service via invalid HTTP priority header; fixed in 9.0.104; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-3p2h-wqq4-wf4h",
+        "aliases": [
+          "BIT-tomcat-2025-31650",
+          "CVE-2025-31650"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-3p2h-wqq4-wf4h"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.104",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.104"
+      },
+      "fingerprint": "v1:7fcdf0bedbb348c78a95f02839d9033bf94016334d62df222ba21ea456ff6774"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-42wg-hm62-jcwg (CVE-2025-49124) Apache Tomcat installer for Windows has an untrusted search path vulnerability; fixed in 9.0.106; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-42wg-hm62-jcwg",
+        "aliases": [
+          "BIT-tomcat-2025-49124",
+          "CVE-2025-49124"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-42wg-hm62-jcwg"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.106",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.106"
+      },
+      "fingerprint": "v1:5cd5035757667854239cb1ed18f29d16094134853a12eac2f76946f338a78a32"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-4j3c-42xv-3f84 (CVE-2025-52434) Apache Tomcat is vulnerable to resource exhaustion when using the APR/Native co…; fixed in 9.0.107; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-4j3c-42xv-3f84",
+        "aliases": [
+          "BIT-tomcat-2025-52434",
+          "CVE-2025-52434"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-4j3c-42xv-3f84"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.107",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.107"
+      },
+      "fingerprint": "v1:3f4a2353ed16e7d96061642905872167afd3a1a0e160d677982217e378ab87e8"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-563x-q5rq-57qp (CVE-2026-24880) Apache Tomcat has an HTTP Request/Response Smuggling vulnerability; fixed in 9.0.116; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-563x-q5rq-57qp",
+        "aliases": [
+          "BIT-tomcat-2026-24880",
+          "CVE-2026-24880"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-563x-q5rq-57qp"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.116",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.116"
+      },
+      "fingerprint": "v1:0621e1ce9b39ac208c3c2a152373671fd9d02b4ce2da9259981d5723f063bdd9"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-5j33-cvvr-w245 (CVE-2024-50379) Apache Tomcat Time-of-check Time-of-use (TOCTOU) Race Condition vulnerability; fixed in 9.0.98; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-5j33-cvvr-w245",
+        "aliases": [
+          "BIT-tomcat-2024-50379",
+          "CVE-2024-50379"
+        ],
+        "cvssScore": 9.8,
+        "url": "https://osv.dev/vulnerability/GHSA-5j33-cvvr-w245"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.98",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.98"
+      },
+      "fingerprint": "v1:a7d393e7f7eac1f1c7104630f3ec323b36ddb7ead2b2dc36d397d301f55dc825"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-5m62-pw8w-7w9f (CVE-2026-43515) Apache Tomcat - Security constraints not correctly applied; fixed in 9.0.118; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-5m62-pw8w-7w9f",
+        "aliases": [
+          "BIT-tomcat-2026-43515",
+          "CVE-2026-43515"
+        ],
+        "cvssScore": 9.1,
+        "url": "https://osv.dev/vulnerability/GHSA-5m62-pw8w-7w9f"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.118",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.118"
+      },
+      "fingerprint": "v1:5d2794744d46b1d08ab2c3881682d6fb47a0cdbec814bfde04add039860041ec"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-5mp6-jrq3-r938 (CVE-2026-43513) Apache Tomcat: LockOutRealm treats user names as case-sensitive; fixed in 9.0.118; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-5mp6-jrq3-r938",
+        "aliases": [
+          "BIT-tomcat-2026-43513",
+          "CVE-2026-43513"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-5mp6-jrq3-r938"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.118",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.118"
+      },
+      "fingerprint": "v1:3b39cf5326debb8e0998ae09ae79b6d7e2d6cd8aaff2330889026ca8b14f7287"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-7jqf-v358-p8g7 (CVE-2024-38286) Apache Tomcat Allocation of Resources Without Limits or Throttling vulnerability; fixed in 9.0.90; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-7jqf-v358-p8g7",
+        "aliases": [
+          "BIT-tomcat-2024-38286",
+          "CVE-2024-38286"
+        ],
+        "cvssScore": 8.6,
+        "url": "https://osv.dev/vulnerability/GHSA-7jqf-v358-p8g7"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.90",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.90"
+      },
+      "fingerprint": "v1:d388854aae5baa1b4eae98ad5c39e32cd8cf1f845709179fe3363afd4aa858ac"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-7w75-32cg-r6g2 (CVE-2024-24549) Apache Tomcat Denial of Service due to improper input validation vulnerability …; fixed in 9.0.86; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-7w75-32cg-r6g2",
+        "aliases": [
+          "BIT-tomcat-2024-24549",
+          "CVE-2024-24549"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-7w75-32cg-r6g2"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.86",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.86"
+      },
+      "fingerprint": "v1:6b52ea61e15ef86219233bb5f88b87bdd31e720a061644a0db14ba3050a47177"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-83qj-6fr2-vhqg (CVE-2025-24813) Apache Tomcat: Potential RCE and/or information disclosure and/or information c…; fixed in 9.0.99; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-83qj-6fr2-vhqg",
+        "aliases": [
+          "BIT-tomcat-2025-24813",
+          "CVE-2025-24813"
+        ],
+        "cvssScore": 9.8,
+        "url": "https://osv.dev/vulnerability/GHSA-83qj-6fr2-vhqg"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.99",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.99"
+      },
+      "fingerprint": "v1:3a19e3fa7f567431b1bf20e09bb929c2bf5a3f46b075984cfd1d710654fb6a16"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-9m3c-qcxr-9x87 (CVE-2026-25854) Apache Tomcat has an Open Redirect vulnerability; fixed in 9.0.116; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-9m3c-qcxr-9x87",
+        "aliases": [
+          "BIT-tomcat-2026-25854",
+          "CVE-2026-25854"
+        ],
+        "cvssScore": 6.1,
+        "url": "https://osv.dev/vulnerability/GHSA-9m3c-qcxr-9x87"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.116",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.116"
+      },
+      "fingerprint": "v1:1c42d01213eab90fa55b2e9ea283e97345d5e740c0ebc7d1ed5677b2fde42ef2"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-9m89-8frq-c98c (CVE-2026-43514) Apache Tomcat - AJP secret compared in non-constant time; fixed in 9.0.118; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-9m89-8frq-c98c",
+        "aliases": [
+          "BIT-tomcat-2026-43514",
+          "CVE-2026-43514"
+        ],
+        "cvssScore": 3.7,
+        "url": "https://osv.dev/vulnerability/GHSA-9m89-8frq-c98c"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.118",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.118"
+      },
+      "fingerprint": "v1:8b9af0f117162c431be3811da611b384a97ea764d84dcece327acb2f3fee5e35"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-9xv2-5v5q-p794 (CVE-2026-65905) Apache Tomcat's DIGEST authenticator has an Authentication Bypass by Capture-re…; fixed in 9.0.121; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-9xv2-5v5q-p794",
+        "aliases": [
+          "BIT-tomcat-2026-65905",
+          "CVE-2026-65905"
+        ],
+        "cvssScore": 9.8,
+        "url": "https://osv.dev/vulnerability/GHSA-9xv2-5v5q-p794"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.121",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.121"
+      },
+      "fingerprint": "v1:ff574d9dbdf7ffca0561e40b1e7dc710985b8a56bc079f97777571c55849be13"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-ff77-26x5-69cr (CVE-2025-31651) Apache Tomcat Rewrite rule bypass; fixed in 9.0.104; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-ff77-26x5-69cr",
+        "aliases": [
+          "BIT-tomcat-2025-31651",
+          "CVE-2025-31651"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-ff77-26x5-69cr"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.104",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.104"
+      },
+      "fingerprint": "v1:082b6dc52da84dfa9ce0ff9f76944e6b5b756b95010c397c6a2b2cf122e450c7"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-fpj8-gq4v-p354 (CVE-2025-66614) Apache Tomcat - Client certificate verification bypass; fixed in 9.0.113; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-fpj8-gq4v-p354",
+        "aliases": [
+          "BIT-tomcat-2025-66614",
+          "CVE-2025-66614"
+        ],
+        "cvssScore": 9.1,
+        "url": "https://osv.dev/vulnerability/GHSA-fpj8-gq4v-p354"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.113",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.113"
+      },
+      "fingerprint": "v1:c47bca2c2002acbab82038ec820406c8a7a50a49303d31572a54060b8553acba"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-fv25-8xcx-gqjc (CVE-2026-42498) Apache Tomcat - WebSocket authentication header exposure; fixed in 9.0.118; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-fv25-8xcx-gqjc",
+        "aliases": [
+          "BIT-tomcat-2026-42498",
+          "CVE-2026-42498"
+        ],
+        "cvssScore": 7.3,
+        "url": "https://osv.dev/vulnerability/GHSA-fv25-8xcx-gqjc"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.118",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.118"
+      },
+      "fingerprint": "v1:630ac4f5e357a7074095645d0ab6bbf1c853c792c57ab2b0182b1beb4e264ab6"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-gcx9-497g-6cp6 (CVE-2026-65182) Apache Tomcat has an Improper Access Control, Incorrect Authorization vulnerabi…; fixed in 9.0.121; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-gcx9-497g-6cp6",
+        "aliases": [
+          "BIT-tomcat-2026-65182",
+          "CVE-2026-65182"
+        ],
+        "cvssScore": 9.1,
+        "url": "https://osv.dev/vulnerability/GHSA-gcx9-497g-6cp6"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.121",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.121"
+      },
+      "fingerprint": "v1:b7af076d6edc6fb9fb0cc517d24232d0e2e36871ceec2acab3907cf35c67fd0e"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-gqp3-2cvr-x8m3 (CVE-2025-48989) Apache Tomcat Improper Resource Shutdown or Release vulnerability; fixed in 9.0.108; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-gqp3-2cvr-x8m3",
+        "aliases": [
+          "BIT-tomcat-2025-48989",
+          "CVE-2025-48989"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-gqp3-2cvr-x8m3"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.108",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.108"
+      },
+      "fingerprint": "v1:ff407474deed5c86849fa7b54010964eb91fddd59ead9d14ad656f41d483904a"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-gx5v-xp9w-j4cg (CVE-2026-41284) Apache Tomcat: Unbounded read in WebDAV LOCK and  PROPFIND handling; fixed in 9.0.118; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-gx5v-xp9w-j4cg",
+        "aliases": [
+          "BIT-tomcat-2026-41284",
+          "CVE-2026-41284"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-gx5v-xp9w-j4cg"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.118",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.118"
+      },
+      "fingerprint": "v1:6796511f133acb0c850d60e14220d40434e287a324713617e395a3e3fa4f74e4"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-h2fw-rfh5-95r3 (CVE-2025-46701) Apache Tomcat - CGI security constraint bypass; fixed in 9.0.105; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-h2fw-rfh5-95r3",
+        "aliases": [
+          "BIT-tomcat-2025-46701",
+          "CVE-2025-46701"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-h2fw-rfh5-95r3"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.105",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.105"
+      },
+      "fingerprint": "v1:f7970c7044cd603c2b02a2806e8d2b67fc48275d6ab7af3a27e8a3606ca92ee1"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-h3gc-qfqq-6h8f (CVE-2025-48988) Apache Tomcat - DoS in multipart upload; fixed in 9.0.106; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-h3gc-qfqq-6h8f",
+        "aliases": [
+          "BIT-tomcat-2025-48988",
+          "CVE-2025-48988"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-h3gc-qfqq-6h8f"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.106",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.106"
+      },
+      "fingerprint": "v1:efdff9d81e222c8423ffeaf874c674e79b5a1d9d85f25865df7ba2996d8c43b2"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-h3x4-894j-xpx5 (CVE-2026-68525) Apache Tomcat's FORM authentication process has an Incorrect Authorization vuln…; fixed in 9.0.121; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-h3x4-894j-xpx5",
+        "aliases": [
+          "BIT-tomcat-2026-68525",
+          "CVE-2026-68525"
+        ],
+        "cvssScore": 9.1,
+        "url": "https://osv.dev/vulnerability/GHSA-h3x4-894j-xpx5"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.121",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.121"
+      },
+      "fingerprint": "v1:44a64c04853da3642c82b2d3f8cf6ef4f05ec7883966f99ecd5f68a64a199a18"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-h6fc-48rj-7qqh (CVE-2026-43512) Apache Tomcat - Digest authenticator will authenticate any unknown user; fixed in 9.0.118; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-h6fc-48rj-7qqh",
+        "aliases": [
+          "BIT-tomcat-2026-43512",
+          "CVE-2026-43512"
+        ],
+        "cvssScore": 9.8,
+        "url": "https://osv.dev/vulnerability/GHSA-h6fc-48rj-7qqh"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.118",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.118"
+      },
+      "fingerprint": "v1:6fcf4773f3a47e113568dbb5692db6a8e178485a2803d5c480531be12b486b93"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-hgrr-935x-pq79 (CVE-2025-61795) Apache Tomcat Vulnerable to Improper Resource Shutdown or Release; fixed in 9.0.110; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-hgrr-935x-pq79",
+        "aliases": [
+          "BIT-tomcat-2025-61795",
+          "CVE-2025-61795"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-hgrr-935x-pq79"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.110",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.110"
+      },
+      "fingerprint": "v1:030420dab515dd070812c295f32d771ffb27bf837fa4a786c3bb5d95dae1f52f"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-mgp5-rv84-w37q (CVE-2026-24734) Apache Tomcat has an Improper Input Validation vulnerability; fixed in 9.0.115; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-mgp5-rv84-w37q",
+        "aliases": [
+          "BIT-tomcat-2026-24734",
+          "CVE-2026-24734"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-mgp5-rv84-w37q"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.115",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.115"
+      },
+      "fingerprint": "v1:4c74c67ef69c6fa418a5068b6030fb995ca14f48067600834767336e2cc9e021"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-r29c-68gh-xp6x (CVE-2026-41293) Apache Tomcat - HTTP/2 request headers not validated; fixed in 9.0.118; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-r29c-68gh-xp6x",
+        "aliases": [
+          "BIT-tomcat-2026-41293",
+          "CVE-2026-41293"
+        ],
+        "cvssScore": 9.8,
+        "url": "https://osv.dev/vulnerability/GHSA-r29c-68gh-xp6x"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.118",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.118"
+      },
+      "fingerprint": "v1:d0e7127a0e4f370c41d5993340728b7f1333beec2db0711f785603ca83dc8103"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-rv64-5gf8-9qq8 (CVE-2026-34483) Apache Tomcat has an Improper Encoding or Escaping of Output vulnerability in t…; fixed in 9.0.116; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-rv64-5gf8-9qq8",
+        "aliases": [
+          "BIT-tomcat-2026-34483",
+          "CVE-2026-34483"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-rv64-5gf8-9qq8"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.116",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.116"
+      },
+      "fingerprint": "v1:92540af8e7b58906699356d40b8edfda65bcb8245fe6aa19fe81c00eea316adf"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "critical",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-vfww-5hm6-hx2j (CVE-2025-55754) Apache Tomcat Vulnerable to Improper Neutralization of Escape, Meta, or Control…; fixed in 9.0.109; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-vfww-5hm6-hx2j",
+        "aliases": [
+          "BIT-tomcat-2025-55754",
+          "CVE-2025-55754"
+        ],
+        "cvssScore": 9.6,
+        "url": "https://osv.dev/vulnerability/GHSA-vfww-5hm6-hx2j"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.109",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.109"
+      },
+      "fingerprint": "v1:c12decf9e9a1edb474e78f6c74cb02d6bc85b9f48066f15b3c97b5426a25ccce"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-wc4r-xq3c-5cf3 (CVE-2025-49125) Apache Tomcat - Security constraint bypass for pre/post-resources; fixed in 9.0.106; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-wc4r-xq3c-5cf3",
+        "aliases": [
+          "BIT-tomcat-2025-49125",
+          "CVE-2025-49125"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-wc4r-xq3c-5cf3"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.106",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.106"
+      },
+      "fingerprint": "v1:16845ac6e5b3707a4a5cb8a81d24e74c11f130e3540cc13022bd4ef395fd5d22"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-wm9w-rjj3-j356 (CVE-2024-34750) Apache Tomcat - Denial of Service; fixed in 9.0.90; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-wm9w-rjj3-j356",
+        "aliases": [
+          "BIT-tomcat-2024-34750",
+          "CVE-2024-34750"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-wm9w-rjj3-j356"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.90",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.90"
+      },
+      "fingerprint": "v1:5ccab6b5f6adf308f24b69d7d3d60b59f5ee2eccaf83d478a78e941cb8eeda5d"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-wmwf-9ccg-fff5 (CVE-2025-55752) Apache Tomcat Vulnerable to Relative Path Traversal; fixed in 9.0.109; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-wmwf-9ccg-fff5",
+        "aliases": [
+          "BIT-tomcat-2025-55752",
+          "CVE-2025-55752"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-wmwf-9ccg-fff5"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.109",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.109"
+      },
+      "fingerprint": "v1:dc097eb535c286cb9cbd4858b45fcd9b67d827c03ff84792dcedc53a9821d695"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-wr62-c79q-cv37 (CVE-2025-52520) Apache Tomcat Catalina is vulnerable to DoS attack through bypassing of size li…; fixed in 9.0.107; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-wr62-c79q-cv37",
+        "aliases": [
+          "BIT-tomcat-2025-52520",
+          "CVE-2025-52520"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-wr62-c79q-cv37"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.107",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.107"
+      },
+      "fingerprint": "v1:2853454c8bc9f560430b1b6ff4da6a6134cda9f3a41169ce9cbfea52d07b6235"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.apache.tomcat.embed:tomcat-embed-core 9.0.83: GHSA-x4m4-345f-5h5g (CVE-2026-34487) Apache Tomcat vulnerable to Insertion of Sensitive Information into Log File; fixed in 9.0.117; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.83",
+      "advisory": {
+        "id": "GHSA-x4m4-345f-5h5g",
+        "aliases": [
+          "BIT-tomcat-2026-34487",
+          "CVE-2026-34487"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-x4m4-345f-5h5g"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.117",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-core to 9.0.117"
+      },
+      "fingerprint": "v1:29e7be9877a3de735f7271bf4883ea52188e59b58011a640403b01067ceb2a7a"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.tomcat.embed:tomcat-embed-websocket 9.0.83: GHSA-v682-8vv8-vpwr (CVE-2024-23672) Denial of Service via incomplete cleanup vulnerability in Apache Tomcat; fixed in 9.0.86; via spring-boot-starter-web > spring-boot-starter-tomcat",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@9.0.83",
+      "advisory": {
+        "id": "GHSA-v682-8vv8-vpwr",
+        "aliases": [
+          "BIT-tomcat-2024-23672",
+          "CVE-2024-23672"
+        ],
+        "cvssScore": 6.3,
+        "url": "https://osv.dev/vulnerability/GHSA-v682-8vv8-vpwr"
+      },
+      "remediation": {
+        "fixedVersion": "9.0.86",
+        "description": "Upgrade org.apache.tomcat.embed:tomcat-embed-websocket to 9.0.86"
+      },
+      "fingerprint": "v1:1e04f1df6d33bdbbbe928de46c693d0d4212fbe39bb7eb668081580e00b57684"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-context 5.3.31: GHSA-4gc7-5j7h-4qph (CVE-2024-38820) Spring Framework DataBinder Case Sensitive Match Exception; no fixed version published; via spring-boot-starter-web > spring-webmvc",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-context@5.3.31",
+      "advisory": {
+        "id": "GHSA-4gc7-5j7h-4qph",
+        "aliases": [
+          "CVE-2024-38820"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-4gc7-5j7h-4qph"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:d3a2ad6f554f9dc4292d20035d59215634e26f322f3ce1ea32fbe043d52be71c"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.springframework:spring-context 5.3.31: GHSA-4wp7-92pw-q264 (CVE-2025-22233) Spring Framework DataBinder Case Sensitive Match Exception; no fixed version published; via spring-boot-starter-web > spring-webmvc",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-context@5.3.31",
+      "advisory": {
+        "id": "GHSA-4wp7-92pw-q264",
+        "aliases": [
+          "CVE-2025-22233"
+        ],
+        "cvssScore": 3.1,
+        "url": "https://osv.dev/vulnerability/GHSA-4wp7-92pw-q264"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:11073376ce0233e1bf7b0d25ed49d9cb548be222f7643d09c51c33e51729557e"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-expression 5.3.31: GHSA-775g-4xr8-78h8 (CVE-2026-41849) Spring Framework Denial of Service via Integer Overflow in SpEL Expressions; no fixed version published; via spring-boot-starter-web > spring-webmvc",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-expression@5.3.31",
+      "advisory": {
+        "id": "GHSA-775g-4xr8-78h8",
+        "aliases": [
+          "CVE-2026-41849"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-775g-4xr8-78h8"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:0feea032a48a5df6f0e47fa03759368b13ecd97a8b8be468d56fc4de3a321d78"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-expression 5.3.31: GHSA-9cmq-m9j5-mvww (CVE-2024-38808) Spring Framework vulnerable to Denial of Service; fixed in 5.3.39; via spring-boot-starter-web > spring-webmvc",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-expression@5.3.31",
+      "advisory": {
+        "id": "GHSA-9cmq-m9j5-mvww",
+        "aliases": [
+          "CVE-2024-38808"
+        ],
+        "cvssScore": 4.3,
+        "url": "https://osv.dev/vulnerability/GHSA-9cmq-m9j5-mvww"
+      },
+      "remediation": {
+        "fixedVersion": "5.3.39",
+        "description": "Upgrade org.springframework:spring-expression to 5.3.39"
+      },
+      "fingerprint": "v1:f8697c6e6f1d224e5bdb0ac3a26dc8452b77d8dfe201ce7def67930b1dcf3810"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "org.springframework:spring-expression 5.3.31: GHSA-9f52-rjqv-25qv (CVE-2026-41852) Spring Framework Arbitrary Method Invocation in SpEL Expressions; no fixed version published; via spring-boot-starter-web > spring-webmvc",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-expression@5.3.31",
+      "advisory": {
+        "id": "GHSA-9f52-rjqv-25qv",
+        "aliases": [
+          "CVE-2026-41852"
+        ],
+        "cvssScore": 3.7,
+        "url": "https://osv.dev/vulnerability/GHSA-9f52-rjqv-25qv"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:a272f92dc9f0b0e37f3cadc485f63b220a56464639018cdb33c59a6e910ae143"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "org.springframework:spring-expression 5.3.31: GHSA-r5w3-xv2f-j59q (CVE-2026-41850) Spring Framework Algorithmic Denial of Service via SpEL Expressions; no fixed version published; via spring-boot-starter-web > spring-webmvc",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-expression@5.3.31",
+      "advisory": {
+        "id": "GHSA-r5w3-xv2f-j59q",
+        "aliases": [
+          "CVE-2026-41850"
+        ],
+        "cvssScore": 7.5,
+        "url": "https://osv.dev/vulnerability/GHSA-r5w3-xv2f-j59q"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:de253792a293306fae3ed4590678abf15e1b1ddfd56949963ece4f15385482f9"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.springframework:spring-expression 5.3.31: GHSA-wxpp-56q6-5pcg (CVE-2026-41851) Spring Framework Denial of Service via Unbounded Cache in SpEL; no fixed version published; via spring-boot-starter-web > spring-webmvc",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework/spring-expression@5.3.31",
+      "advisory": {
+        "id": "GHSA-wxpp-56q6-5pcg",
+        "aliases": [
+          "CVE-2026-41851"
+        ],
+        "cvssScore": 5.3,
+        "url": "https://osv.dev/vulnerability/GHSA-wxpp-56q6-5pcg"
+      },
+      "remediation": {
+        "description": "No fixed version is published yet"
+      },
+      "fingerprint": "v1:977f0a13c79aa13302238a1cefb0d830fe3cb59683ead04e9b626f28cc3697a6"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "ch.qos.logback:logback-classic 1.2.12: GHSA-vmq6-5m68-f53m (CVE-2023-6378) logback serialization vulnerability; fixed in 1.2.13; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-classic@1.2.12",
+      "advisory": {
+        "id": "GHSA-vmq6-5m68-f53m",
+        "aliases": [
+          "CVE-2023-6378"
+        ],
+        "cvssScore": 7.1,
+        "url": "https://osv.dev/vulnerability/GHSA-vmq6-5m68-f53m"
+      },
+      "remediation": {
+        "fixedVersion": "1.2.13",
+        "description": "Upgrade ch.qos.logback:logback-classic to 1.2.13"
+      },
+      "fingerprint": "v1:58cb359e9ca43ea96578c617bb8c99db2cf402f61a446e62a58bca73d4515ad3"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "com.fasterxml.jackson.core:jackson-core 2.13.5: GHSA-h46c-h94j-95f3 (CVE-2025-52999) jackson-core can throw a StackoverflowError when processing deeply nested data; fixed in 2.15.0; via spring-boot-starter-web > spring-boot-starter-json > jackson-databind",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.5",
+      "advisory": {
+        "id": "GHSA-h46c-h94j-95f3",
+        "aliases": [
+          "CVE-2025-52999"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-h46c-h94j-95f3"
+      },
+      "remediation": {
+        "fixedVersion": "2.15.0",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-core to 2.15.0"
+      },
+      "fingerprint": "v1:74bfe544498bafa8eb77431a913b4068911d24c6942fbd45a84cd8ef8663e697"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "com.fasterxml.jackson.core:jackson-core 2.13.5: GHSA-r7wm-3cxj-wff9 jackson-core: Async parser maxNumberLength bypass via chunked digit accumulatio…; fixed in 2.18.8; via spring-boot-starter-web > spring-boot-starter-json > jackson-databind",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.5",
+      "advisory": {
+        "id": "GHSA-r7wm-3cxj-wff9",
+        "aliases": [],
+        "url": "https://osv.dev/vulnerability/GHSA-r7wm-3cxj-wff9"
+      },
+      "remediation": {
+        "fixedVersion": "2.18.8",
+        "description": "Upgrade com.fasterxml.jackson.core:jackson-core to 2.18.8"
+      },
+      "fingerprint": "v1:cc1005cc8f3293416f989b4a3a7373b573d1e9a8c0475825fc1e49c5572a09f5"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-25qh-j22f-pwp8 (CVE-2025-11226) QOS.CH logback-core is vulnerable to Arbitrary Code Execution through file proc…; fixed in 1.3.16; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-25qh-j22f-pwp8",
+        "aliases": [
+          "CVE-2025-11226"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-25qh-j22f-pwp8"
+      },
+      "remediation": {
+        "fixedVersion": "1.3.16",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.3.16"
+      },
+      "fingerprint": "v1:d55db4f28969c4ceea76cbc5026f2db97e620488e168a174c723ed79ee7117b1"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-6v67-2wr5-gvf4 (CVE-2024-12801) QOS.CH logback-core Server-Side Request Forgery vulnerability; fixed in 1.3.15; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-6v67-2wr5-gvf4",
+        "aliases": [
+          "CVE-2024-12801"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-6v67-2wr5-gvf4"
+      },
+      "remediation": {
+        "fixedVersion": "1.3.15",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.3.15"
+      },
+      "fingerprint": "v1:07e22389a91bb3c641ab167107ae80f8cd917e865b0ceaf876ad8789c79a3bc8"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-gm62-rw4g-vrc4 (CVE-2023-6481) Logback is vulnerable to an attacker mounting a Denial-Of-Service attack by sen…; fixed in 1.2.13; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-gm62-rw4g-vrc4",
+        "aliases": [
+          "CVE-2023-6481"
+        ],
+        "cvssScore": 7.1,
+        "url": "https://osv.dev/vulnerability/GHSA-gm62-rw4g-vrc4"
+      },
+      "remediation": {
+        "fixedVersion": "1.2.13",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.2.13"
+      },
+      "fingerprint": "v1:7ef7f0bc03151ce90dafa6b0f56104f2cbb1df02c1d2775450d34e10afb63d08"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-jhq6-gfmj-v8fx (CVE-2026-10532) Logback vulnerable to Object Injection through HardenedObjectInputStream modules; fixed in 1.5.34; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-jhq6-gfmj-v8fx",
+        "aliases": [
+          "CVE-2026-10532"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-jhq6-gfmj-v8fx"
+      },
+      "remediation": {
+        "fixedVersion": "1.5.34",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.5.34"
+      },
+      "fingerprint": "v1:55f329fc05f6bb41c4d9744bad13596e8559e03b8b23dd378be9e2eed6674a89"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-p47f-322f-whfh (CVE-2026-9828) QOS.CH Sarl logback logback-core has a deserialization of untrusted data vulner…; fixed in 1.5.33; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-p47f-322f-whfh",
+        "aliases": [
+          "CVE-2026-9828"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-p47f-322f-whfh"
+      },
+      "remediation": {
+        "fixedVersion": "1.5.33",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.5.33"
+      },
+      "fingerprint": "v1:988b4892d48227c19c1f61add2af1ef3c9b26a416d25eb5756401c8e62758e8f"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-pr98-23f8-jwxv (CVE-2024-12798) QOS.CH logback-core Expression Language Injection vulnerability; fixed in 1.3.15; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-pr98-23f8-jwxv",
+        "aliases": [
+          "CVE-2024-12798"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-pr98-23f8-jwxv"
+      },
+      "remediation": {
+        "fixedVersion": "1.3.15",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.3.15"
+      },
+      "fingerprint": "v1:393645314c70ff44d70234fe27fd9b4b5fb7ebc40de80094e86c6c249ae27639"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "low",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-qqpg-mvqg-649v (CVE-2026-1225) Logback allows an attacker to instantiate classes already present on the class …; fixed in 1.5.25; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-qqpg-mvqg-649v",
+        "aliases": [
+          "CVE-2026-1225"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-qqpg-mvqg-649v"
+      },
+      "remediation": {
+        "fixedVersion": "1.5.25",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.5.25"
+      },
+      "fingerprint": "v1:5faa58f6c1124bf9fab01ca81bbce4a779f23536400679c888e29bbcf2a56601"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "high",
+      "message": "ch.qos.logback:logback-core 1.2.12: GHSA-vmq6-5m68-f53m (CVE-2023-6378) logback serialization vulnerability; fixed in 1.2.13; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > logback-classic",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/ch.qos.logback/logback-core@1.2.12",
+      "advisory": {
+        "id": "GHSA-vmq6-5m68-f53m",
+        "aliases": [
+          "CVE-2023-6378"
+        ],
+        "cvssScore": 7.1,
+        "url": "https://osv.dev/vulnerability/GHSA-vmq6-5m68-f53m"
+      },
+      "remediation": {
+        "fixedVersion": "1.2.13",
+        "description": "Upgrade ch.qos.logback:logback-core to 1.2.13"
+      },
+      "fingerprint": "v1:bcf6e0825756e0b3a22e8c7338ee4e5f7ae7789fb46ef8c13a688787917a2ef2"
+    },
+    {
+      "ruleId": "vuln/known-vulnerability",
+      "category": "security",
+      "severity": "medium",
+      "message": "org.apache.logging.log4j:log4j-api 2.17.2: GHSA-qv9r-c865-cp47 (CVE-2026-49844) Apache Log4j API: Improper encoding of non-finite floating-point values during …; fixed in 2.25.5; via spring-boot-starter-web > spring-boot-starter > spring-boot-starter-logging > log4j-to-slf4j",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.apache.logging.log4j/log4j-api@2.17.2",
+      "advisory": {
+        "id": "GHSA-qv9r-c865-cp47",
+        "aliases": [
+          "CVE-2026-49844"
+        ],
+        "url": "https://osv.dev/vulnerability/GHSA-qv9r-c865-cp47"
+      },
+      "remediation": {
+        "fixedVersion": "2.25.5",
+        "description": "Upgrade org.apache.logging.log4j:log4j-api to 2.25.5"
+      },
+      "fingerprint": "v1:0a930d83be8737af1596130508c53d6e3a52f0ce06487f5d07fc608ed390c55f"
+    },
+    {
+      "ruleId": "maintenance/no-recent-release",
+      "category": "tech",
+      "severity": "low",
+      "message": "commons-collections:commons-collections: no release in 10 years (newest is 3.2.2, released 2015-11-12)",
+      "location": {
+        "path": "pom.xml",
+        "line": 45,
+        "module": ""
+      },
+      "component": "pkg:maven/commons-collections/commons-collections@3.2.2",
+      "remediation": {
+        "description": "Look for a maintained replacement"
+      },
+      "fingerprint": "v1:b845ed60dbcb43cadceb76f205ec5767c8010a082f1fded76caf8c5fb3eda51a"
+    },
+    {
+      "ruleId": "eol/past-end-of-life",
+      "category": "security",
+      "severity": "high",
+      "message": "uses Spring Boot 2.7, which reached end of life on 2023-06-30. The oldest supported release is Spring Boot 4.1 (4.1.1). Commercial support runs to 2029-06-30.",
+      "location": {
+        "path": "pom.xml",
+        "line": 10,
+        "module": ""
+      },
+      "component": "pkg:maven/org.springframework.boot/spring-boot@2.7.18",
+      "remediation": {
+        "fixedVersion": "4.1.1",
+        "description": "Upgrade to Spring Boot 4.1 (4.1.1)"
+      },
+      "fingerprint": "v1:495e785bee2237471c9a7abcba1dcdb3424a0547c2f76f13fe9b048a58e631b6"
+    },
+    {
+      "ruleId": "hygiene/missing-codeowners",
+      "category": "tech",
+      "severity": "low",
+      "message": "No CODEOWNERS file: nobody is asked to review changes automatically",
+      "location": {
+        "path": null
+      },
+      "remediation": {
+        "description": "Add .github/CODEOWNERS naming who owns each part of the code"
+      },
+      "fingerprint": "v1:c8a8dcb63d49518bb66739bb47191c8cfa4b98eb3f5b37333ae9eda9dc980d17"
+    },
+    {
+      "ruleId": "hygiene/missing-ci",
+      "category": "tech",
+      "severity": "low",
+      "message": "No CI configuration: changes aren't built or tested automatically",
+      "location": {
+        "path": null
+      },
+      "remediation": {
+        "description": "Add a CI workflow, e.g. .github/workflows/ci.yml running ./mvnw verify"
+      },
+      "fingerprint": "v1:7537d6163664942a7f20ae14ce2387887d4fab9aaa6aa7371a3a6da02ced0c5a"
+    }
+  ],
+  "analyzers": [
+    {
+      "id": "deps",
+      "category": "tech",
+      "status": "ok",
+      "durationMs": 0
+    },
+    {
+      "id": "vuln",
+      "category": "security",
+      "status": "ok",
+      "durationMs": 0
+    },
+    {
+      "id": "maintenance",
+      "category": "tech",
+      "status": "ok",
+      "durationMs": 0
+    },
+    {
+      "id": "eol",
+      "category": "security",
+      "status": "ok",
+      "durationMs": 0
+    },
+    {
+      "id": "secrets",
+      "category": "security",
+      "status": "ok",
+      "durationMs": 0
+    },
+    {
+      "id": "duplication",
+      "category": "tech",
+      "status": "ok",
+      "durationMs": 0
+    },
+    {
+      "id": "hygiene",
+      "category": "tech",
+      "status": "ok",
+      "durationMs": 0
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Will-Barnard-WB/stealth/blob/main/docs/schema/doctor-report.schema.json",
+  "title": "stealth doctor --json",
+  "description": "The report written by stealth doctor --json. schemaVersion 1: fields may be added; renaming or removing one bumps schemaVersion.",
+  "type": "object",
+  "required": ["schemaVersion", "tool", "score", "fixes", "findings", "analyzers", "warnings"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "stealth" },
+        "version": { "type": "string" }
+      }
+    },
+    "score": {
+      "type": "object",
+      "required": ["overall", "grade", "overallCapped", "scoringVersion", "security", "tech"],
+      "properties": {
+        "overall": { "type": ["integer", "null"], "minimum": 0, "maximum": 100, "description": "null when an analyzer was left out with a Run only flag." },
+        "grade": { "$ref": "#/$defs/grade" },
+        "overallCapped": { "type": "boolean", "description": "A critical finding capped the overall score at 50." },
+        "scoringVersion": { "type": "integer", "minimum": 1, "description": "ADR-0002. Compare scores only within one scoringVersion." },
+        "security": { "$ref": "#/$defs/categoryScore" },
+        "tech": { "$ref": "#/$defs/categoryScore" }
+      }
+    },
+    "failUnder": {
+      "description": "Present when a fail-under threshold was set.",
+      "type": "object",
+      "required": ["passed", "exitCode", "failures"],
+      "properties": {
+        "passed": { "type": "boolean" },
+        "exitCode": { "enum": [0, 1, 2] },
+        "failures": { "type": "array", "items": { "type": "string" } },
+        "error": { "type": "string", "description": "Why the threshold couldn't be judged (exit code 2)." }
+      }
+    },
+    "fixes": {
+      "description": "Most important first: each is one change, such as one dependency upgrade.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["location", "points", "findings"],
+        "properties": {
+          "location": { "$ref": "#/$defs/location" },
+          "points": { "type": "number", "minimum": 0, "description": "Score points the fix would gain." },
+          "findings": { "type": "array", "items": { "$ref": "#/$defs/fingerprint" }, "description": "Fingerprints of the findings it fixes." }
+        }
+      }
+    },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "analyzers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "status", "durationMs"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "$ref": "#/$defs/category" },
+          "status": { "enum": ["ok", "failed", "timed_out", "skipped", "not_selected"] },
+          "durationMs": { "type": "integer", "minimum": 0 },
+          "error": { "type": "string" }
+        }
+      }
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "grade": { "enum": ["A", "B", "C", "D", "F", null] },
+    "category": { "enum": ["security", "tech"] },
+    "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+    "fingerprint": { "type": "string", "pattern": "^v[0-9]+:[0-9a-f]+$" },
+    "categoryScore": {
+      "type": "object",
+      "required": ["status", "score", "grade", "capped", "analyzers", "deductions"],
+      "properties": {
+        "status": { "enum": ["complete", "incomplete", "partial", "not_run"] },
+        "score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "grade": { "$ref": "#/$defs/grade" },
+        "capped": { "type": "boolean" },
+        "analyzers": { "type": "array", "items": { "type": "string" } },
+        "deductions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["analyzer", "findings", "points", "capped"],
+            "properties": {
+              "analyzer": { "type": "string" },
+              "findings": { "type": "integer", "minimum": 0 },
+              "points": { "type": "number", "minimum": 0 },
+              "capped": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {
+          "type": ["string", "null"],
+          "pattern": "^(?![A-Za-z]:)[^/\\\\][^\\\\]*$",
+          "description": "Relative to the repository root with forward slashes; null for the whole repository."
+        },
+        "line": { "type": "integer", "minimum": 1 },
+        "module": { "type": "string", "description": "Maven module directory; empty for the root module." }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["ruleId", "category", "severity", "message", "location", "fingerprint"],
+      "properties": {
+        "ruleId": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*/[a-z0-9]+(-[a-z0-9]+)*$" },
+        "category": { "$ref": "#/$defs/category" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "message": { "type": "string" },
+        "location": { "$ref": "#/$defs/location" },
+        "relatedLocations": { "type": "array", "items": { "$ref": "#/$defs/location" } },
+        "component": { "type": "string", "pattern": "^pkg:" },
+        "advisory": {
+          "type": "object",
+          "required": ["id", "aliases"],
+          "properties": {
+            "id": { "type": "string" },
+            "aliases": { "type": "array", "items": { "type": "string" } },
+            "cvssScore": { "type": "number", "minimum": 0, "maximum": 10 },
+            "url": { "type": "string", "format": "uri" }
+          }
+        },
+        "remediation": {
+          "type": "object",
+          "properties": {
+            "fixedVersion": { "type": "string" },
+            "description": { "type": "string" }
+          }
+        },
+        "fingerprint": { "$ref": "#/$defs/fingerprint" }
+      }
+    }
+  }
+}
