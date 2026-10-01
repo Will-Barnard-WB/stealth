@@ -114,8 +114,7 @@ allow:
 
 An entry with both `path` and `fingerprint` must match both. After `expires` (UTC) it stops applying.
 
-The analyzer already applies these entries (`StealthConfig.secrets()`); reading them from `.stealth.yml` arrives with
-the `.stealth.yml` config ticket.
+Expired entries stop applying and `stealth doctor` prints a warning.
 
 ## Fixing a finding
 

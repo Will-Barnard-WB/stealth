@@ -113,13 +113,19 @@ public class DuplicationAnalyzer implements Analyzer {
 
     @Override
     public List<Finding> analyze(RepoContext context) throws Exception {
+        // .stealth.yml's analyzers.duplication settings win over the defaults
+        int tokens = context.config().thresholds().duplicationMinTokens().orElse(minTokens);
+        boolean tests =
+                context.config().thresholds().duplicationIncludeTests().orElse(includeTests);
         List<String> paths =
-                context.get(WorkingTreeFiles.FILES).stream().filter(this::isSource).toList();
+                context.get(WorkingTreeFiles.FILES).stream()
+                        .filter(path -> isSource(path, tests))
+                        .toList();
         if (paths.isEmpty()) {
             return List.of();
         }
         List<Block> blocks = new ArrayList<>();
-        try (CpdAnalysis cpd = CpdAnalysis.create(configuration())) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(configuration(tokens))) {
             cpd.setCpdListener(new Cancellation());
             for (String path : paths) {
                 Optional<String> source = read(context.root().resolve(path));
@@ -141,7 +147,7 @@ public class DuplicationAnalyzer implements Analyzer {
                 .toList();
     }
 
-    private CPDConfiguration configuration() {
+    private static CPDConfiguration configuration(int minTokens) {
         CPDConfiguration config = new CPDConfiguration();
         config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById("java"));
         config.setMinimumTileSize(minTokens);
@@ -156,6 +162,10 @@ public class DuplicationAnalyzer implements Analyzer {
 
     /** Hand-written Java in a module's source root, outside build output and generated code. */
     boolean isSource(String path) {
+        return isSource(path, includeTests);
+    }
+
+    private static boolean isSource(String path, boolean includeTests) {
         if (!path.endsWith(".java")) {
             return false;
         }

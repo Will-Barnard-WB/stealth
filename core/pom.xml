@@ -43,5 +43,10 @@
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

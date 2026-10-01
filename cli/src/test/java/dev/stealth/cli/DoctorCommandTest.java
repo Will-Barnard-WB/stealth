@@ -12,6 +12,7 @@ import dev.stealth.core.RepoContext;
 import dev.stealth.core.Severity;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
@@ -161,6 +162,136 @@ class DoctorCommandTest {
                 .contains("Usage: doctor [OPTIONS] [PATH]")
                 .contains("Run only:", "--secrets", "--security")
                 .contains("Show only:", "--critical", "--info");
+    }
+
+    @Test
+    void execute_failUnderInStealthYml_exitsOneBelowTheThreshold() throws Exception {
+        Files.writeString(repo.resolve(".stealth.yml"), "version: 1\nfail-under:\n  tech: 100\n");
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        int exitCode = execute(List.of(hygiene), repo.toString());
+
+        assertThat(exitCode).isEqualTo(1);
+        assertThat(out.toString()).contains("fail-under: tech score 99 is below 100");
+    }
+
+    @Test
+    void execute_failUnderOption_overridesTheOverallThresholdInStealthYml() throws Exception {
+        Files.writeString(repo.resolve(".stealth.yml"), "version: 1\nfail-under: 100\n");
+        // One high tech finding: tech 92, overall 0.6 × 100 + 0.4 × 92 = 96.8, so 97
+        Analyzer hygiene =
+                analyzer("hygiene", Category.TECH, List.of(finding(Severity.HIGH, "High problem")));
+        Analyzer vuln = analyzer("vuln", Category.SECURITY, List.of());
+
+        assertThat(execute(List.of(hygiene, vuln), repo.toString())).isEqualTo(1);
+        assertThat(execute(List.of(hygiene, vuln), "--fail-under", "90", repo.toString())).isZero();
+    }
+
+    @Test
+    void execute_invalidStealthYml_exitsTwoNamingTheLine() throws Exception {
+        Files.writeString(repo.resolve(".stealth.yml"), "version: 1\nfail-under: 101\n");
+
+        int exitCode = execute(List.of(), repo.toString());
+
+        assertThat(exitCode).isEqualTo(CommandLine.ExitCode.USAGE);
+        assertThat(err.toString())
+                .contains(
+                        "stealth doctor: .stealth.yml:2: fail-under must be between 0 and 100, got"
+                                + " 101");
+    }
+
+    @Test
+    void execute_configOption_readsThatFileAndShowsItsWarnings() throws Exception {
+        Path config = repo.resolve("ci-stealth.yml");
+        Files.writeString(
+                config, "version: 1\nignroe: []\nseverity:\n  hygiene/missing-codeowners: off\n");
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        execute(List.of(hygiene), "--config", config.toString(), repo.toString());
+
+        assertThat(out.toString())
+                .contains(
+                        "warning  " + config + ":2: unknown key 'ignroe' (did you mean 'ignore'?)")
+                .contains("No problems found.");
+    }
+
+    @Test
+    void execute_json_printsTheReportAsJson() {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        int exitCode = execute(List.of(hygiene), "--json", repo.toString());
+
+        assertThat(exitCode).isZero();
+        assertThat(out.toString())
+                .startsWith("{")
+                .contains("\"schemaVersion\": 1", "\"ruleId\": \"hygiene/missing-codeowners\"");
+    }
+
+    @Test
+    void execute_formatSarifWithAGateItCantJudge_printsSarifAndTheErrorOnStderrAndExitsTwo() {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+
+        int exitCode =
+                execute(
+                        List.of(hygiene),
+                        "--format",
+                        "SARIF",
+                        "--fail-under",
+                        "100",
+                        "--tech",
+                        repo.toString());
+
+        assertThat(exitCode).isEqualTo(2);
+        assertThat(out.toString()).contains("\"version\": \"2.1.0\"", "\"stealth/v1\"");
+        assertThat(err.toString())
+                .contains("fail-under: the overall score needs a run of every analyzer");
+    }
+
+    @Test
+    void execute_outputFile_writesTheFormatThereAndTheTerminalReportToStdout() throws Exception {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+        Path sarif = repo.resolve("reports/stealth.sarif");
+
+        int exitCode =
+                execute(
+                        List.of(hygiene),
+                        "--format",
+                        "sarif",
+                        "--output",
+                        sarif.toString(),
+                        repo.toString());
+
+        assertThat(exitCode).isZero();
+        assertThat(Files.readString(sarif)).contains("\"hygiene/missing-codeowners\"");
+        assertThat(out.toString()).contains("Fix these first").doesNotContain("\"version\"");
+        assertThat(err.toString()).contains("wrote sarif report to " + sarif);
+    }
+
+    @Test
+    void execute_terminalToOutputFile_writesPlainText() throws Exception {
+        Analyzer hygiene = analyzer("hygiene", Category.TECH, List.of(missingCodeowners()));
+        Path report = repo.resolve("report.txt");
+
+        execute(List.of(hygiene), "-o", report.toString(), repo.toString());
+
+        assertThat(Files.readString(report)).contains("Fix these first").doesNotContain("\u001B[");
+        assertThat(out.toString()).isEmpty();
+    }
+
+    @Test
+    void execute_jsonAndAnotherFormat_isAUsageError() {
+        int exitCode = execute(List.of(), "--json", "--format", "sarif", repo.toString());
+
+        assertThat(exitCode).isEqualTo(CommandLine.ExitCode.USAGE);
+        assertThat(err.toString()).contains("--json and --format sarif disagree");
+    }
+
+    @Test
+    void execute_unknownFormat_isAUsageError() {
+        int exitCode = execute(List.of(), "--format", "html", repo.toString());
+
+        assertThat(exitCode).isEqualTo(CommandLine.ExitCode.USAGE);
+        assertThat(err.toString()).contains("expected terminal, json or sarif, got 'html'");
     }
 
     private int execute(List<Analyzer> analyzers, String... args) {

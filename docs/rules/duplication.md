@@ -54,12 +54,17 @@ removing a copy, or renaming or moving a file that holds one changes it.
 
 ## Configuration
 
-Until `.stealth.yml` can set them per repository, change them for a run with environment variables:
+Per repository, in `.stealth.yml`:
 
-| Environment variable | Default | Meaning |
-|---|---|---|
-| `STEALTH_DUPLICATION_MIN_TOKENS` | `100` | Smallest duplicated block reported, in tokens |
-| `STEALTH_DUPLICATION_INCLUDE_TESTS` | `false` | Also scan `src/test/java` |
+```yaml
+analyzers:
+  duplication:
+    min-tokens: 150       # default 100: the smallest duplicated block reported, in tokens
+    include-tests: true   # default false: also scan src/test/java
+```
+
+The defaults for every repo can also be changed with the environment variables `STEALTH_DUPLICATION_MIN_TOKENS` and
+`STEALTH_DUPLICATION_INCLUDE_TESTS`; `.stealth.yml` wins over them.
 
 ## Performance
 

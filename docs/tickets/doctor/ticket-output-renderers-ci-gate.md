@@ -36,16 +36,26 @@ Terminal output is the first impression at launch. JSON and SARIF formats become
 ### Progress
 
 - **Terminal output (done early, with the vulnerability analyzer):** `stealth doctor` groups findings by the line they point at, so each group is one fix (upgrading `spring-boot-starter-parent` covers its own outdatedness and every vulnerability that comes in through it), ranks fixes by worst severity then ADR-0002 weight, shows the top 10 with a summary per category, and `--all` lists every finding under its fix. Colours by severity on an ANSI terminal; plain symbols where stdout can't encode ✓ or →. See `FixList` and `TerminalReport` in `cli`. The score line comes with the scoring engine.
-- Still to do: `--json`, SARIF, `--fail-under`.
+- **JSON, SARIF and `--fail-under` (done with `.stealth.yml`):** see the notes below.
+
+### Notes from implementation
+
+- **Renderers live in `core`** (`dev.stealth.core.report.JsonReport`, `SarifReport`) so the MCP server and the platform can reuse them; the terminal renderer stays in `cli` because it depends on picocli's `Ansi`. No `ReportRenderer` interface: the three take different inputs (SARIF needs the rule catalogue and the root build file), and an interface over one call site added nothing.
+- **`--output FILE`** writes the chosen format to the file; with json/sarif the terminal report still goes to stdout, so a CI log shows the scores while the SARIF is uploaded. With SARIF on stdout, config warnings and the `fail-under` verdict go to stderr.
+- **`--fail-under`** replaces `fail-under.overall` from `.stealth.yml`; category thresholds stay. A threshold the run can't judge (the overall score on a `--hygiene` run, or a category that was partial) exits 2 rather than passing silently.
+- **SARIF details beyond ADR-0003's table:** `relatedLocations` for the other copies of duplicated code; when a repo has no root `pom.xml`, repository-level findings carry only a logical location (valid SARIF, but GitHub may not show them).
+- **Show only flags** (`--critical`, …) narrow only the terminal list; JSON and SARIF always carry every finding, so code scanning doesn't close alerts because of a display filter.
+- **Not done:** `--no-color` (picocli already honours `NO_COLOR` and non-TTY output) and `--verbose` timings; neither was needed for the CI gate.
+
 
 ### Definition of done
 
-- [ ] Snapshot tests per renderer on `fixtures/boot2-legacy`
-- [ ] SARIF output validated against the official SARIF 2.1.0 JSON schema in tests
-- [ ] JSON schema published and output validated against it
-- [ ] Exit code tests for `--fail-under` (above, equal, below) and errors
-- [ ] Windows path test (relative, forward slashes)
-- [ ] `./mvnw verify` passes (tests + Spotless)
+- [x] Snapshot tests per renderer on `fixtures/boot2-legacy` (`ReportSnapshotTest`; snapshots in `core/src/test/resources/snapshots/`)
+- [x] SARIF output validated against the official SARIF 2.1.0 JSON schema in tests (`SarifReportTest`, `ReportSnapshotTest`; the ADR example too)
+- [x] JSON schema published and output validated against it (`docs/schema/doctor-report.schema.json`)
+- [x] Exit code tests for `--fail-under` (above, equal, below) and errors (`FailUnderGateTest`, `DoctorCommandTest`)
+- [x] Windows path test (relative, forward slashes): `JsonReportTest.render_onEveryOs_pathsAreRepoRelativeWithForwardSlashes` runs a real analyzer, so it covers Windows on the CI matrix
+- [x] `./mvnw verify` passes (tests + Spotless)
 
 ### Out of scope
 

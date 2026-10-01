@@ -118,7 +118,9 @@ public class MaintenanceAnalyzer implements Analyzer {
 
         Map<String, Optional<Release>> latest = lookUp(candidates.values());
         LocalDate today = LocalDate.ofInstant(clock.instant(), ZoneOffset.UTC);
-        LocalDate cutoff = today.minus(staleAfter);
+        LocalDate cutoff =
+                today.minus(
+                        context.config().thresholds().maintenanceStaleAfter().orElse(staleAfter));
         List<Finding> findings = new ArrayList<>();
         for (Candidate candidate : candidates.values()) {
             latest.get(candidate.dependency().key())

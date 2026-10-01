@@ -3,6 +3,8 @@ package dev.stealth.core;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +40,11 @@ public class AnalyzerRunner {
                 throw new IllegalArgumentException("duplicate analyzer id: " + analyzer.id());
             }
         }
+    }
+
+    /** Every registered analyzer, in order. */
+    public List<Analyzer> analyzers() {
+        return analyzers;
     }
 
     public DoctorReport run(RepoContext context) throws InterruptedException {
@@ -99,7 +106,11 @@ public class AnalyzerRunner {
                                     e.getCause().toString()));
                 }
             }
-            return new DoctorReport(findings, withUnselected(analyzers, results));
+            // ADR-0004 steps 3 and 4: severity overrides and allowlists, before anything scores
+            StealthConfig.Applied applied =
+                    context.config().apply(findings, LocalDate.now(ZoneOffset.UTC));
+            return new DoctorReport(
+                    applied.findings(), withUnselected(analyzers, results), applied.warnings());
         } finally {
             executor.shutdownNow();
         }

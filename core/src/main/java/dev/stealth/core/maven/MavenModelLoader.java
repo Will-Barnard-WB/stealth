@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,16 +88,24 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
 
     @Override
     public MavenProjectModel load(RepoContext context) {
-        return load(context.root());
+        return load(context.root(), context.config()::isIgnored);
     }
 
     public MavenProjectModel load(Path repositoryRoot) {
+        return load(repositoryRoot, directory -> false);
+    }
+
+    /**
+     * Skips modules whose directory {@code ignored} matches (ADR-0004: a glob matching a module
+     * directory excludes the module, dependencies included). The root module is never skipped.
+     */
+    public MavenProjectModel load(Path repositoryRoot, Predicate<String> ignored) {
         RepoPoms poms = RepoPoms.discover(repositoryRoot);
         if (poms.pomFiles().isEmpty()) {
             return new MavenProjectModel(List.of(), poms.warnings());
         }
         start();
-        return new Run(poms, settings.get()).load();
+        return new Run(poms, settings.get(), ignored).load();
     }
 
     private void start() {
@@ -116,6 +125,7 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
 
         private final RepoPoms poms;
         private final MavenResolverSettings settings;
+        private final Predicate<String> ignored;
         private final VersionLocator locator;
         private final Map<String, Path> modules;
         private final DefaultRepositorySystemSession session;
@@ -125,9 +135,10 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
         private final Properties systemProperties = new Properties();
         private final List<String> warnings = new ArrayList<>();
 
-        Run(RepoPoms poms, MavenResolverSettings settings) {
+        Run(RepoPoms poms, MavenResolverSettings settings, Predicate<String> ignored) {
             this.poms = poms;
             this.settings = settings;
+            this.ignored = ignored;
             this.locator = new VersionLocator(poms);
             this.modules = poms.modulesByCoordinates();
             this.session = session();
@@ -147,6 +158,10 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
         MavenProjectModel load() {
             List<MavenModule> loaded = new ArrayList<>();
             for (Path pom : poms.pomFiles()) {
+                String directory = poms.moduleDirectory(pom);
+                if (!directory.isEmpty() && ignored.test(directory)) {
+                    continue;
+                }
                 build(pom).ifPresent(loaded::add);
             }
             return new MavenProjectModel(loaded, warnings);

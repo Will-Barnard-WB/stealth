@@ -70,8 +70,12 @@ fail-under:
 | `allow.*[].reason` | string | Why this is accepted. Shown in `--verbose` output. |
 | `allow.*[].expires` | date | After this date (UTC) the entry stops applying and stealth warns. |
 | `fail-under` | int, or map with `overall` / `tech` / `security` | Minimum scores. `--fail-under N` on the command line overrides `overall`. |
+| `analyzers.<id>.enabled` | bool | `false` turns the analyzer off. *(Added with the config ticket.)* |
+| `analyzers.<id>.<setting>` | depends | Analyzer thresholds: `maintenance.stale-after`, `duplication.min-tokens` / `include-tests`, `hygiene.stale-branch-after` / `large-file-bytes`. *(Added with the config ticket.)* |
+| `eol.java-distribution` / `eol.java-version` | string | Which JDK's end-of-life dates apply, and the runtime Java when it isn't the compile target. *(Added with the EOL analyzer.)* |
 
-Keys use kebab-case to match CLI flags. Rule ids and severities are the ones from [ADR-0001](0001-finding-model.md).
+Keys use kebab-case to match CLI flags; camelCase spellings of the same keys are accepted too. A JSON Schema for editors
+is published at `docs/schema/stealth-yml.schema.json`. Rule ids and severities are the ones from [ADR-0001](0001-finding-model.md).
 
 ### Validation
 
