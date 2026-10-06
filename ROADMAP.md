@@ -41,6 +41,8 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [ ] **Phase 1 launch:** docs, demo GIF, Show HN, r/java, Spring community. Check findings by hand on spring-petclinic first.
 
 ## Phase 2 — Upgrade
+> **Proposed, under review:** fold this phase into `stealth clean` (proven CVE patches without a migration, upgrade impact, test gaps, verify) and bring the Phase 3 hooks forward. See [docs/direction/clean-and-hooks.md](docs/direction/clean-and-hooks.md).
+
 - [ ] **OpenRewrite recipe license audit** ⚠️ *do first.* Some recipe modules use Moderne's source-available license, which restricts competing commercial use.
 - [ ] **OpenRewrite integration:** Spring Boot 3, Java 17/21, Jakarta EE, JUnit 5 recipes, run programmatically.
 - [ ] **Recipe catalog:** `stealth upgrade --list` maps doctor findings to available fixes.
