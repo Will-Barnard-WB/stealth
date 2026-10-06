@@ -46,7 +46,7 @@
         <wiremock.version>3.13.2</wiremock.version>
         <spotless-maven-plugin.version>3.10.3</spotless-maven-plugin.version>
         <google-java-format.version>1.36.1</google-java-format.version>
-        <maven.version>3.9.16</maven.version>
+        <maven.version>3.10.0</maven.version>
         <maven-resolver.version>1.9.27</maven-resolver.version>
         <json-schema-validator.version>3.0.8</json-schema-validator.version>
         <jgit.version>7.8.0.202609011348-r</jgit.version>
