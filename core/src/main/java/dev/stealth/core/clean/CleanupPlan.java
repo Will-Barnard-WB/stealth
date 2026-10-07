@@ -13,12 +13,14 @@ import java.util.Optional;
  * @param remaining vulnerability findings no safe patch clears: they need a major upgrade
  *     (migration), or have no fixed version yet
  * @param secrets secret findings, which need the developer (rotate) and the agent (move to config)
+ * @param vulnerabilities how many known vulnerabilities the repository has now
  */
 public record CleanupPlan(
         List<Patch> patches,
         Optional<Proof> combined,
         List<Finding> remaining,
-        List<Finding> secrets) {
+        List<Finding> secrets,
+        int vulnerabilities) {
 
     public CleanupPlan {
         patches = List.copyOf(patches);

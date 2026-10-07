@@ -42,6 +42,13 @@ public final class PomEditor {
      * was planned against, then the insertions.
      */
     public static void applyAll(Path root, java.util.Collection<PomEdit> edits) throws IOException {
+        for (PomEdit edit : ordered(edits)) {
+            apply(root, edit);
+        }
+    }
+
+    /** The order edits must be applied in: line changes before anything that inserts lines. */
+    public static List<PomEdit> ordered(java.util.Collection<PomEdit> edits) {
         List<PomEdit> ordered = new ArrayList<>(edits);
         ordered.sort(
                 java.util.Comparator.comparingInt(
@@ -51,9 +58,7 @@ public final class PomEditor {
                                     case PomEdit.SetProperty set -> 1;
                                     case PomEdit.PinVersion pin -> 2;
                                 }));
-        for (PomEdit edit : ordered) {
-            apply(root, edit);
-        }
+        return ordered;
     }
 
     static String apply(String text, PomEdit edit) throws IOException {

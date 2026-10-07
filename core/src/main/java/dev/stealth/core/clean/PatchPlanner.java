@@ -87,7 +87,7 @@ public class PatchPlanner {
         List<Finding> secrets =
                 report.findings().stream().filter(f -> f.ruleId().startsWith("secrets/")).toList();
         if (vulnerabilities.isEmpty()) {
-            return new CleanupPlan(List.of(), Optional.empty(), List.of(), secrets);
+            return new CleanupPlan(List.of(), Optional.empty(), List.of(), secrets, 0);
         }
         Set<String> baseline = new TreeSet<>();
         vulnerabilities.forEach(f -> vulnerabilityKey(f).ifPresent(baseline::add));
@@ -144,7 +144,7 @@ public class PatchPlanner {
                                                 .map(k -> !cleared.contains(k))
                                                 .orElse(true))
                         .toList();
-        return new CleanupPlan(patches, combined, remaining, secrets);
+        return new CleanupPlan(patches, combined, remaining, secrets, baseline.size());
     }
 
     /** The candidate's patch, or its fallback pins when moving the BOM doesn't prove out. */
@@ -192,6 +192,18 @@ public class PatchPlanner {
                 candidate.crossesMajor(),
                 level,
                 proof);
+    }
+
+    /** Known vulnerabilities of the dependency tree under {@code root}, as {@code g:a ADVISORY}. */
+    public Set<String> vulnerabilities(Path root, StealthConfig config)
+            throws IOException, InterruptedException {
+        try {
+            return check.vulnerabilities(root, config);
+        } catch (IOException | InterruptedException | RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException(e.getMessage(), e);
+        }
     }
 
     /** Applies {@code edits} to a scratch copy of the POMs, re-resolves and checks again. */
