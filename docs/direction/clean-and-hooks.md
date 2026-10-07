@@ -332,6 +332,9 @@ Each step is a separate PR and useful on its own.
 1. **Proven patches:** `plan_cleanup`, `apply_cleanup`, `verify_cleanup` (MCP and CLI). Also measure the headline
    number: *share of CVEs cleared without a migration, tests green* on `boot2-legacy` and 3–4 public Spring Boot 2.7
    repos. If it's high, that's the launch story. If it's low, we learn that before building more.
+   **Status: built** (see [the ticket](../tickets/clean/ticket-proven-patches.md)). On `boot2-legacy`: 47 of 108
+   cleared by the safe patches, 76 with the reviewed minor jumps, tests green, still on Spring Boot 2.7. Public repos
+   not measured yet.
 2. **Hooks:** `stealth hooks install`, `post-edit` (dependencies and secrets), `stop` (what the session introduced).
 3. **`upgrade_impact`:** japicmp plus ASM call-site analysis.
 4. **`test_gaps` and `verify_tests`:** coverage of affected call sites, measured with JaCoCo.

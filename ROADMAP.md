@@ -41,17 +41,17 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [ ] **Phase 1 launch:** docs, demo GIF, Show HN, r/java, Spring community. Check findings by hand on spring-petclinic first.
 
 ## Phase 2 — Upgrade
-> **Proposed, under review:** fold this phase into `stealth clean` (proven CVE patches without a migration, upgrade impact, test gaps, verify) and bring the Phase 3 hooks forward. See [docs/direction/clean-and-hooks.md](docs/direction/clean-and-hooks.md).
+> **Proposed, under review:** fold this phase into `stealth clean` (proven CVE patches without a migration, upgrade impact, test gaps, verify) and bring the Phase 3 hooks forward. See [docs/direction/clean-and-hooks.md](docs/direction/clean-and-hooks.md). Step 1 (proven patches) is built: see [docs/tickets/clean/ticket-proven-patches.md](docs/tickets/clean/ticket-proven-patches.md).
 
 - [ ] **OpenRewrite recipe license audit** ⚠️ *do first.* Some recipe modules use Moderne's source-available license, which restricts competing commercial use.
 - [ ] **OpenRewrite integration:** Spring Boot 3, Java 17/21, Jakarta EE, JUnit 5 recipes, run programmatically.
 - [ ] **Recipe catalog:** `stealth upgrade --list` maps doctor findings to available fixes.
-- [ ] **Git safety rules:** refuse a dirty working tree, always use a new branch, never modify the current branch.
-- [ ] **Test verification harness:** `./mvnw test` before and after, compared.
-- [ ] **Vulnerability-driven dependency bumps:** to the fixed versions reported by OSV.
+- [x] **Git safety rules:** refuse a dirty working tree, always use a new branch, never modify the current branch. *(In `stealth clean --apply`: temporary worktree, new branch.)*
+- [x] **Test verification harness:** `./mvnw test` before and after, compared. *(Surefire results compared with the baseline; a patch that makes them worse is dropped.)*
+- [x] **Vulnerability-driven dependency bumps:** to the fixed versions reported by OSV. *(`stealth clean`: proven on the re-resolved tree, including Spring Boot's managed-version properties.)*
 - [ ] **Change report and `--open-pr`:** recipes applied, diff summary, test changes; open a PR via the GitHub API.
 - [ ] **Opt-in agent repair loop:** failing tests + diff → Claude, with an iteration limit.
-- [ ] **MCP tools:** `plan_upgrade`, `run_upgrade`.
+- [ ] **MCP tools:** `plan_upgrade`, `run_upgrade`. *(For dependency patches: built as `plan_cleanup`, `apply_cleanup`, `verify_cleanup`; migrations still to do.)*
 - [ ] **Public upgrade benchmark:** success rate across 20 real open-source Spring repos.
 
 ## Phase 3 — Conventions + Hooks

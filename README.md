@@ -101,6 +101,9 @@ Then start Claude Code in any Java/Maven repository (`/mcp` in Claude Code shows
 | `repo_health` | Security and tech scores, finding counts by severity, the top 5 fixes, analyzer statuses | "How healthy is this codebase?" |
 | `list_findings` | Findings with location and fix, filtered by `category` (security/tech), minimum `severity`, `analyzer`, `limit` (default 50) | "What vulnerabilities do we have?" |
 | `check_dependency` | Latest version, whether it's maintained, known vulnerabilities in a version and what fixes them. No repository needed | "Should I add commons-text 1.9?" |
+| `plan_cleanup` | Proven version patches that fix vulnerabilities now, what needs review or a major, and what's left (see [`stealth clean`](#fix-vulnerabilities-stealth-clean)) | "Fix what you can without upgrading Spring Boot" |
+| `apply_cleanup` | The safe patches committed to a new branch, tests run before and after | (after the user agrees to the plan) |
+| `verify_cleanup` | What the agent's own changes resolved or introduced, compared with a base commit | "Did that fix it?" |
 
 - **Fast follow-ups.** The first scan of a repository takes as long as `stealth doctor`; later calls reuse it until a file
   changes (git repositories), for up to an hour. `.stealth.yml` in the repository applies.
@@ -111,6 +114,36 @@ Then start Claude Code in any Java/Maven repository (`/mcp` in Claude Code shows
   prints the `~/.cursor/mcp.json` entry for Cursor and other MCP clients.
 - The server has to be running when Claude Code starts a session; if it isn't, `/mcp` shows stealth as failed. Start
   `stealth mcp` and reconnect.
+
+## Fix vulnerabilities: `stealth clean`
+
+Most CVEs in an older Spring Boot app come in through Spring Boot, and the usual advice ("upgrade to Spring Boot 3")
+is a migration nobody can schedule this sprint. `stealth clean` finds what can be fixed now, without leaving your
+framework's version, and proves it.
+
+```bash
+stealth clean                 # the plan: what can be fixed, proven; changes nothing
+stealth clean --apply         # put the safe patches on a new branch, tests run before and after
+stealth clean --verify        # compare your uncommitted changes with HEAD (or --base main)
+```
+
+- **The cheapest edit for each vulnerable dependency:** its own `<version>` line when you declare it; else the
+  property your parent manages it with (`<tomcat.version>`), or the version property of the BOM the parent imports
+  (`<spring-framework.version>`, which moves the whole family together); else a `<dependencyManagement>` pin.
+- **Proven before anything is written:** each patch is applied to a scratch copy of the POMs, the dependency tree is
+  re-resolved and checked against OSV again, and it's kept only if its vulnerabilities are gone, none are introduced,
+  and the new version actually resolves. (OSV sometimes names commercial-only releases, such as Spring 5.3.42, as the
+  fix; those are skipped.)
+- **Safe by default:** patch releases of versions your framework manages (Tomcat 9.0.83 → 9.0.121) and bumps of
+  dependencies you declare. Minor jumps past what the framework manages (Logback 1.2 → 1.5 under Spring Boot 2.7) are
+  proven but listed for review (`--allow-minor`); new majors need `--allow-major`.
+- **Your checkout is never touched:** `--apply` refuses uncommitted changes, works in a temporary git worktree on a
+  new `stealth/clean-<date>-<time>` branch, commits one patch per commit, runs your tests (`./mvnw -B test`, `mvn`,
+  or `--test-command`) before and after, and drops any patch that makes them worse.
+
+On `fixtures/boot2-legacy` (Spring Boot 2.7.18) the safe patches clear 47 of 108 known vulnerabilities in one
+command, on a reviewable branch, with the tests green; the reviewed ones take it to 76. Most of the rest have no fix
+in the open-source Spring 5.3 / Boot 2.7 lines.
 
 ## Output formats and the CI gate
 
