@@ -11,9 +11,9 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /** Runs an external program (git, the build) and keeps the end of its output. */
-final class Command {
+public final class Command {
 
-    static final boolean WINDOWS =
+    public static final boolean WINDOWS =
             System.getProperty("os.name", "").toLowerCase(Locale.ROOT).startsWith("windows");
 
     /** How much output to keep: the end of a failing build is what explains it. */
@@ -25,14 +25,14 @@ final class Command {
      * @param output standard output, plus standard error when they were merged
      * @param errors standard error when kept separate (empty when merged)
      */
-    record Result(int exitCode, String output, String errors, boolean timedOut) {
+    public record Result(int exitCode, String output, String errors, boolean timedOut) {
 
-        boolean ok() {
+        public boolean ok() {
             return exitCode == 0 && !timedOut;
         }
 
         /** The last {@code lines} lines of output, then of errors. */
-        String tail(int lines) {
+        public String tail(int lines) {
             List<String> all = new ArrayList<>(output.lines().toList());
             all.addAll(errors.lines().toList());
             return String.join("\n", all.subList(Math.max(0, all.size() - lines), all.size()));
@@ -40,7 +40,7 @@ final class Command {
     }
 
     /** Runs {@code command} with standard error merged into the output, as a build log reads. */
-    static Result run(Path directory, Duration timeout, List<String> command)
+    public static Result run(Path directory, Duration timeout, List<String> command)
             throws IOException, InterruptedException {
         return run(directory, timeout, command, true);
     }
@@ -49,7 +49,8 @@ final class Command {
      * @param mergeErrors false keeps standard error out of {@link Result#output()}: for output that
      *     gets parsed, which git warnings (such as Windows line-ending notices) would corrupt
      */
-    static Result run(Path directory, Duration timeout, List<String> command, boolean mergeErrors)
+    public static Result run(
+            Path directory, Duration timeout, List<String> command, boolean mergeErrors)
             throws IOException, InterruptedException {
         List<String> full = new ArrayList<>();
         String program = command.getFirst().toLowerCase(Locale.ROOT);

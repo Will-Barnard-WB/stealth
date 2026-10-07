@@ -87,6 +87,9 @@ class McpServerIT {
         parent.registerBean(PatchPlanner.class, () -> planner);
         parent.registerBean(Cleaner.class, () -> new Cleaner(planner, AllAnalyzers.REFERENCE_DATE));
         parent.registerBean(CleanupVerifier.class, () -> new CleanupVerifier(components.runner()));
+        parent.registerBean(
+                dev.stealth.core.impact.UpgradeImpact.class,
+                () -> new dev.stealth.core.impact.UpgradeImpact(loader));
         parent.refresh();
 
         port = freePort();
@@ -127,7 +130,8 @@ class McpServerIT {
                             "check_dependency",
                             "plan_cleanup",
                             "apply_cleanup",
-                            "verify_cleanup");
+                            "verify_cleanup",
+                            "upgrade_impact");
             assertThat(tools.tools())
                     .allSatisfy(tool -> assertThat(tool.description()).isNotBlank());
             // Only apply_cleanup writes anything (a new branch), and it's not destructive

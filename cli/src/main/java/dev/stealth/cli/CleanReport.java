@@ -270,6 +270,43 @@ class CleanReport {
         return String.join(System.lineSeparator(), lines) + System.lineSeparator();
     }
 
+    String impact(Path root, dev.stealth.core.impact.UpgradeImpact.Result impact) {
+        List<String> lines = header(root);
+        lines.add(
+                "  "
+                        + style("bold", impact.dependency())
+                        + " "
+                        + impact.from()
+                        + " → "
+                        + impact.to()
+                        + style(
+                                "faint",
+                                "  ("
+                                        + impact.removed()
+                                        + " APIs removed, "
+                                        + impact.deprecated()
+                                        + " deprecated)"));
+        lines.add("");
+        if (impact.usages().isEmpty()) {
+            lines.add(
+                    "  "
+                            + style(
+                                    "fg(114)",
+                                    "Nothing here uses what the upgrade removes or deprecates."));
+        }
+        for (dev.stealth.core.impact.UpgradeImpact.Usage usage : impact.usages()) {
+            String kind =
+                    usage.kind() == dev.stealth.core.impact.UpgradeImpact.Kind.REMOVED
+                            ? style("bold,fg(203)", "removed   ")
+                            : style("fg(214)", "deprecated");
+            lines.add("  " + kind + "  " + usage.where() + "  " + usage.api());
+            usage.hint().ifPresent(h -> lines.add("              " + style("faint", h)));
+        }
+        impact.notes().forEach(n -> lines.add("  " + style("faint", n)));
+        lines.add("");
+        return String.join(System.lineSeparator(), lines) + System.lineSeparator();
+    }
+
     private String patchLine(String number, Patch patch) {
         String level =
                 switch (patch.level()) {

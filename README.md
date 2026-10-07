@@ -104,6 +104,7 @@ Then start Claude Code in any Java/Maven repository (`/mcp` in Claude Code shows
 | `plan_cleanup` | Proven version patches that fix vulnerabilities now, what needs review or a major, and what's left (see [`stealth clean`](#fix-vulnerabilities-stealth-clean)) | "Fix what you can without upgrading Spring Boot" |
 | `apply_cleanup` | The safe patches committed to a new branch, tests run before and after | (after the user agrees to the plan) |
 | `verify_cleanup` | What the agent's own changes resolved or introduced, compared with a base commit | "Did that fix it?" |
+| `upgrade_impact` | Every place the code uses an API a dependency upgrade removes or deprecates, with what to use instead | "What would moving to Spring 6 break?" |
 
 - **Fast follow-ups.** The first scan of a repository takes as long as `stealth doctor`; later calls reuse it until a file
   changes (git repositories), for up to an hour. `.stealth.yml` in the repository applies.
@@ -125,6 +126,7 @@ framework's version, and proves it.
 stealth clean                 # the plan: what can be fixed, proven; changes nothing
 stealth clean --apply         # put the safe patches on a new branch, tests run before and after
 stealth clean --verify        # compare your uncommitted changes with HEAD (or --base main)
+stealth clean --impact org.springframework:spring-web:6.1.14   # what that upgrade breaks here, line by line
 ```
 
 - **The cheapest edit for each vulnerable dependency:** its own `<version>` line when you declare it; else the
@@ -141,9 +143,38 @@ stealth clean --verify        # compare your uncommitted changes with HEAD (or -
   new `stealth/clean-<date>-<time>` branch, commits one patch per commit, runs your tests (`./mvnw -B test`, `mvn`,
   or `--test-command`) before and after, and drops any patch that makes them worse.
 
+**Upgrade impact** (`--impact`, MCP `upgrade_impact`) is for the upgrades that aren't drop-ins. It compares the
+library's public API between the version you use and the target (with ASM, from the jars), then finds every place
+your compiled code calls, extends or overrides something removed or deprecated, with `file:line` and what to use
+instead: for `boot2-legacy`, spring-web 5.3 → 6.1 removes 520 APIs, and the one that matters is
+`RequestIdFilter.java:20`, an override of `doFilterInternal` that now takes `jakarta.servlet` types. Exact when the
+project is compiled; otherwise it matches imports only, and says so.
+
 On `fixtures/boot2-legacy` (Spring Boot 2.7.18) the safe patches clear 47 of 108 known vulnerabilities in one
 command, on a reviewable branch, with the tests green; the reviewed ones take it to 76. Most of the rest have no fix
 in the open-source Spring 5.3 / Boot 2.7 lines.
+
+## Guard the agent while it works: `stealth hooks`
+
+```bash
+stealth hooks install            # adds hooks to this repo's .claude/settings.json (commit it for the team)
+stealth hooks install --user     # or to ~/.claude/settings.json, for every repository
+stealth hooks uninstall
+```
+
+Claude Code then runs stealth automatically, with no prompting:
+
+- **After each edit** (`Edit`, `Write`, `MultiEdit`): if a `pom.xml` gained or changed a dependency, it's checked
+  against Maven Central and OSV. A vulnerable version, or an artifact that doesn't exist (an invented name an attacker
+  could register), is reported straight back to the agent with the version to use. Any other edited file is scanned
+  for hardcoded secrets.
+- **Before it finishes** (`Stop`): the same checks over every file the session changed, so it doesn't hand back work
+  that added a vulnerable dependency or a secret.
+
+Only what the agent introduced is reported, compared with the last commit; existing debt is `stealth doctor`'s job.
+The agent is told to fix it, or to tell you why it's intended (for example a version you asked for). Each check takes
+about a second, a Stop check is never repeated in the same turn, and if stealth can't run, the agent carries on.
+`.stealth.yml` applies (`ignore`, `allow.secrets`).
 
 ## Output formats and the CI gate
 

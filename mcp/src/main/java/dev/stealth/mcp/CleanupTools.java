@@ -10,6 +10,7 @@ import dev.stealth.core.clean.CleanupResult;
 import dev.stealth.core.clean.CleanupVerifier;
 import dev.stealth.core.clean.PatchPlanner;
 import dev.stealth.core.clean.TestRunner;
+import dev.stealth.core.impact.UpgradeImpact;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -39,12 +40,19 @@ class CleanupTools {
     private final PatchPlanner planner;
     private final Cleaner cleaner;
     private final CleanupVerifier verifier;
+    private final UpgradeImpact impact;
 
-    CleanupTools(RepoScans scans, PatchPlanner planner, Cleaner cleaner, CleanupVerifier verifier) {
+    CleanupTools(
+            RepoScans scans,
+            PatchPlanner planner,
+            Cleaner cleaner,
+            CleanupVerifier verifier,
+            UpgradeImpact impact) {
         this.scans = scans;
         this.planner = planner;
         this.cleaner = cleaner;
         this.verifier = verifier;
+        this.impact = impact;
     }
 
     @McpTool(
@@ -149,6 +157,37 @@ class CleanupTools {
                                             Optional.empty()));
                     return CleanupJson.result(result);
                 });
+    }
+
+    @McpTool(
+            name = "upgrade_impact",
+            title = "Upgrade impact",
+            description =
+                    """
+                    What upgrading one Maven dependency to a given version would break in this \
+                    repository: the library's API is compared between the version used now and \
+                    the target, and every place the repository's code calls, extends or overrides \
+                    something removed or deprecated is listed with file:line and, where known, \
+                    what to use instead. Call it before a major upgrade (e.g. one plan_cleanup \
+                    says needs a major version) to size the work, then make the changes yourself \
+                    and call verify_cleanup. Exact when the project is compiled (target/classes); \
+                    otherwise it matches imports only. Changes nothing.\
+                    """,
+            annotations = @McpAnnotations(readOnlyHint = true, openWorldHint = true))
+    CallToolResult upgradeImpact(
+            @McpToolParam(description = "Absolute path of the repository root.") String path,
+            @McpToolParam(description = "Group id, e.g. org.springframework") String groupId,
+            @McpToolParam(description = "Artifact id, e.g. spring-web") String artifactId,
+            @McpToolParam(description = "Version to upgrade to, e.g. 6.1.14") String version) {
+        return call(
+                "upgrade_impact " + groupId + ":" + artifactId + ":" + version,
+                () ->
+                        CleanupJson.impact(
+                                impact.analyze(
+                                        scans.context(StealthTools.directory(path)),
+                                        groupId,
+                                        artifactId,
+                                        version)));
     }
 
     @McpTool(

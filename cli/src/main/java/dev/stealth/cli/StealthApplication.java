@@ -39,6 +39,10 @@ public class StealthApplication implements CommandLineRunner, ExitCodeGenerator 
     }
 
     public static void main(String[] args) {
+        if (args.length > 0 && args[0].equals("hook")) {
+            // Claude Code runs this after every edit: skip Spring, it's most of the startup time
+            System.exit(HookMain.run(args, System.in, System.out, System.err));
+        }
         System.exit(SpringApplication.exit(SpringApplication.run(StealthApplication.class, args)));
     }
 

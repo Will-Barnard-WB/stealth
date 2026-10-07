@@ -43,6 +43,13 @@
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-java</artifactId>
         </dependency>
+        <!-- Reads class files: library APIs and a repository's compiled code, for upgrade impact.
+             Already brought in by maven-model-builder; declared because we use it directly -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.9.1</version>
+        </dependency>
         <dependency>
             <groupId>com.networknt</groupId>
             <artifactId>json-schema-validator</artifactId>

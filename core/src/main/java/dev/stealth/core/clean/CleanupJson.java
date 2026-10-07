@@ -226,6 +226,41 @@ public final class CleanupJson {
         return JSON.writeValueAsString(json);
     }
 
+    public static String impact(dev.stealth.core.impact.UpgradeImpact.Result impact) {
+        ObjectNode json = JSON.createObjectNode();
+        json.put("dependency", impact.dependency());
+        json.put("from", impact.from());
+        json.put("to", impact.to());
+        json.put("precise", impact.precise());
+        json.put("apisRemoved", impact.removed());
+        json.put("apisDeprecated", impact.deprecated());
+        json.put("breakingUsages", impact.breaking());
+        ArrayNode usages = json.putArray("usages");
+        for (dev.stealth.core.impact.UpgradeImpact.Usage usage :
+                impact.usages().stream().limit(200).toList()) {
+            ObjectNode node = usages.addObject();
+            node.put("where", usage.where());
+            node.put("api", usage.api());
+            node.put("change", lower(usage.kind()));
+            usage.hint().ifPresent(h -> node.put("hint", h));
+        }
+        if (impact.usages().size() > 200) {
+            json.put("truncated", impact.usages().size() - 200);
+        }
+        ArrayNode notes = json.putArray("notes");
+        impact.notes().forEach(notes::add);
+        json.put(
+                "next",
+                impact.usages().isEmpty()
+                        ? "Nothing in this repository uses an API the upgrade removes or"
+                              + " deprecates; the version change itself is the work (and the tests"
+                              + " decide)."
+                        : "Change each removed usage (hints say what to use instead), then"
+                                + " deprecated ones if convenient; change the version, and call"
+                                + " verify_cleanup with runTests.");
+        return JSON.writeValueAsString(json);
+    }
+
     private static ObjectNode score(HealthScore score) {
         ObjectNode node = JSON.createObjectNode();
         if (score.overall().isPresent()) {
