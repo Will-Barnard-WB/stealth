@@ -90,6 +90,11 @@ class McpServerIT {
         parent.registerBean(
                 dev.stealth.core.impact.UpgradeImpact.class,
                 () -> new dev.stealth.core.impact.UpgradeImpact(loader));
+        parent.registerBean(
+                dev.stealth.core.impact.TestGaps.class,
+                () ->
+                        new dev.stealth.core.impact.TestGaps(
+                                loader, new dev.stealth.core.impact.UpgradeImpact(loader)));
         parent.refresh();
 
         port = freePort();
@@ -131,7 +136,8 @@ class McpServerIT {
                             "plan_cleanup",
                             "apply_cleanup",
                             "verify_cleanup",
-                            "upgrade_impact");
+                            "upgrade_impact",
+                            "test_gaps");
             assertThat(tools.tools())
                     .allSatisfy(tool -> assertThat(tool.description()).isNotBlank());
             // Only apply_cleanup writes anything (a new branch), and it's not destructive

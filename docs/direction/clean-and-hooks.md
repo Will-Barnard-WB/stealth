@@ -342,6 +342,9 @@ Each step is a separate PR and useful on its own.
    **Status: built** with ASM alone (no japicmp; see [the ticket](../tickets/clean/ticket-upgrade-impact.md)). On
    `boot2-legacy`, spring-web 5.3 → 6.1 points at the one broken override, with the jakarta replacement.
 4. **`test_gaps` and `verify_tests`:** coverage of affected call sites, measured with JaCoCo.
+   **Status: built** as one tool, `test_gaps` (calling it again is the verification; see
+   [the ticket](../tickets/clean/ticket-test-gaps.md)). Claude Code used it to find, test and close the gap in
+   `boot2-legacy` on its own.
 5. **Later:** OpenRewrite recipes for the mechanical parts of migrations; `--open-pr`.
 
 This replaces the current Phase 2 plan's separate `stealth upgrade` command. Phase 2's git safety rules, test

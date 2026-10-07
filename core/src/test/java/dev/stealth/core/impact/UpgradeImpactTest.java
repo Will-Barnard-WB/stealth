@@ -8,18 +8,11 @@ import dev.stealth.core.StealthConfig;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenResolverSettings;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
-import java.util.stream.Stream;
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -30,7 +23,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 class UpgradeImpactTest {
 
-    private static final Map<String, String> LIB_1 =
+    static final Map<String, String> LIB_1 =
             Map.of(
                     "lib/Api.java",
                     """
@@ -47,7 +40,7 @@ class UpgradeImpactTest {
                     "lib/Moving.java",
                     "package lib; public class Moving {}");
 
-    private static final Map<String, String> LIB_2 =
+    static final Map<String, String> LIB_2 =
             Map.of(
                     "lib/Api.java",
                     """
@@ -61,7 +54,7 @@ class UpgradeImpactTest {
                     "lib/moved/Moving.java",
                     "package lib.moved; public class Moving {}");
 
-    private static final String APP =
+    static final String APP =
             """
             package app;
 
@@ -93,10 +86,12 @@ class UpgradeImpactTest {
     @BeforeEach
     void setUp() throws Exception {
         Path localRepository = work.resolve("m2");
-        Path lib1 = compile(LIB_1, List.of(), work.resolve("lib1"));
-        Path lib2 = compile(LIB_2, List.of(), work.resolve("lib2"));
-        install(localRepository, "1.0", jar(lib1, work.resolve("lib-1.0.jar")));
-        install(localRepository, "2.0", jar(lib2, work.resolve("lib-2.0.jar")));
+        Path lib1 = CompiledWorld.compile(work, LIB_1, List.of(), work.resolve("lib1"));
+        Path lib2 = CompiledWorld.compile(work, LIB_2, List.of(), work.resolve("lib2"));
+        CompiledWorld.install(
+                localRepository, "1.0", CompiledWorld.jar(lib1, work.resolve("lib-1.0.jar")));
+        CompiledWorld.install(
+                localRepository, "2.0", CompiledWorld.jar(lib2, work.resolve("lib-2.0.jar")));
 
         repo = work.resolve("app");
         Files.createDirectories(repo.resolve("src/main/java/app"));
@@ -204,55 +199,7 @@ class UpgradeImpactTest {
     }
 
     private void compileApp(Path libJar) throws IOException {
-        compile(Map.of("app/App.java", APP), List.of(libJar), repo.resolve("target/classes"));
-    }
-
-    /**
-     * Compiles {@code sources} (path → code) with debug info, so class files carry line numbers.
-     */
-    private Path compile(Map<String, String> sources, List<Path> classpath, Path output)
-            throws IOException {
-        Path sourceDir = Files.createTempDirectory(work, "src");
-        List<String> arguments = new ArrayList<>(List.of("-g", "-d", output.toString()));
-        if (!classpath.isEmpty()) {
-            arguments.addAll(List.of("-cp", classpath.getFirst().toString()));
-        }
-        for (Map.Entry<String, String> source : sources.entrySet()) {
-            Path file = sourceDir.resolve(source.getKey());
-            Files.createDirectories(file.getParent());
-            Files.writeString(file, source.getValue());
-            arguments.add(file.toString());
-        }
-        Files.createDirectories(output);
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        int status = compiler.run(null, null, null, arguments.toArray(String[]::new));
-        assertThat(status).as("javac").isZero();
-        return output;
-    }
-
-    private static Path jar(Path classes, Path jar) throws IOException {
-        try (OutputStream out = Files.newOutputStream(jar);
-                JarOutputStream jarOut = new JarOutputStream(out);
-                Stream<Path> files = Files.walk(classes)) {
-            for (Path file : files.filter(Files::isRegularFile).toList()) {
-                jarOut.putNextEntry(
-                        new JarEntry(classes.relativize(file).toString().replace('\\', '/')));
-                jarOut.write(Files.readAllBytes(file));
-                jarOut.closeEntry();
-            }
-        }
-        return jar;
-    }
-
-    private static void install(Path localRepository, String version, Path jar) throws IOException {
-        Path directory = localRepository.resolve("com/example/lib/" + version);
-        Files.createDirectories(directory);
-        Files.copy(jar, directory.resolve("lib-" + version + ".jar"));
-        Files.writeString(
-                directory.resolve("lib-" + version + ".pom"),
-                "<project><modelVersion>4.0.0</modelVersion><groupId>com.example</groupId>"
-                        + "<artifactId>lib</artifactId><version>"
-                        + version
-                        + "</version></project>");
+        CompiledWorld.compile(
+                work, Map.of("app/App.java", APP), List.of(libJar), repo.resolve("target/classes"));
     }
 }

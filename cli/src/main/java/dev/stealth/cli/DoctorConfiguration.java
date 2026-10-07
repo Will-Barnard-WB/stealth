@@ -15,6 +15,7 @@ import dev.stealth.core.eol.EndOfLifeClient;
 import dev.stealth.core.http.CachedHttpClient;
 import dev.stealth.core.http.HttpCache;
 import dev.stealth.core.hygiene.RepoHygieneAnalyzer;
+import dev.stealth.core.impact.TestGaps;
 import dev.stealth.core.impact.UpgradeImpact;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenResolverSettings;
@@ -125,6 +126,11 @@ class DoctorConfiguration {
     @Bean
     UpgradeImpact upgradeImpact(MavenModelLoader loader) {
         return new UpgradeImpact(loader);
+    }
+
+    @Bean
+    TestGaps testGaps(MavenModelLoader loader, UpgradeImpact impact) {
+        return new TestGaps(loader, impact);
     }
 
     @Bean

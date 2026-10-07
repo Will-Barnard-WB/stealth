@@ -27,8 +27,9 @@ final class UsageScanner {
      * @param owner the referenced class (internal name)
      * @param member the referenced member key, or null for a reference to the class itself
      * @param source the source file, repo-relative, as best it can be found
+     * @param method the enclosing method ({@code Class#method}), or null outside a method body
      */
-    record Reference(String owner, String member, String source, int line) {}
+    record Reference(String owner, String member, String source, int line, String method) {}
 
     private UsageScanner() {}
 
@@ -99,6 +100,7 @@ final class UsageScanner {
 
                     private final List<String> pendingSupers = new ArrayList<>();
                     private final List<String> supertypes = new ArrayList<>();
+                    private final String[] current = {null};
 
                     @Override
                     public void visitSource(String file, String debug) {
@@ -137,6 +139,12 @@ final class UsageScanner {
                             String signature,
                             String[] exceptions) {
                         int[] line = {0};
+                        String simpleClass =
+                                className[0].substring(className[0].lastIndexOf('/') + 1);
+                        current[0] =
+                                simpleClass.replace('$', '.')
+                                        + "#"
+                                        + (name.equals("<init>") ? "new" : name);
                         boolean overridable =
                                 (access
                                                         & (Opcodes.ACC_PRIVATE
@@ -161,6 +169,7 @@ final class UsageScanner {
                                         add(type, name + descriptor, at);
                                     }
                                 }
+                                current[0] = null;
                             }
 
                             private final int[] methodStart = {0};
@@ -263,7 +272,8 @@ final class UsageScanner {
                                         owner,
                                         member,
                                         source[0] == null ? className[0] : source[0],
-                                        line));
+                                        line,
+                                        current[0]));
                     }
 
                     @Override

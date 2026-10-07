@@ -261,6 +261,41 @@ public final class CleanupJson {
         return JSON.writeValueAsString(json);
     }
 
+    public static String gaps(dev.stealth.core.impact.TestGaps.Result gaps) {
+        ObjectNode json = JSON.createObjectNode();
+        json.put("dependency", gaps.dependency());
+        gaps.to().ifPresent(v -> json.put("upgradeTo", v));
+        json.put("sites", gaps.sites());
+        json.put("covered", gaps.covered());
+        json.put("testsPassed", gaps.testsPassed());
+        if (!gaps.failingTests().isEmpty()) {
+            json.put("failingTests", String.join(", ", gaps.failingTests()));
+        }
+        ArrayNode style = json.putArray("testStyle");
+        gaps.testStyle().forEach(style::add);
+        ArrayNode list = json.putArray("gaps");
+        for (dev.stealth.core.impact.TestGaps.Gap gap : gaps.gaps().stream().limit(100).toList()) {
+            ObjectNode node = list.addObject();
+            node.put("where", gap.where());
+            node.put("api", gap.api());
+            gap.method().ifPresent(m -> node.put("testThisMethod", m));
+            gap.testClass().ifPresent(t -> node.put("existingTestClass", t));
+        }
+        ArrayNode notes = json.putArray("notes");
+        gaps.notes().forEach(notes::add);
+        json.put(
+                "next",
+                gaps.gaps().isEmpty()
+                        ? "Every site is run by a test"
+                                + (gaps.testsPassed()
+                                        ? " and the tests pass."
+                                        : ", but the tests fail: fix them first.")
+                        : "Write tests that pin the current behaviour of each testThisMethod (in"
+                              + " the existing test class if there is one, in the same style), run"
+                              + " test_gaps again until gaps is empty, then make the upgrade.");
+        return JSON.writeValueAsString(json);
+    }
+
     private static ObjectNode score(HealthScore score) {
         ObjectNode node = JSON.createObjectNode();
         if (score.overall().isPresent()) {
