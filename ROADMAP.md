@@ -59,7 +59,7 @@ Tasks are tracked in ClickUp (folder "Stealth — Autonomous Maintainer"). Tasks
 - [ ] **Generate ArchUnit layer rules** from observed dependencies between layers.
 - [ ] **Duplicate-intent detection:** CPD + helper name/signature similarity ("use `DateUtils.parseIso` instead").
 - [ ] **`stealth check --changed`:** analyze only the git diff, fast.
-- [ ] **`stealth hooks install`:** Claude Code Stop hook in `.claude/settings.json`; output goes back to the agent.
+- [x] **`stealth hooks install`:** Claude Code Stop hook in `.claude/settings.json`; output goes back to the agent. *(Built early, as step 2 of `stealth clean`: PostToolUse and Stop hooks for dependencies and secrets. See [docs/tickets/clean/ticket-hooks.md](docs/tickets/clean/ticket-hooks.md).)*
 - [ ] **MCP tools:** `get_conventions`, `find_existing_helper(description)`.
 - [ ] **Export conventions** to AGENTS.md, `.cursorrules` and Copilot instructions.
 

@@ -145,6 +145,28 @@ On `fixtures/boot2-legacy` (Spring Boot 2.7.18) the safe patches clear 47 of 108
 command, on a reviewable branch, with the tests green; the reviewed ones take it to 76. Most of the rest have no fix
 in the open-source Spring 5.3 / Boot 2.7 lines.
 
+## Guard the agent while it works: `stealth hooks`
+
+```bash
+stealth hooks install            # adds hooks to this repo's .claude/settings.json (commit it for the team)
+stealth hooks install --user     # or to ~/.claude/settings.json, for every repository
+stealth hooks uninstall
+```
+
+Claude Code then runs stealth automatically, with no prompting:
+
+- **After each edit** (`Edit`, `Write`, `MultiEdit`): if a `pom.xml` gained or changed a dependency, it's checked
+  against Maven Central and OSV. A vulnerable version, or an artifact that doesn't exist (an invented name an attacker
+  could register), is reported straight back to the agent with the version to use. Any other edited file is scanned
+  for hardcoded secrets.
+- **Before it finishes** (`Stop`): the same checks over every file the session changed, so it doesn't hand back work
+  that added a vulnerable dependency or a secret.
+
+Only what the agent introduced is reported, compared with the last commit; existing debt is `stealth doctor`'s job.
+The agent is told to fix it, or to tell you why it's intended (for example a version you asked for). Each check takes
+about a second, a Stop check is never repeated in the same turn, and if stealth can't run, the agent carries on.
+`.stealth.yml` applies (`ignore`, `allow.secrets`).
+
 ## Output formats and the CI gate
 
 ```bash

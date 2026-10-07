@@ -336,6 +336,8 @@ Each step is a separate PR and useful on its own.
    cleared by the safe patches, 76 with the reviewed minor jumps, tests green, still on Spring Boot 2.7. Public repos
    not measured yet.
 2. **Hooks:** `stealth hooks install`, `post-edit` (dependencies and secrets), `stop` (what the session introduced).
+   **Status: built** (see [the ticket](../tickets/clean/ticket-hooks.md)). The hook format was confirmed against
+   Claude Code itself; about 1 s per check.
 3. **`upgrade_impact`:** japicmp plus ASM call-site analysis.
 4. **`test_gaps` and `verify_tests`:** coverage of affected call sites, measured with JaCoCo.
 5. **Later:** OpenRewrite recipes for the mechanical parts of migrations; `--open-pr`.

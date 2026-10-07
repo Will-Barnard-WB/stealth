@@ -173,7 +173,19 @@ public class SecretsAnalyzer implements Analyzer {
         if (content.isEmpty()) {
             return List.of();
         }
-        String text = content.get();
+        return scanText(path, content.get());
+    }
+
+    /**
+     * Secrets in one file's text, for checking an edit without scanning the repository: the hook
+     * compares a file's secrets with its committed version's. No allowlist is applied here.
+     *
+     * @param path the file's repo-relative path, for rule selection, locations and fingerprints
+     */
+    public List<Finding> scanText(String path, String text) {
+        if (!isScannable(path)) {
+            return List.of();
+        }
         String lower = text.toLowerCase(Locale.ROOT);
         String extension = extension(path);
 
