@@ -67,6 +67,27 @@ final class GitWorkspace {
         return directory;
     }
 
+    /** {@code ref} checked out, detached, in a temporary worktree: for comparing against it. */
+    Path addDetachedWorktree(String ref) throws CleanException, InterruptedException {
+        Path directory;
+        try {
+            directory = Files.createTempDirectory("stealth-verify-");
+            Files.delete(directory);
+        } catch (IOException e) {
+            throw new CleanException("can't create a temporary directory: " + e.getMessage(), e);
+        }
+        checked(
+                git(top, "worktree", "add", "--detach", directory.toString(), ref),
+                "check out " + ref + " (is it a branch, tag or commit here?)");
+        return directory;
+    }
+
+    /** Whether the working tree differs from HEAD, new files included (agents add files too). */
+    boolean hasChanges() throws CleanException, InterruptedException {
+        return !checked(git(top, "status", "--porcelain"), "read the working tree's status")
+                .isBlank();
+    }
+
     boolean branchExists(String branch) throws InterruptedException, CleanException {
         return git(top, "rev-parse", "--verify", "--quiet", "refs/heads/" + branch).ok();
     }
