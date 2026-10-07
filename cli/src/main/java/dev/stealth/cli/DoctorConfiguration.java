@@ -2,6 +2,9 @@ package dev.stealth.cli;
 
 import dev.stealth.core.Analyzer;
 import dev.stealth.core.AnalyzerRunner;
+import dev.stealth.core.clean.Cleaner;
+import dev.stealth.core.clean.CleanupVerifier;
+import dev.stealth.core.clean.PatchPlanner;
 import dev.stealth.core.deps.DependencyFreshnessAnalyzer;
 import dev.stealth.core.deps.MaintenanceAnalyzer;
 import dev.stealth.core.deps.MavenCentralClient;
@@ -100,6 +103,22 @@ class DoctorConfiguration {
     EndOfLifeAnalyzer endOfLifeAnalyzer(
             MavenModelLoader loader, EndOfLifeClient endOfLife, Clock clock) {
         return new EndOfLifeAnalyzer(loader, endOfLife, clock);
+    }
+
+    /** {@code stealth clean}: proven patches, applied on a branch, and verification. */
+    @Bean
+    PatchPlanner patchPlanner(MavenModelLoader loader, VulnerabilityAnalyzer vulnerabilities) {
+        return new PatchPlanner(loader, vulnerabilities);
+    }
+
+    @Bean
+    Cleaner cleaner(PatchPlanner planner, Clock clock) {
+        return new Cleaner(planner, clock);
+    }
+
+    @Bean
+    CleanupVerifier cleanupVerifier(AnalyzerRunner runner) {
+        return new CleanupVerifier(runner);
     }
 
     @Bean

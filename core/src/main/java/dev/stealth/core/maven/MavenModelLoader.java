@@ -45,6 +45,8 @@ import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.supplier.RepositorySystemSupplier;
 
 /**
@@ -106,6 +108,39 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
         }
         start();
         return new Run(poms, settings.get(), ignored).load();
+    }
+
+    /**
+     * Whether {@code groupId:artifactId:version} can be resolved: published on the remote
+     * repository, or already in the local one. Dependency collection quietly skips POMs it can't
+     * find, as Maven does, so a tree can mention a version that doesn't exist.
+     */
+    public boolean isPublished(String groupId, String artifactId, String version) {
+        start();
+        MavenResolverSettings current = settings.get();
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        session.setLocalRepositoryManager(
+                system.newLocalRepositoryManager(
+                        session, new LocalRepository(current.localRepository().toFile())));
+        session.setOffline(current.offline());
+        session.setConfigProperty(ConfigurationProperties.USER_AGENT, "stealth");
+        ArtifactRequest request =
+                new ArtifactRequest(
+                        new DefaultArtifact(groupId, artifactId, "", "pom", version),
+                        List.of(
+                                new RemoteRepository.Builder(
+                                                "central",
+                                                "default",
+                                                current.remoteRepository().toString())
+                                        .setSnapshotPolicy(new RepositoryPolicy(false, null, null))
+                                        .build()),
+                        null);
+        try {
+            system.resolveArtifact(session, request);
+            return true;
+        } catch (ArtifactResolutionException e) {
+            return false;
+        }
     }
 
     private void start() {

@@ -104,6 +104,45 @@ class StealthCommandTest {
                                             new AnalyzerRunner(List.of(), Duration.ofSeconds(1)),
                                             new OfflineMode()));
                         }
+                        if (cls == CleanCommand.class) {
+                            AnalyzerRunner none =
+                                    new AnalyzerRunner(List.of(), Duration.ofSeconds(1));
+                            dev.stealth.core.maven.MavenModelLoader loader =
+                                    new dev.stealth.core.maven.MavenModelLoader(
+                                            dev.stealth.core.maven.MavenResolverSettings
+                                                    .defaults());
+                            dev.stealth.core.clean.PatchPlanner planner =
+                                    new dev.stealth.core.clean.PatchPlanner(
+                                            loader,
+                                            new dev.stealth.core.vuln.VulnerabilityAnalyzer(
+                                                    loader,
+                                                    new dev.stealth.core.vuln.OsvClient(
+                                                            new dev.stealth.core.http
+                                                                    .CachedHttpClient(
+                                                                    java.net.http.HttpClient
+                                                                            .newHttpClient(),
+                                                                    new dev.stealth.core.http
+                                                                            .HttpCache(
+                                                                            java.nio.file.Path.of(
+                                                                                    System
+                                                                                            .getProperty(
+                                                                                                    "java.io.tmpdir")),
+                                                                            Duration.ofHours(1),
+                                                                            java.time.Clock
+                                                                                    .systemUTC()),
+                                                                    () -> true,
+                                                                    1,
+                                                                    Duration.ZERO),
+                                                            dev.stealth.core.vuln.OsvClient.OSV)));
+                            return cls.cast(
+                                    new CleanCommand(
+                                            none,
+                                            planner,
+                                            new dev.stealth.core.clean.Cleaner(
+                                                    planner, java.time.Clock.systemUTC()),
+                                            new dev.stealth.core.clean.CleanupVerifier(none),
+                                            new OfflineMode()));
+                        }
                         if (cls == McpCommand.class) {
                             return cls.cast(
                                     new McpCommand(

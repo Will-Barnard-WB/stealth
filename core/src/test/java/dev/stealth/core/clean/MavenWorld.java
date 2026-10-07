@@ -47,6 +47,8 @@ final class MavenWorld {
                     "com.example:fam-a@1.0", List.of("ADV-F"),
                     // Moving the whole BOM to 1.1 brings this in, so that patch must be rejected
                     "com.example:fam-b@1.1", List.of("ADV-NEW"),
+                    // Its fix (1.9) was never published, like Spring's commercial-only 5.3.4x
+                    "com.example:fam-b@1.0", List.of("ADV-GHOST"),
                     "com.example:loose@1.0", List.of("ADV-X"));
 
     final MavenModelLoader loader;
@@ -60,8 +62,8 @@ final class MavenWorld {
         planner =
                 new PatchPlanner(
                         loader,
-                        (root, config) ->
-                                vulnerabilities(loader.load(root)).stream()
+                        context ->
+                                vulnerabilities(context.get(loader)).stream()
                                         .map(v -> v.substring(0, v.lastIndexOf('@')))
                                         .collect(Collectors.toSet()));
     }
@@ -131,6 +133,7 @@ final class MavenWorld {
                     case "ADV-D", "ADV-L", "ADV-F" -> "1.1";
                     case "ADV-L2" -> "2.0";
                     case "ADV-X" -> "1.2";
+                    case "ADV-GHOST" -> "1.9";
                     default -> "9.9";
                 };
         return new Finding(

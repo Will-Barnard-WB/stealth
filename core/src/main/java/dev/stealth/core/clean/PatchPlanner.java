@@ -59,7 +59,7 @@ public class PatchPlanner {
     /** Known vulnerabilities of the dependency tree under a root, as {@code g:a ADVISORY-ID}. */
     @FunctionalInterface
     public interface TreeCheck {
-        Set<String> vulnerabilities(Path root, StealthConfig config) throws Exception;
+        Set<String> vulnerabilities(RepoContext context) throws Exception;
     }
 
     private final MavenModelLoader loader;
@@ -68,8 +68,8 @@ public class PatchPlanner {
     public PatchPlanner(MavenModelLoader loader, VulnerabilityAnalyzer vulnerabilities) {
         this(
                 loader,
-                (root, config) ->
-                        vulnerabilities.analyze(new RepoContext(root, config)).stream()
+                context ->
+                        vulnerabilities.analyze(context).stream()
                                 .map(PatchPlanner::vulnerabilityKey)
                                 .flatMap(Optional::stream)
                                 .collect(Collectors.toSet()));
@@ -94,8 +94,18 @@ public class PatchPlanner {
 
         MavenProjectModel model = context.get(loader);
         Map<String, Candidate> candidates = new LinkedHashMap<>();
+        // Only fixes that exist: OSV can name a commercial-only release (Spring 5.3.4x, say)
+        Map<String, Boolean> published = new java.util.concurrent.ConcurrentHashMap<>();
+        java.util.function.BiPredicate<String, String> isPublished =
+                (key, version) ->
+                        published.computeIfAbsent(
+                                key + ":" + version,
+                                k -> {
+                                    String[] ga = key.split(":", 2);
+                                    return loader.isPublished(ga[0], ga[1], version);
+                                });
         for (Target target : targets(vulnerabilities, model)) {
-            for (Candidate candidate : target.candidates()) {
+            for (Candidate candidate : target.candidates(isPublished)) {
                 candidates.merge(
                         candidate.edit().key() + (candidate.crossesMajor() ? "+major" : ""),
                         candidate,
@@ -132,7 +142,12 @@ public class PatchPlanner {
             Set<String> targets = new TreeSet<>();
             safe.forEach(p -> targets.addAll(p.targets()));
             Proof together =
-                    prove(context, safe.stream().map(Patch::edit).toList(), targets, baseline);
+                    prove(
+                            context,
+                            safe.stream().map(Patch::edit).toList(),
+                            safe.stream().flatMap(p -> p.changes().stream()).toList(),
+                            targets,
+                            baseline);
             combined = Optional.of(together);
             cleared.addAll(together.cleared());
         }
@@ -151,7 +166,13 @@ public class PatchPlanner {
     private List<Patch> proveCandidate(
             RepoContext context, Candidate candidate, Set<String> baseline)
             throws InterruptedException {
-        Proof proof = prove(context, List.of(candidate.edit()), candidate.targets(), baseline);
+        Proof proof =
+                prove(
+                        context,
+                        List.of(candidate.edit()),
+                        candidate.changes(),
+                        candidate.targets(),
+                        baseline);
         if (proof.accepted() || candidate.fallbacks().isEmpty()) {
             return List.of(patch(candidate, proof));
         }
@@ -165,6 +186,7 @@ public class PatchPlanner {
                             prove(
                                     context,
                                     List.of(fallback.edit()),
+                                    fallback.changes(),
                                     fallback.targets(),
                                     baseline)));
         }
@@ -198,7 +220,7 @@ public class PatchPlanner {
     public Set<String> vulnerabilities(Path root, StealthConfig config)
             throws IOException, InterruptedException {
         try {
-            return check.vulnerabilities(root, config);
+            return check.vulnerabilities(new RepoContext(root, config));
         } catch (IOException | InterruptedException | RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -208,14 +230,25 @@ public class PatchPlanner {
 
     /** Applies {@code edits} to a scratch copy of the POMs, re-resolves and checks again. */
     private Proof prove(
-            RepoContext context, List<PomEdit> edits, Set<String> targets, Set<String> baseline)
+            RepoContext context,
+            List<PomEdit> edits,
+            List<Patch.VersionChange> changes,
+            Set<String> targets,
+            Set<String> baseline)
             throws InterruptedException {
         Path scratch = null;
         try {
             scratch = Files.createTempDirectory("stealth-clean-");
             copyPoms(context.root(), scratch);
             PomEditor.applyAll(scratch, edits);
-            Set<String> after = check.vulnerabilities(scratch, context.config());
+            RepoContext patched = new RepoContext(scratch, context.config());
+            Optional<String> unresolved =
+                    resolutionProblem(context.get(loader), patched.get(loader), changes)
+                            .or(() -> unpublished(changes));
+            if (unresolved.isPresent()) {
+                return Proof.failed(unresolved.get());
+            }
+            Set<String> after = check.vulnerabilities(patched);
             List<String> cleared = targets.stream().filter(t -> !after.contains(t)).toList();
             List<String> remaining = targets.stream().filter(after::contains).toList();
             List<String> introduced =
@@ -236,6 +269,80 @@ public class PatchPlanner {
         }
     }
 
+    /**
+     * Why the patched POMs don't resolve as intended, if they don't: a new resolution problem (a
+     * version that isn't published, say), a module that lost its dependency tree, or a dependency
+     * that doesn't end up at its new version. Without this, a dependency missing from the tree
+     * would look like a fixed vulnerability.
+     */
+    static Optional<String> resolutionProblem(
+            MavenProjectModel before, MavenProjectModel after, List<Patch.VersionChange> changes) {
+        Set<String> knownWarnings = new java.util.HashSet<>(before.warnings());
+        Optional<String> newWarning =
+                after.warnings().stream().filter(w -> !knownWarnings.contains(w)).findFirst();
+        if (newWarning.isPresent()) {
+            return Optional.of("doesn't resolve: " + newWarning.get());
+        }
+        for (MavenModule module : before.modules()) {
+            Optional<MavenModule> patched = after.module(module.directory());
+            if (!module.dependencyTree().isEmpty()
+                    && patched.map(m -> m.dependencyTree().isEmpty()).orElse(true)) {
+                return Optional.of(
+                        "the dependency tree of "
+                                + (module.directory().isEmpty()
+                                        ? "the root module"
+                                        : module.directory())
+                                + " no longer resolves");
+            }
+        }
+        Map<String, Set<String>> resolved = resolvedVersions(after);
+        Map<String, Set<String>> original = resolvedVersions(before);
+        for (Patch.VersionChange change : changes) {
+            Set<String> versions = resolved.getOrDefault(change.dependency(), Set.of());
+            if (original.containsKey(change.dependency()) && !versions.contains(change.to())) {
+                return Optional.of(
+                        change.dependency()
+                                + " resolves to "
+                                + (versions.isEmpty() ? "nothing" : String.join(", ", versions))
+                                + ", not "
+                                + change.to());
+            }
+        }
+        return Optional.empty();
+    }
+
+    /** The first new version that can't be resolved, e.g. a commercial-only release. */
+    private Optional<String> unpublished(List<Patch.VersionChange> changes) {
+        for (Patch.VersionChange change : changes) {
+            String[] key = change.dependency().split(":", 2);
+            if (key.length == 2 && !loader.isPublished(key[0], key[1], change.to())) {
+                return Optional.of(
+                        change.dependency()
+                                + ":"
+                                + change.to()
+                                + " isn't published (OSV names it as the fix, but it can't be"
+                                + " downloaded; commercial-only releases look like this)");
+            }
+        }
+        return Optional.empty();
+    }
+
+    /** Every version of every dependency in the modules' resolved trees. */
+    private static Map<String, Set<String>> resolvedVersions(MavenProjectModel model) {
+        Map<String, Set<String>> versions = new LinkedHashMap<>();
+        for (MavenModule module : model.modules()) {
+            for (dev.stealth.core.maven.DependencyNode root : module.dependencyTree()) {
+                root.walk(
+                        path -> {
+                            dev.stealth.core.maven.DependencyNode node = path.getLast();
+                            versions.computeIfAbsent(node.key(), k -> new TreeSet<>())
+                                    .add(node.version());
+                        });
+            }
+        }
+        return versions;
+    }
+
     /** One vulnerable dependency version in one module, and what fixes its advisories. */
     private record Target(
             MavenModule module,
@@ -251,18 +358,20 @@ public class PatchPlanner {
         /**
          * A same-major patch for what can be fixed in this major, a cross-major one for the rest.
          */
-        List<Candidate> candidates() {
+        List<Candidate> candidates(java.util.function.BiPredicate<String, String> isPublished) {
             List<Candidate> candidates = new ArrayList<>();
             Map<String, String> sameMajor = new LinkedHashMap<>();
             Map<String, String> newMajor = new LinkedHashMap<>();
             fixedIn.forEach(
                     (advisory, fixed) ->
-                            fixed.ifPresent(
-                                    v ->
-                                            (Versions.update(version, v) == Versions.Update.MAJOR
-                                                            ? newMajor
-                                                            : sameMajor)
-                                                    .put(advisory, v)));
+                            fixed.filter(v -> isPublished.test(key(), v))
+                                    .ifPresent(
+                                            v ->
+                                                    (Versions.update(version, v)
+                                                                            == Versions.Update.MAJOR
+                                                                    ? newMajor
+                                                                    : sameMajor)
+                                                            .put(advisory, v)));
             candidate(sameMajor, false).ifPresent(candidates::add);
             // The cross-major patch has to fix the same-major advisories too
             Map<String, String> all = new LinkedHashMap<>(sameMajor);

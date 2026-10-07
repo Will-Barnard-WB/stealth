@@ -11,7 +11,7 @@ import picocli.CommandLine.Spec;
         name = "stealth",
         mixinStandardHelpOptions = true,
         versionProvider = ManifestVersionProvider.class,
-        subcommands = {DoctorCommand.class, McpCommand.class},
+        subcommands = {DoctorCommand.class, CleanCommand.class, McpCommand.class},
         description = "Find, prevent and clear tech debt and security debt.")
 public class StealthCommand implements Runnable {
 

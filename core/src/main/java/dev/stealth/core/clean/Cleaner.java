@@ -222,7 +222,21 @@ public class Cleaner {
             return "new test failures: "
                     + fresh.stream().limit(5).collect(Collectors.joining(", "));
         }
-        return "the build failed:\n" + run.output();
+        // The first error line usually says what broke; keep the output for the details
+        String first =
+                run.output()
+                        .lines()
+                        .filter(l -> l.contains("ERROR") || l.contains("FAIL"))
+                        .findFirst()
+                        .or(
+                                () ->
+                                        run.output()
+                                                .lines()
+                                                .filter(l -> !l.isBlank())
+                                                .reduce((a, b) -> b))
+                        .orElse("no output")
+                        .strip();
+        return "the build failed: " + first + "\n" + run.output();
     }
 
     private String defaultBranch(GitWorkspace git) throws CleanException, InterruptedException {

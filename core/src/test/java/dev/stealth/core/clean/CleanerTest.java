@@ -62,8 +62,8 @@ class CleanerTest {
         assertThat(result.branch()).contains("stealth/clean-20261007-1412");
         assertThat(result.applied()).hasSize(4);
         assertThat(result.failed()).isEmpty();
-        assertThat(result.vulnerabilitiesBefore()).isEqualTo(5);
-        assertThat(result.vulnerabilitiesAfter()).isEqualTo(1);
+        assertThat(result.vulnerabilitiesBefore()).isEqualTo(6);
+        assertThat(result.vulnerabilitiesAfter()).isEqualTo(2);
         assertThat(result.baseline()).hasValueSatisfying(r -> assertThat(r.passed()).isTrue());
         // The user's checkout is exactly as it was
         assertThat(Files.readString(app.resolve("pom.xml"))).isEqualTo(MavenWorld.APP_POM);

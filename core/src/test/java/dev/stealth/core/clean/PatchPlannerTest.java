@@ -76,6 +76,17 @@ class PatchPlannerTest {
     }
 
     @Test
+    void plan_fixedVersionThatIsntPublished_isNotPlannedAndStaysRemaining() throws Exception {
+        CleanupPlan plan = plan();
+
+        assertThat(plan.patches())
+                .noneMatch(p -> p.changes().stream().anyMatch(c -> c.to().equals("1.9")));
+        assertThat(plan.remaining())
+                .extracting(f -> f.advisory().orElseThrow().id())
+                .contains("ADV-GHOST");
+    }
+
+    @Test
     void plan_unmanagedTransitiveDependency_isPinned() throws Exception {
         Patch loose = patchFor(plan(), "com.example:loose");
 
@@ -96,7 +107,7 @@ class PatchPlannerTest {
                         });
         assertThat(plan.remaining())
                 .extracting(f -> f.advisory().orElseThrow().id())
-                .containsExactly("ADV-L2");
+                .containsExactlyInAnyOrder("ADV-L2", "ADV-GHOST");
         // Planning never touches the repository itself
         assertThat(Files.readString(app.resolve("pom.xml"))).isEqualTo(MavenWorld.APP_POM);
     }
