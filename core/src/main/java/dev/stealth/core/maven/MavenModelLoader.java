@@ -196,8 +196,9 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                     .setSystemProperties(systemProperties);
 
             Model effective;
+            ModelBuildingResult result;
             try {
-                ModelBuildingResult result = modelBuilder.build(request);
+                result = modelBuilder.build(request);
                 effective = result.getEffectiveModel();
             } catch (ModelBuildingException e) {
                 for (ModelProblem problem : e.getProblems()) {
@@ -226,7 +227,8 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                             javaVersion(effective, pom),
                             springBootVersion(effective, pom),
                             externalParent(pom),
-                            importedBoms(pom, effective)));
+                            importedBoms(pom, effective),
+                            managedVersions(effective, result, pom)));
         }
 
         private Optional<PomReference> externalParent(Path pom) {
@@ -306,6 +308,47 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                             located.source()));
         }
 
+        /** The effective {@code <dependencyManagement>}, without BOM imports (already expanded). */
+        private Map<String, ManagedVersion> managedVersions(
+                Model effective, ModelBuildingResult result, Path pom) {
+            Map<String, ManagedVersion> managed = new LinkedHashMap<>();
+            if (effective.getDependencyManagement() == null) {
+                return managed;
+            }
+            Set<String> parents = new HashSet<>(result.getModelIds());
+            // BOM imports as the module and its parents write them, nearest first
+            Map<String, VersionLocator.BomImport> imports = new LinkedHashMap<>();
+            for (String id : result.getModelIds()) {
+                Model raw = result.getRawModel(id);
+                if (raw == null || raw.getDependencyManagement() == null) {
+                    continue;
+                }
+                Optional<Path> declaring =
+                        raw.getPomFile() == null
+                                ? Optional.empty()
+                                : locator.repositoryPom(raw.getPomFile().getPath());
+                for (Dependency imported : raw.getDependencyManagement().getDependencies()) {
+                    if ("import".equals(imported.getScope())) {
+                        imports.putIfAbsent(
+                                imported.getGroupId() + ":" + imported.getArtifactId(),
+                                new VersionLocator.BomImport(
+                                        imported.getVersion(),
+                                        imported.getLocation("version"),
+                                        declaring));
+                    }
+                }
+            }
+            for (Dependency dependency : effective.getDependencyManagement().getDependencies()) {
+                if (dependency.getVersion() == null || "import".equals(dependency.getScope())) {
+                    continue;
+                }
+                managed.putIfAbsent(
+                        dependency.getGroupId() + ":" + dependency.getArtifactId(),
+                        locator.managed(dependency, parents, imports, pom));
+            }
+            return managed;
+        }
+
         private MavenModule unresolvedModule(Path pom, Model raw) {
             return new MavenModule(
                     RepoPoms.groupId(raw),
@@ -319,7 +362,8 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    List.of());
+                    List.of(),
+                    Map.of());
         }
 
         private List<DependencyNode> dependencyTree(Model effective, String pomPath) {
