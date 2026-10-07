@@ -10,6 +10,7 @@ import dev.stealth.core.clean.CleanupResult;
 import dev.stealth.core.clean.CleanupVerifier;
 import dev.stealth.core.clean.PatchPlanner;
 import dev.stealth.core.clean.TestRunner;
+import dev.stealth.core.impact.TestGaps;
 import dev.stealth.core.impact.UpgradeImpact;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import java.io.IOException;
@@ -41,18 +42,21 @@ class CleanupTools {
     private final Cleaner cleaner;
     private final CleanupVerifier verifier;
     private final UpgradeImpact impact;
+    private final TestGaps gaps;
 
     CleanupTools(
             RepoScans scans,
             PatchPlanner planner,
             Cleaner cleaner,
             CleanupVerifier verifier,
-            UpgradeImpact impact) {
+            UpgradeImpact impact,
+            TestGaps gaps) {
         this.scans = scans;
         this.planner = planner;
         this.cleaner = cleaner;
         this.verifier = verifier;
         this.impact = impact;
+        this.gaps = gaps;
     }
 
     @McpTool(
@@ -188,6 +192,41 @@ class CleanupTools {
                                         groupId,
                                         artifactId,
                                         version)));
+    }
+
+    @McpTool(
+            name = "test_gaps",
+            title = "Test gaps",
+            description =
+                    """
+                    Where this repository uses a dependency (or, with version, where upgrading it \
+                    breaks) that no test runs. Runs the tests with JaCoCo, so it takes as long as \
+                    the test suite. Before a risky upgrade, call it, write tests that pin the \
+                    current behaviour of each method it lists (same style as the existing tests), \
+                    and call it again until there are no gaps: then the tests passing after the \
+                    upgrade actually means something. Writes only build output (target/).\
+                    """,
+            annotations = @McpAnnotations(readOnlyHint = true, openWorldHint = true))
+    CallToolResult testGaps(
+            @McpToolParam(description = "Absolute path of the repository root.") String path,
+            @McpToolParam(description = "Group id, e.g. org.springframework") String groupId,
+            @McpToolParam(description = "Artifact id, e.g. spring-web") String artifactId,
+            @McpToolParam(
+                            description =
+                                    "Version you plan to upgrade to: only its breaking call sites"
+                                            + " are checked. Default: every use of the dependency.",
+                            required = false)
+                    String version) {
+        return call(
+                "test_gaps " + groupId + ":" + artifactId,
+                () ->
+                        CleanupJson.gaps(
+                                gaps.analyze(
+                                        scans.context(StealthTools.directory(path)),
+                                        groupId,
+                                        artifactId,
+                                        Optional.ofNullable(version).filter(v -> !v.isBlank()),
+                                        Optional.empty())));
     }
 
     @McpTool(

@@ -105,6 +105,7 @@ Then start Claude Code in any Java/Maven repository (`/mcp` in Claude Code shows
 | `apply_cleanup` | The safe patches committed to a new branch, tests run before and after | (after the user agrees to the plan) |
 | `verify_cleanup` | What the agent's own changes resolved or introduced, compared with a base commit | "Did that fix it?" |
 | `upgrade_impact` | Every place the code uses an API a dependency upgrade removes or deprecates, with what to use instead | "What would moving to Spring 6 break?" |
+| `test_gaps` | Which of those places (or uses of a dependency) no test runs, with the method to test; runs the tests with JaCoCo | "Make sure the upgrade is covered by tests first" |
 
 - **Fast follow-ups.** The first scan of a repository takes as long as `stealth doctor`; later calls reuse it until a file
   changes (git repositories), for up to an hour. `.stealth.yml` in the repository applies.
@@ -127,6 +128,7 @@ stealth clean                 # the plan: what can be fixed, proven; changes not
 stealth clean --apply         # put the safe patches on a new branch, tests run before and after
 stealth clean --verify        # compare your uncommitted changes with HEAD (or --base main)
 stealth clean --impact org.springframework:spring-web:6.1.14   # what that upgrade breaks here, line by line
+stealth clean --gaps org.springframework:spring-web:6.1.14     # which of those places no test runs
 ```
 
 - **The cheapest edit for each vulnerable dependency:** its own `<version>` line when you declare it; else the
@@ -149,6 +151,13 @@ your compiled code calls, extends or overrides something removed or deprecated, 
 instead: for `boot2-legacy`, spring-web 5.3 → 6.1 removes 520 APIs, and the one that matters is
 `RequestIdFilter.java:20`, an override of `doFilterInternal` that now takes `jakarta.servlet` types. Exact when the
 project is compiled; otherwise it matches imports only, and says so.
+
+**Test gaps** (`--gaps`, MCP `test_gaps`) make "the tests pass" mean something before a risky upgrade. It runs your
+tests with JaCoCo (added on the command line; your POM isn't changed) and reports which of the places an upgrade
+affects (or, without a version, every use of the dependency) no test executes, with the method to test, the existing
+test class, and the style your tests are written in. In `boot2-legacy`, the only spring-web 6 breaking site, the
+`RequestIdFilter` override, is run by no test even though the build is green; given `test_gaps`, Claude Code wrote
+tests for it in the repo's style and re-ran the tool until no gaps were left.
 
 On `fixtures/boot2-legacy` (Spring Boot 2.7.18) the safe patches clear 47 of 108 known vulnerabilities in one
 command, on a reviewable branch, with the tests green; the reviewed ones take it to 76. Most of the rest have no fix

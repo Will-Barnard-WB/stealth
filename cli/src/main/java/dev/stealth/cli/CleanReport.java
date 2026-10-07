@@ -307,6 +307,40 @@ class CleanReport {
         return String.join(System.lineSeparator(), lines) + System.lineSeparator();
     }
 
+    String gaps(Path root, dev.stealth.core.impact.TestGaps.Result gaps) {
+        List<String> lines = header(root);
+        lines.add(
+                "  "
+                        + style("bold", gaps.dependency())
+                        + gaps.to().map(v -> " → " + v).orElse("")
+                        + style(
+                                "faint",
+                                "  "
+                                        + gaps.covered()
+                                        + " of "
+                                        + gaps.sites()
+                                        + " call sites run by a test; tests "
+                                        + (gaps.testsPassed() ? "pass" : "fail or didn't run")));
+        if (!gaps.testStyle().isEmpty()) {
+            lines.add(
+                    "  " + style("faint", "Tests here use " + String.join(", ", gaps.testStyle())));
+        }
+        lines.add("");
+        for (dev.stealth.core.impact.TestGaps.Gap gap : gaps.gaps()) {
+            lines.add("  " + style("fg(214)", "untested") + "  " + gap.where() + "  " + gap.api());
+            lines.add(
+                    "            "
+                            + style(
+                                    "faint",
+                                    "test "
+                                            + gap.method().orElse("the enclosing method")
+                                            + gap.testClass().map(t -> " in " + t).orElse("")));
+        }
+        gaps.notes().forEach(n -> lines.add("  " + style("faint", n)));
+        lines.add("");
+        return String.join(System.lineSeparator(), lines) + System.lineSeparator();
+    }
+
     private String patchLine(String number, Patch patch) {
         String level =
                 switch (patch.level()) {

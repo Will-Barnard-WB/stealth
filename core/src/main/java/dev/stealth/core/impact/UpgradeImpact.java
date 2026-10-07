@@ -74,8 +74,15 @@ public class UpgradeImpact {
      * @param where {@code file:line}
      * @param api the class or member used, e.g. {@code com.google.common.io.Files#createTempDir()}
      * @param hint what to use instead, when known
+     * @param method the enclosing method, {@code Class#method}, when known (compiled code)
      */
-    public record Usage(String where, String api, Kind kind, Optional<String> hint) {}
+    public record Usage(
+            String where, String api, Kind kind, Optional<String> hint, Optional<String> method) {
+
+        public Usage(String where, String api, Kind kind, Optional<String> hint) {
+            this(where, api, kind, hint, Optional.empty());
+        }
+    }
 
     /**
      * @param precise whether usages come from compiled classes (exact, with lines) or, when the
@@ -183,11 +190,22 @@ public class UpgradeImpact {
                     String api = dotted(owner);
                     usages.putIfAbsent(
                             where + api,
-                            new Usage(where, api, Kind.REMOVED, classHint(owner, after)));
+                            new Usage(
+                                    where,
+                                    api,
+                                    Kind.REMOVED,
+                                    classHint(owner, after),
+                                    Optional.ofNullable(reference.method())));
                 } else if (changes.deprecatedClasses().contains(owner)) {
                     String api = dotted(owner);
                     usages.putIfAbsent(
-                            where + api, new Usage(where, api, Kind.DEPRECATED, Optional.empty()));
+                            where + api,
+                            new Usage(
+                                    where,
+                                    api,
+                                    Kind.DEPRECATED,
+                                    Optional.empty(),
+                                    Optional.ofNullable(reference.method())));
                 }
                 continue;
             }
@@ -201,13 +219,20 @@ public class UpgradeImpact {
                                 where,
                                 api,
                                 Kind.REMOVED,
-                                memberHint(owner, reference.member(), after)));
+                                memberHint(owner, reference.member(), after),
+                                Optional.ofNullable(reference.method())));
             } else if (changes.deprecatedMembers()
                     .getOrDefault(owner, Set.of())
                     .contains(reference.member())) {
                 String api = member(owner, reference.member());
                 usages.putIfAbsent(
-                        where + api, new Usage(where, api, Kind.DEPRECATED, Optional.empty()));
+                        where + api,
+                        new Usage(
+                                where,
+                                api,
+                                Kind.DEPRECATED,
+                                Optional.empty(),
+                                Optional.ofNullable(reference.method())));
             }
         }
         return sorted(usages.values());

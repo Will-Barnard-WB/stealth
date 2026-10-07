@@ -15,6 +15,7 @@ import dev.stealth.core.clean.CleanupVerifier;
 import dev.stealth.core.clean.PatchPlanner;
 import dev.stealth.core.clean.TestRunner;
 import dev.stealth.core.clean.Verification;
+import dev.stealth.core.impact.TestGaps;
 import dev.stealth.core.impact.UpgradeImpact;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -62,6 +63,7 @@ public class CleanCommand implements Callable<Integer> {
     private final CleanupVerifier verifier;
     private final OfflineMode offlineMode;
     private final UpgradeImpact upgradeImpact;
+    private final TestGaps testGaps;
 
     @Spec private CommandSpec spec;
 
@@ -129,6 +131,14 @@ public class CleanCommand implements Callable<Integer> {
                             + " it removes or deprecates, line by line.")
     private String impact;
 
+    @Option(
+            names = "--gaps",
+            paramLabel = "GROUP:ARTIFACT[:VERSION]",
+            description =
+                    "Where the code uses a dependency (or, with VERSION, where that upgrade breaks)"
+                            + " that no test runs. Runs the tests with JaCoCo.")
+    private String gapsFor;
+
     @Option(names = "--json", description = "Print JSON.")
     private boolean json;
 
@@ -143,13 +153,15 @@ public class CleanCommand implements Callable<Integer> {
             Cleaner cleaner,
             CleanupVerifier verifier,
             OfflineMode offlineMode,
-            UpgradeImpact upgradeImpact) {
+            UpgradeImpact upgradeImpact,
+            TestGaps testGaps) {
         this.runner = runner;
         this.planner = planner;
         this.cleaner = cleaner;
         this.verifier = verifier;
         this.offlineMode = offlineMode;
         this.upgradeImpact = upgradeImpact;
+        this.testGaps = testGaps;
     }
 
     @Override
@@ -161,8 +173,12 @@ public class CleanCommand implements Callable<Integer> {
             err.println("stealth clean: not a directory: " + path);
             return ExitCode.USAGE;
         }
-        if ((apply ? 1 : 0) + (verify ? 1 : 0) + (impact != null ? 1 : 0) > 1) {
-            err.println("stealth clean: use one of --apply, --verify or --impact");
+        if ((apply ? 1 : 0)
+                        + (verify ? 1 : 0)
+                        + (impact != null ? 1 : 0)
+                        + (gapsFor != null ? 1 : 0)
+                > 1) {
+            err.println("stealth clean: use one of --apply, --verify, --impact or --gaps");
             return ExitCode.USAGE;
         }
         if (apply && verify) {
@@ -173,6 +189,32 @@ public class CleanCommand implements Callable<Integer> {
         CleanReport text = new CleanReport(spec.commandLine().getColorScheme().ansi());
         try {
             RepoContext context = new RepoContext(root, loadConfig(root).config());
+            if (gapsFor != null) {
+                String[] coordinates = gapsFor.split(":");
+                if (coordinates.length < 2 || coordinates.length > 3) {
+                    err.println(
+                            "stealth clean: --gaps takes group:artifact or group:artifact:version");
+                    return ExitCode.USAGE;
+                }
+                TestGaps.Result result =
+                        testGaps.analyze(
+                                context,
+                                coordinates[0],
+                                coordinates[1],
+                                coordinates.length == 3
+                                        ? Optional.of(coordinates[2])
+                                        : Optional.empty(),
+                                testCommand == null || testCommand.isBlank()
+                                        ? Optional.empty()
+                                        : Optional.of(
+                                                Arrays.asList(testCommand.strip().split("\\s+"))));
+                out.print(
+                        json
+                                ? CleanupJson.gaps(result) + System.lineSeparator()
+                                : text.gaps(root, result));
+                out.flush();
+                return result.gaps().isEmpty() && result.testsPassed() ? ExitCode.OK : 1;
+            }
             if (impact != null) {
                 String[] coordinates = impact.split(":");
                 if (coordinates.length != 3) {

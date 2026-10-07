@@ -92,6 +92,13 @@ public final class TestRunner {
                 result.tail(40));
     }
 
+    /** The project's wrapper if it has one, else {@code mvn}, running {@code goals}. */
+    public static List<String> maven(Path project, List<String> goals) {
+        List<String> command = new java.util.ArrayList<>(maven(project).subList(0, 3));
+        command.addAll(goals);
+        return command;
+    }
+
     /** The project's wrapper if it has one, else {@code mvn}; batch mode, no colour. */
     static List<String> maven(Path project) {
         String wrapper = Command.WINDOWS ? "mvnw.cmd" : "mvnw";
