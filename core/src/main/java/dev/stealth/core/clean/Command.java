@@ -21,20 +21,35 @@ final class Command {
 
     private Command() {}
 
-    record Result(int exitCode, String output, boolean timedOut) {
+    /**
+     * @param output standard output, plus standard error when they were merged
+     * @param errors standard error when kept separate (empty when merged)
+     */
+    record Result(int exitCode, String output, String errors, boolean timedOut) {
 
         boolean ok() {
             return exitCode == 0 && !timedOut;
         }
 
-        /** The last {@code lines} lines of output. */
+        /** The last {@code lines} lines of output, then of errors. */
         String tail(int lines) {
-            List<String> all = output.lines().toList();
+            List<String> all = new ArrayList<>(output.lines().toList());
+            all.addAll(errors.lines().toList());
             return String.join("\n", all.subList(Math.max(0, all.size() - lines), all.size()));
         }
     }
 
+    /** Runs {@code command} with standard error merged into the output, as a build log reads. */
     static Result run(Path directory, Duration timeout, List<String> command)
+            throws IOException, InterruptedException {
+        return run(directory, timeout, command, true);
+    }
+
+    /**
+     * @param mergeErrors false keeps standard error out of {@link Result#output()}: for output that
+     *     gets parsed, which git warnings (such as Windows line-ending notices) would corrupt
+     */
+    static Result run(Path directory, Duration timeout, List<String> command, boolean mergeErrors)
             throws IOException, InterruptedException {
         List<String> full = new ArrayList<>();
         String program = command.getFirst().toLowerCase(Locale.ROOT);
@@ -45,48 +60,56 @@ final class Command {
         Process process =
                 new ProcessBuilder(full)
                         .directory(directory.toFile())
-                        .redirectErrorStream(true)
+                        .redirectErrorStream(mergeErrors)
                         .start();
         process.getOutputStream().close();
         StringBuilder output = new StringBuilder();
-        Thread reader =
-                Thread.ofVirtual()
-                        .start(
-                                () -> {
-                                    try (InputStream in = process.getInputStream()) {
-                                        byte[] buffer = new byte[8192];
-                                        int read;
-                                        while ((read = in.read(buffer)) >= 0) {
-                                            synchronized (output) {
-                                                output.append(
-                                                        new String(
-                                                                buffer,
-                                                                0,
-                                                                read,
-                                                                StandardCharsets.UTF_8));
-                                                if (output.length() > MAX_OUTPUT * 2) {
-                                                    output.delete(0, output.length() - MAX_OUTPUT);
-                                                }
-                                            }
-                                        }
-                                    } catch (IOException e) {
-                                        // The process ended; whatever was read is kept
-                                    }
-                                });
+        StringBuilder errors = new StringBuilder();
+        Thread outputReader = read(process.getInputStream(), output);
+        Thread errorReader = mergeErrors ? null : read(process.getErrorStream(), errors);
         boolean finished = process.waitFor(timeout.toMillis(), TimeUnit.MILLISECONDS);
         if (!finished) {
             process.descendants().forEach(ProcessHandle::destroyForcibly);
             process.destroyForcibly();
             process.waitFor(10, TimeUnit.SECONDS);
         }
-        reader.join(5_000);
-        String text;
-        synchronized (output) {
-            text =
-                    output.length() > MAX_OUTPUT
-                            ? output.substring(output.length() - MAX_OUTPUT)
-                            : output.toString();
+        outputReader.join(5_000);
+        if (errorReader != null) {
+            errorReader.join(5_000);
         }
-        return new Result(finished ? process.exitValue() : -1, text, !finished);
+        return new Result(
+                finished ? process.exitValue() : -1, text(output), text(errors), !finished);
+    }
+
+    /** Reads {@code stream} into {@code into} on a virtual thread, keeping only the end. */
+    private static Thread read(InputStream stream, StringBuilder into) {
+        return Thread.ofVirtual()
+                .start(
+                        () -> {
+                            try (InputStream in = stream) {
+                                byte[] buffer = new byte[8192];
+                                int read;
+                                while ((read = in.read(buffer)) >= 0) {
+                                    synchronized (into) {
+                                        into.append(
+                                                new String(
+                                                        buffer, 0, read, StandardCharsets.UTF_8));
+                                        if (into.length() > MAX_OUTPUT * 2) {
+                                            into.delete(0, into.length() - MAX_OUTPUT);
+                                        }
+                                    }
+                                }
+                            } catch (IOException e) {
+                                // The process ended; whatever was read is kept
+                            }
+                        });
+    }
+
+    private static String text(StringBuilder buffer) {
+        synchronized (buffer) {
+            return buffer.length() > MAX_OUTPUT
+                    ? buffer.substring(buffer.length() - MAX_OUTPUT)
+                    : buffer.toString();
+        }
     }
 }

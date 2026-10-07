@@ -233,11 +233,14 @@ class CleanerTest {
         Process process =
                 new ProcessBuilder(command)
                         .directory(app.toFile())
-                        .redirectErrorStream(true)
+                        .redirectError(ProcessBuilder.Redirect.PIPE)
                         .start();
+        // stdout only: git's stderr warnings (CRLF notices on Windows) aren't output
         String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        String errors = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
         if (process.waitFor() != 0) {
-            throw new IOException("git " + String.join(" ", arguments) + " failed: " + output);
+            throw new IOException(
+                    "git " + String.join(" ", arguments) + " failed: " + output + errors);
         }
         return output.strip();
     }

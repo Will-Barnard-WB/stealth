@@ -227,7 +227,10 @@ public class SecretsAnalyzer implements Analyzer {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.of(new Remediation(Optional.empty(), Optional.of(ADVICE))),
-                Fingerprints.of(rule.id(), path, sha256(match.secret())));
+                // Line endings normalized: a Windows checkout (CRLF) of a multi-line key is the
+                // same
+                // secret, and must keep the same fingerprint for verify, SARIF and the hooks
+                Fingerprints.of(rule.id(), path, sha256(match.secret().replace("\r\n", "\n"))));
     }
 
     private static int lineOf(String text, int offset) {

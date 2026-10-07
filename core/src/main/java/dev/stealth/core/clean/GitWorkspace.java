@@ -149,7 +149,9 @@ final class GitWorkspace {
         command.add("git");
         command.addAll(List.of(arguments));
         try {
-            return Command.run(directory, TIMEOUT, command);
+            // Parsed output: git's warnings on stderr (e.g. "LF will be replaced by CRLF" with
+            // core.autocrlf on Windows) must not look like changes or paths
+            return Command.run(directory, TIMEOUT, command, false);
         } catch (IOException e) {
             throw new CleanException("can't run git (is it installed?): " + e.getMessage(), e);
         }
