@@ -141,7 +141,8 @@ class StealthCommandTest {
                                             new dev.stealth.core.clean.Cleaner(
                                                     planner, java.time.Clock.systemUTC()),
                                             new dev.stealth.core.clean.CleanupVerifier(none),
-                                            new OfflineMode()));
+                                            new OfflineMode(),
+                                            new dev.stealth.core.impact.UpgradeImpact(loader)));
                         }
                         if (cls == McpCommand.class) {
                             return cls.cast(

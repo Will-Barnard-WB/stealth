@@ -15,6 +15,7 @@ import dev.stealth.core.clean.CleanupVerifier;
 import dev.stealth.core.clean.PatchPlanner;
 import dev.stealth.core.clean.TestRunner;
 import dev.stealth.core.clean.Verification;
+import dev.stealth.core.impact.UpgradeImpact;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -60,6 +61,7 @@ public class CleanCommand implements Callable<Integer> {
     private final Cleaner cleaner;
     private final CleanupVerifier verifier;
     private final OfflineMode offlineMode;
+    private final UpgradeImpact upgradeImpact;
 
     @Spec private CommandSpec spec;
 
@@ -119,6 +121,14 @@ public class CleanCommand implements Callable<Integer> {
     @Option(names = "--tests", description = "With --verify, run the tests too.")
     private boolean tests;
 
+    @Option(
+            names = "--impact",
+            paramLabel = "GROUP:ARTIFACT:VERSION",
+            description =
+                    "What upgrading a dependency to VERSION would break here: the code using APIs"
+                            + " it removes or deprecates, line by line.")
+    private String impact;
+
     @Option(names = "--json", description = "Print JSON.")
     private boolean json;
 
@@ -132,12 +142,14 @@ public class CleanCommand implements Callable<Integer> {
             PatchPlanner planner,
             Cleaner cleaner,
             CleanupVerifier verifier,
-            OfflineMode offlineMode) {
+            OfflineMode offlineMode,
+            UpgradeImpact upgradeImpact) {
         this.runner = runner;
         this.planner = planner;
         this.cleaner = cleaner;
         this.verifier = verifier;
         this.offlineMode = offlineMode;
+        this.upgradeImpact = upgradeImpact;
     }
 
     @Override
@@ -149,6 +161,10 @@ public class CleanCommand implements Callable<Integer> {
             err.println("stealth clean: not a directory: " + path);
             return ExitCode.USAGE;
         }
+        if ((apply ? 1 : 0) + (verify ? 1 : 0) + (impact != null ? 1 : 0) > 1) {
+            err.println("stealth clean: use one of --apply, --verify or --impact");
+            return ExitCode.USAGE;
+        }
         if (apply && verify) {
             err.println("stealth clean: use --apply or --verify, not both");
             return ExitCode.USAGE;
@@ -157,6 +173,24 @@ public class CleanCommand implements Callable<Integer> {
         CleanReport text = new CleanReport(spec.commandLine().getColorScheme().ansi());
         try {
             RepoContext context = new RepoContext(root, loadConfig(root).config());
+            if (impact != null) {
+                String[] coordinates = impact.split(":");
+                if (coordinates.length != 3) {
+                    err.println(
+                            "stealth clean: --impact takes group:artifact:version, e.g."
+                                    + " org.springframework:spring-web:6.1.14");
+                    return ExitCode.USAGE;
+                }
+                UpgradeImpact.Result result =
+                        upgradeImpact.analyze(
+                                context, coordinates[0], coordinates[1], coordinates[2]);
+                out.print(
+                        json
+                                ? CleanupJson.impact(result) + System.lineSeparator()
+                                : text.impact(root, result));
+                out.flush();
+                return ExitCode.OK;
+            }
             if (verify) {
                 Verification verification =
                         verifier.verify(
@@ -198,7 +232,7 @@ public class CleanCommand implements Callable<Integer> {
                             : text.result(root, result));
             out.flush();
             return result.failed().isEmpty() ? ExitCode.OK : 1;
-        } catch (CleanException | ConfigException | IOException e) {
+        } catch (CleanException | ConfigException | IOException | IllegalArgumentException e) {
             err.println("stealth clean: " + e.getMessage());
             err.flush();
             return ExitCode.USAGE;

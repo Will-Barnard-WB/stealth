@@ -116,6 +116,17 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
      * find, as Maven does, so a tree can mention a version that doesn't exist.
      */
     public boolean isPublished(String groupId, String artifactId, String version) {
+        return resolve(groupId, artifactId, version, "pom").isPresent();
+    }
+
+    /**
+     * Downloads (or finds in the local repository) one artifact file, e.g. a jar to read its API.
+     *
+     * @param extension {@code jar} or {@code pom}
+     * @return the file, or empty if it can't be resolved
+     */
+    public Optional<Path> resolve(
+            String groupId, String artifactId, String version, String extension) {
         start();
         MavenResolverSettings current = settings.get();
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
@@ -126,7 +137,7 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
         session.setConfigProperty(ConfigurationProperties.USER_AGENT, "stealth");
         ArtifactRequest request =
                 new ArtifactRequest(
-                        new DefaultArtifact(groupId, artifactId, "", "pom", version),
+                        new DefaultArtifact(groupId, artifactId, "", extension, version),
                         List.of(
                                 new RemoteRepository.Builder(
                                                 "central",
@@ -136,10 +147,11 @@ public class MavenModelLoader implements SharedResource<MavenProjectModel> {
                                         .build()),
                         null);
         try {
-            system.resolveArtifact(session, request);
-            return true;
+            return Optional.ofNullable(system.resolveArtifact(session, request).getArtifact())
+                    .map(a -> a.getFile())
+                    .map(java.io.File::toPath);
         } catch (ArtifactResolutionException e) {
-            return false;
+            return Optional.empty();
         }
     }
 

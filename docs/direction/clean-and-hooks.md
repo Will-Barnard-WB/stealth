@@ -339,6 +339,8 @@ Each step is a separate PR and useful on its own.
    **Status: built** (see [the ticket](../tickets/clean/ticket-hooks.md)). The hook format was confirmed against
    Claude Code itself; about 1 s per check.
 3. **`upgrade_impact`:** japicmp plus ASM call-site analysis.
+   **Status: built** with ASM alone (no japicmp; see [the ticket](../tickets/clean/ticket-upgrade-impact.md)). On
+   `boot2-legacy`, spring-web 5.3 → 6.1 points at the one broken override, with the jakarta replacement.
 4. **`test_gaps` and `verify_tests`:** coverage of affected call sites, measured with JaCoCo.
 5. **Later:** OpenRewrite recipes for the mechanical parts of migrations; `--open-pr`.
 

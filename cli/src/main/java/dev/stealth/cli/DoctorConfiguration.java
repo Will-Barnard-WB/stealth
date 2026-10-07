@@ -15,6 +15,7 @@ import dev.stealth.core.eol.EndOfLifeClient;
 import dev.stealth.core.http.CachedHttpClient;
 import dev.stealth.core.http.HttpCache;
 import dev.stealth.core.hygiene.RepoHygieneAnalyzer;
+import dev.stealth.core.impact.UpgradeImpact;
 import dev.stealth.core.maven.MavenModelLoader;
 import dev.stealth.core.maven.MavenResolverSettings;
 import dev.stealth.core.secrets.SecretsAnalyzer;
@@ -119,6 +120,11 @@ class DoctorConfiguration {
     @Bean
     CleanupVerifier cleanupVerifier(AnalyzerRunner runner) {
         return new CleanupVerifier(runner);
+    }
+
+    @Bean
+    UpgradeImpact upgradeImpact(MavenModelLoader loader) {
+        return new UpgradeImpact(loader);
     }
 
     @Bean
