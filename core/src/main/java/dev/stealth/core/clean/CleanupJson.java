@@ -83,6 +83,13 @@ public final class CleanupJson {
                         : "Show the user this plan. If they agree, call apply_cleanup to put the "
                                 + safe.size()
                                 + " safe patches on a new branch (tests are run before and after)."
+                                + (plan.reviewPatches().isEmpty()
+                                        ? ""
+                                        : " "
+                                                + plan.reviewPatches().size()
+                                                + " more are proven but jump past the versions the"
+                                                + " framework manages (allowMinor): explain the"
+                                                + " risk and let the user decide.")
                                 + (plan.secrets().isEmpty()
                                         ? ""
                                         : " Secrets: ask the user to rotate them, then move them"
@@ -95,6 +102,7 @@ public final class CleanupJson {
         node.put("change", patch.edit().describe());
         node.put("pom", patch.edit().pomPath());
         node.put("safe", patch.safe());
+        node.put("needsReview", patch.needsReview());
         node.put("level", lower(patch.level()));
         node.put("proof", lower(patch.proof().status()));
         node.put("clears", patch.proof().cleared().size());
@@ -116,8 +124,12 @@ public final class CleanupJson {
         patch.proof().problem().ifPresent(p -> node.put("problem", p));
         if (patch.crossesMajor()) {
             node.put("note", "Moves to a new major version: not applied unless allowMajor is set.");
-        } else if (patch.level() == dev.stealth.core.deps.Versions.Update.MINOR) {
-            node.put("note", "Minor version jump: the tests decide whether it's safe.");
+        } else if (patch.needsReview()) {
+            node.put(
+                    "note",
+                    "A minor jump past the version the parent or BOM manages, which the framework"
+                            + " wasn't tested with: not applied unless allowMinor is set. Check the"
+                            + " library's compatibility with the framework first.");
         }
         return node;
     }

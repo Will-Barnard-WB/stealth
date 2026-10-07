@@ -36,19 +36,21 @@ public class Cleaner {
 
     /**
      * @param includeMajor also apply proven patches that move a dependency to a new major
+     * @param includeMinor also apply proven minor jumps past what the framework manages
      * @param tests how to run the tests; empty skips them (the result then says so)
      * @param allowFailingTests go ahead when the tests already fail, requiring no new failures
      * @param branch the branch to create; empty names it {@code stealth/clean-<date>-<time>}
      */
     public record Options(
             boolean includeMajor,
+            boolean includeMinor,
             Optional<TestRunner> tests,
             boolean allowFailingTests,
             Optional<String> branch) {}
 
     public CleanupResult apply(RepoContext context, CleanupPlan plan, Options options)
             throws CleanException, InterruptedException {
-        List<Patch> chosen = chosen(plan, options.includeMajor());
+        List<Patch> chosen = chosen(plan, options.includeMajor(), options.includeMinor());
         GitWorkspace git = GitWorkspace.of(context.root());
         git.requireClean();
         String base = git.head();
@@ -148,10 +150,13 @@ public class Cleaner {
      * The proven patches to apply, in an order whose line numbers stay valid. With {@code
      * includeMajor}, a proven major patch replaces the same-major patch editing the same thing.
      */
-    static List<Patch> chosen(CleanupPlan plan, boolean includeMajor) {
+    static List<Patch> chosen(CleanupPlan plan, boolean includeMajor, boolean includeMinor) {
         Map<String, Patch> byEdit = new LinkedHashMap<>();
         for (Patch patch : plan.patches()) {
-            boolean wanted = patch.safe() || (includeMajor && patch.proof().accepted());
+            boolean wanted =
+                    patch.safe()
+                            || (includeMinor && patch.needsReview())
+                            || (includeMajor && patch.proof().accepted());
             if (!wanted) {
                 continue;
             }

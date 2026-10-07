@@ -43,9 +43,12 @@ class PatchPlannerTest {
     void plan_versionManagedByTheParentsProperty_overridesThatProperty() throws Exception {
         Patch lib = safePatchFor(plan(), "com.example:lib");
 
-        assertThat(lib.edit()).isEqualTo(new PomEdit.SetProperty("pom.xml", "lib.version", "1.1"));
+        assertThat(lib.edit())
+                .isEqualTo(new PomEdit.SetProperty("pom.xml", "lib.version", "1.0.1"));
         assertThat(lib.proof().status()).isEqualTo(Proof.Status.PROVEN);
-        assertThat(lib.level()).isEqualTo(Versions.Update.MINOR);
+        // A patch release of a version the parent manages: safe by default
+        assertThat(lib.level()).isEqualTo(Versions.Update.PATCH);
+        assertThat(lib.safe()).isTrue();
     }
 
     @Test
@@ -73,6 +76,9 @@ class PatchPlannerTest {
         assertThat(famA.edit())
                 .isEqualTo(new PomEdit.PinVersion("pom.xml", "com.example", "fam-a", "1.1"));
         assertThat(famA.proof().status()).isEqualTo(Proof.Status.PROVEN);
+        // A minor jump past what the BOM manages: proven, but a person decides
+        assertThat(famA.needsReview()).isTrue();
+        assertThat(famA.safe()).isFalse();
     }
 
     @Test
@@ -93,10 +99,11 @@ class PatchPlannerTest {
         assertThat(loose.edit())
                 .isEqualTo(new PomEdit.PinVersion("pom.xml", "com.example", "loose", "1.2"));
         assertThat(loose.proof().status()).isEqualTo(Proof.Status.PROVEN);
+        assertThat(loose.needsReview()).isTrue();
     }
 
     @Test
-    void plan_safePatchesTogether_areProvenAndOnlyTheMajorOnlyAdvisoryRemains() throws Exception {
+    void plan_safePatchesTogether_areProvenAndWhatTheyDontCoverRemains() throws Exception {
         CleanupPlan plan = plan();
 
         assertThat(plan.combined())
@@ -107,7 +114,7 @@ class PatchPlannerTest {
                         });
         assertThat(plan.remaining())
                 .extracting(f -> f.advisory().orElseThrow().id())
-                .containsExactlyInAnyOrder("ADV-L2", "ADV-GHOST");
+                .containsExactlyInAnyOrder("ADV-F", "ADV-X", "ADV-L2", "ADV-GHOST");
         // Planning never touches the repository itself
         assertThat(Files.readString(app.resolve("pom.xml"))).isEqualTo(MavenWorld.APP_POM);
     }

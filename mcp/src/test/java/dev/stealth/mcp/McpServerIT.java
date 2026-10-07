@@ -13,6 +13,9 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import dev.stealth.core.AllAnalyzers;
 import dev.stealth.core.AnalyzerRunner;
 import dev.stealth.core.Fixture;
+import dev.stealth.core.clean.Cleaner;
+import dev.stealth.core.clean.CleanupVerifier;
+import dev.stealth.core.clean.PatchPlanner;
 import dev.stealth.core.deps.MavenCentralClient;
 import dev.stealth.core.deps.MavenCentralSearch;
 import dev.stealth.core.maven.MavenModelLoader;
@@ -37,6 +40,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterAll;
@@ -79,6 +83,10 @@ class McpServerIT {
         parent.registerBean(MavenCentralSearch.class, components::search);
         parent.registerBean(VulnerabilityAnalyzer.class, components::vulnerabilities);
         parent.registerBean(Clock.class, () -> AllAnalyzers.REFERENCE_DATE);
+        PatchPlanner planner = new PatchPlanner(loader, components.vulnerabilities());
+        parent.registerBean(PatchPlanner.class, () -> planner);
+        parent.registerBean(Cleaner.class, () -> new Cleaner(planner, AllAnalyzers.REFERENCE_DATE));
+        parent.registerBean(CleanupVerifier.class, () -> new CleanupVerifier(components.runner()));
         parent.refresh();
 
         port = freePort();
@@ -113,12 +121,26 @@ class McpServerIT {
 
             assertThat(tools.tools())
                     .extracting(McpSchema.Tool::name)
-                    .containsExactlyInAnyOrder("repo_health", "list_findings", "check_dependency");
+                    .containsExactlyInAnyOrder(
+                            "repo_health",
+                            "list_findings",
+                            "check_dependency",
+                            "plan_cleanup",
+                            "apply_cleanup",
+                            "verify_cleanup");
             assertThat(tools.tools())
-                    .allSatisfy(
+                    .allSatisfy(tool -> assertThat(tool.description()).isNotBlank());
+            // Only apply_cleanup writes anything (a new branch), and it's not destructive
+            assertThat(tools.tools())
+                    .filteredOn(tool -> !tool.name().equals("apply_cleanup"))
+                    .allSatisfy(tool -> assertThat(tool.annotations().readOnlyHint()).isTrue());
+            assertThat(tools.tools())
+                    .filteredOn(tool -> tool.name().equals("apply_cleanup"))
+                    .singleElement()
+                    .satisfies(
                             tool -> {
-                                assertThat(tool.description()).isNotBlank();
-                                assertThat(tool.annotations().readOnlyHint()).isTrue();
+                                assertThat(tool.annotations().readOnlyHint()).isFalse();
+                                assertThat(tool.annotations().destructiveHint()).isFalse();
                             });
             McpSchema.Tool listFindings =
                     tools.tools().stream()
@@ -202,6 +224,39 @@ class McpServerIT {
                                     + " 1.10.0.")
                     .contains(
                             "The latest stable version is 1.15.0, with no known vulnerabilities.");
+        }
+    }
+
+    @Test
+    void planCleanup_boot2Legacy_reportsTheVulnerabilitiesAndWhatCanBeFixed() {
+        try (McpSyncClient client = client(TOKEN)) {
+            JsonNode plan =
+                    call(
+                            client,
+                            "plan_cleanup",
+                            Map.of("path", Fixture.BOOT2_LEGACY.path().toString()));
+
+            assertThat(plan.get("vulnerabilities").asInt()).isPositive();
+            assertThat(plan.get("patches").isArray()).isTrue();
+            assertThat(plan.get("needsMigration").isArray()).isTrue();
+            assertThat(plan.get("next").asString()).isNotBlank();
+        }
+    }
+
+    @Test
+    void applyAndVerifyCleanup_outsideGit_areToolErrorsSayingWhy(@TempDir Path notGit)
+            throws IOException {
+        Path copy = Fixture.BOOT2_LEGACY.copyTo(notGit);
+        try (McpSyncClient client = client(TOKEN)) {
+            for (String tool : List.of("apply_cleanup", "verify_cleanup")) {
+                McpSchema.CallToolResult result =
+                        client.callTool(
+                                new McpSchema.CallToolRequest(
+                                        tool, Map.of("path", copy.toString(), "skipTests", true)));
+
+                assertThat(result.isError()).as(tool).isTrue();
+                assertThat(text(result)).as(tool).contains("isn't in a git repository");
+            }
         }
     }
 

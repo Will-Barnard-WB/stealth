@@ -40,9 +40,28 @@ public record Patch(
         Objects.requireNonNull(proof, "proof");
     }
 
-    /** Proven or partly proven, and within the same major: safe to apply. */
+    /**
+     * Proven, and either a patch release of a version the framework manages, or a change to a
+     * version this repository declares itself: safe to apply by default.
+     */
     public boolean safe() {
-        return proof.accepted() && !crossesMajor;
+        return proof.accepted() && !crossesMajor && !pastManagedLine();
+    }
+
+    /**
+     * Proven, but a minor-version jump past what the parent or BOM manages (e.g. Logback 1.2 to 1.5
+     * under Spring Boot 2.7): the framework wasn't tested with it, so a person decides.
+     */
+    public boolean needsReview() {
+        return proof.accepted() && !crossesMajor && pastManagedLine();
+    }
+
+    /**
+     * Whether this overrides a version managed outside the repository (a parent's property, a BOM,
+     * a pin of a transitive dependency) beyond its patch line.
+     */
+    public boolean pastManagedLine() {
+        return !(edit instanceof PomEdit.SetVersion) && level != Versions.Update.PATCH;
     }
 
     /** A dependency version moved by a patch. */

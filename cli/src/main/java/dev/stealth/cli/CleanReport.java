@@ -64,6 +64,21 @@ class CleanReport {
             }
             lines.add("");
         }
+        List<Patch> review = plan.reviewPatches();
+        if (!review.isEmpty()) {
+            lines.add(
+                    "  "
+                            + style("bold,fg(214)", "Needs review")
+                            + style(
+                                    "faint",
+                                    "  proven, but past the versions your framework manages:"
+                                            + " --allow-minor applies them"));
+            for (Patch patch : review) {
+                lines.add(patchLine(" -", patch));
+                detail(patch).forEach(d -> lines.add("      " + style("faint", d)));
+            }
+            lines.add("");
+        }
         List<Patch> major =
                 plan.patches().stream()
                         .filter(p -> p.crossesMajor() && p.proof().accepted())
@@ -276,8 +291,10 @@ class CleanReport {
         if (!patch.alsoMoves().isEmpty()) {
             details.add("also moves " + String.join(", ", shortNames(patch.alsoMoves())));
         }
-        if (patch.level() == Versions.Update.MINOR) {
-            details.add("a minor-version jump: the tests decide whether it's safe");
+        if (patch.needsReview()) {
+            details.add("check it works with your framework's version before applying");
+        } else if (patch.level() == Versions.Update.MINOR) {
+            details.add("a minor-version jump in a dependency you declare");
         }
         return details;
     }

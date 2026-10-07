@@ -43,6 +43,7 @@ final class MavenWorld {
             Map.of(
                     "com.example:direct@1.0", List.of("ADV-D"),
                     "com.example:lib@1.0", List.of("ADV-L", "ADV-L2"),
+                    "com.example:lib@1.0.1", List.of("ADV-L2"),
                     "com.example:lib@1.1", List.of("ADV-L2"),
                     "com.example:fam-a@1.0", List.of("ADV-F"),
                     // Moving the whole BOM to 1.1 brings this in, so that patch must be rejected
@@ -130,7 +131,8 @@ final class MavenWorld {
         String version = parts[2];
         String fixed =
                 switch (advisory) {
-                    case "ADV-D", "ADV-L", "ADV-F" -> "1.1";
+                    case "ADV-L" -> "1.0.1";
+                    case "ADV-D", "ADV-F" -> "1.1";
                     case "ADV-L2" -> "2.0";
                     case "ADV-X" -> "1.2";
                     case "ADV-GHOST" -> "1.9";
@@ -254,7 +256,7 @@ final class MavenWorld {
         for (String[] artifact :
                 List.of(
                         new String[] {"direct", "1.0", "1.1"},
-                        new String[] {"lib", "1.0", "1.1", "2.0"},
+                        new String[] {"lib", "1.0", "1.0.1", "1.1", "2.0"},
                         new String[] {"fam-a", "1.0", "1.1"},
                         new String[] {"fam-b", "1.0", "1.1"},
                         new String[] {"loose", "1.0", "1.2"})) {

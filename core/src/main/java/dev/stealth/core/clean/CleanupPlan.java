@@ -32,4 +32,9 @@ public record CleanupPlan(
     public List<Patch> safePatches() {
         return patches.stream().filter(Patch::safe).toList();
     }
+
+    /** Proven minor jumps past what the framework manages: a person decides. */
+    public List<Patch> reviewPatches() {
+        return patches.stream().filter(Patch::needsReview).toList();
+    }
 }

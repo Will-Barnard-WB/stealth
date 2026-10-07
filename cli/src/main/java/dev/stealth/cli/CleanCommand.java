@@ -74,6 +74,13 @@ public class CleanCommand implements Callable<Integer> {
     private boolean apply;
 
     @Option(
+            names = "--allow-minor",
+            description =
+                    "With --apply, also apply proven minor jumps past the versions your framework"
+                            + " (e.g. Spring Boot) manages.")
+    private boolean allowMinor;
+
+    @Option(
             names = "--allow-major",
             description =
                     "With --apply, also apply proven patches that move to a new major version.")
@@ -181,6 +188,7 @@ public class CleanCommand implements Callable<Integer> {
                             plan,
                             new Cleaner.Options(
                                     allowMajor,
+                                    allowMinor,
                                     skipTests ? Optional.empty() : Optional.of(testRunner()),
                                     allowFailingTests,
                                     Optional.ofNullable(branch)));

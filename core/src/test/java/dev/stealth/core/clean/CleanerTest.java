@@ -77,9 +77,29 @@ class CleanerTest {
                 .hasSize(4);
         assertThat(git("show", "stealth/clean-20261007-1412:pom.xml"))
                 .contains("<direct.version>1.1</direct.version>")
-                .contains("<lib.version>1.1</lib.version>")
+                .contains("<lib.version>1.0.1</lib.version>")
                 .contains("<artifactId>loose</artifactId>")
                 .contains("<artifactId>fam-a</artifactId>");
+    }
+
+    @Test
+    void apply_byDefault_leavesOutMinorJumpsPastWhatTheFrameworkManages() throws Exception {
+        CleanupResult result =
+                cleaner.apply(
+                        context,
+                        plan(),
+                        new Cleaner.Options(
+                                false,
+                                false,
+                                testsPassingUnless("NEVER"),
+                                false,
+                                Optional.empty()));
+
+        assertThat(result.applied())
+                .extracting(a -> a.patch().edit())
+                .containsExactlyInAnyOrder(
+                        new PomEdit.SetVersion("pom.xml", 12, "1.0", "1.1"),
+                        new PomEdit.SetProperty("pom.xml", "lib.version", "1.0.1"));
     }
 
     @Test
@@ -103,7 +123,7 @@ class CleanerTest {
                         });
         assertThat(git("show", result.branch().orElseThrow() + ":pom.xml"))
                 .doesNotContain("<artifactId>loose</artifactId>")
-                .contains("<lib.version>1.1</lib.version>");
+                .contains("<lib.version>1.0.1</lib.version>");
     }
 
     @Test
@@ -142,16 +162,16 @@ class CleanerTest {
 
     @Test
     void chosen_includeMajor_replacesTheSameMajorPatchForTheSameEdit() throws Exception {
-        List<Patch> safe = Cleaner.chosen(plan(), false);
-        List<Patch> withMajor = Cleaner.chosen(plan(), true);
+        List<Patch> safe = Cleaner.chosen(plan(), false, false);
+        List<Patch> withMajor = Cleaner.chosen(plan(), true, false);
 
         assertThat(safe)
                 .extracting(p -> p.edit())
-                .contains(new PomEdit.SetProperty("pom.xml", "lib.version", "1.1"));
+                .contains(new PomEdit.SetProperty("pom.xml", "lib.version", "1.0.1"));
         assertThat(withMajor)
                 .extracting(p -> p.edit())
                 .contains(new PomEdit.SetProperty("pom.xml", "lib.version", "2.0"))
-                .doesNotContain(new PomEdit.SetProperty("pom.xml", "lib.version", "1.1"));
+                .doesNotContain(new PomEdit.SetProperty("pom.xml", "lib.version", "1.0.1"));
         // Line edits come first, so insertions can't move the lines they point at
         assertThat(safe.getFirst().edit()).isInstanceOf(PomEdit.SetVersion.class);
     }
@@ -165,13 +185,13 @@ class CleanerTest {
                                         p.edit()
                                                 .equals(
                                                         new PomEdit.SetProperty(
-                                                                "pom.xml", "lib.version", "1.1")))
+                                                                "pom.xml", "lib.version", "1.0.1")))
                         .findFirst()
                         .orElseThrow();
 
         assertThat(Cleaner.message(lib))
                 .startsWith(
-                        "stealth clean: Set <lib.version>1.1</lib.version>\n\n"
+                        "stealth clean: Set <lib.version>1.0.1</lib.version>\n\n"
                                 + "Clears 1 known vulnerability:\n"
                                 + "- com.example:lib ADV-L\n")
                 .endsWith("no new known vulnerabilities.");
@@ -181,8 +201,9 @@ class CleanerTest {
         return world.planner.plan(context, world.report(context));
     }
 
+    /** Every proven same-major patch, including the ones that need review. */
     private static Cleaner.Options options(Optional<TestRunner> tests) {
-        return new Cleaner.Options(false, tests, false, Optional.empty());
+        return new Cleaner.Options(false, true, tests, false, Optional.empty());
     }
 
     /** A stand-in test suite: fails when the project's pom.xml contains {@code text}. */
