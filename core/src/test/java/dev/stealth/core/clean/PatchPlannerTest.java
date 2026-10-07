@@ -93,13 +93,41 @@ class PatchPlannerTest {
     }
 
     @Test
-    void plan_unmanagedTransitiveDependency_isPinned() throws Exception {
-        Patch loose = patchFor(plan(), "com.example:loose");
+    void plan_unmanagedTransitiveDependency_isPinnedSafelyWithinItsLineAndForReviewBeyond()
+            throws Exception {
+        List<Patch> loose =
+                plan().patches().stream()
+                        .filter(
+                                p ->
+                                        p.changes().stream()
+                                                .anyMatch(
+                                                        c ->
+                                                                c.dependency()
+                                                                        .equals(
+                                                                                "com.example:loose")))
+                        .toList();
 
-        assertThat(loose.edit())
-                .isEqualTo(new PomEdit.PinVersion("pom.xml", "com.example", "loose", "1.2"));
-        assertThat(loose.proof().status()).isEqualTo(Proof.Status.PROVEN);
-        assertThat(loose.needsReview()).isTrue();
+        // The patch release fixes what it can, safely; the minor jump fixes the rest, for review
+        assertThat(loose)
+                .filteredOn(Patch::safe)
+                .singleElement()
+                .satisfies(
+                        p -> {
+                            assertThat(p.edit())
+                                    .isEqualTo(
+                                            new PomEdit.PinVersion(
+                                                    "pom.xml", "com.example", "loose", "1.0.2"));
+                            assertThat(p.targets()).containsExactly("com.example:loose ADV-X2");
+                        });
+        assertThat(loose)
+                .filteredOn(Patch::needsReview)
+                .singleElement()
+                .satisfies(
+                        p ->
+                                assertThat(p.edit())
+                                        .isEqualTo(
+                                                new PomEdit.PinVersion(
+                                                        "pom.xml", "com.example", "loose", "1.2")));
     }
 
     @Test

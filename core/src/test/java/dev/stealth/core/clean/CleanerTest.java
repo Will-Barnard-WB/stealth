@@ -62,7 +62,7 @@ class CleanerTest {
         assertThat(result.branch()).contains("stealth/clean-20261007-1412");
         assertThat(result.applied()).hasSize(4);
         assertThat(result.failed()).isEmpty();
-        assertThat(result.vulnerabilitiesBefore()).isEqualTo(6);
+        assertThat(result.vulnerabilitiesBefore()).isEqualTo(7);
         assertThat(result.vulnerabilitiesAfter()).isEqualTo(2);
         assertThat(result.baseline()).hasValueSatisfying(r -> assertThat(r.passed()).isTrue());
         // The user's checkout is exactly as it was
@@ -99,7 +99,8 @@ class CleanerTest {
                 .extracting(a -> a.patch().edit())
                 .containsExactlyInAnyOrder(
                         new PomEdit.SetVersion("pom.xml", 12, "1.0", "1.1"),
-                        new PomEdit.SetProperty("pom.xml", "lib.version", "1.0.1"));
+                        new PomEdit.SetProperty("pom.xml", "lib.version", "1.0.1"),
+                        new PomEdit.PinVersion("pom.xml", "com.example", "loose", "1.0.2"));
     }
 
     @Test

@@ -50,7 +50,9 @@ final class MavenWorld {
                     "com.example:fam-b@1.1", List.of("ADV-NEW"),
                     // Its fix (1.9) was never published, like Spring's commercial-only 5.3.4x
                     "com.example:fam-b@1.0", List.of("ADV-GHOST"),
-                    "com.example:loose@1.0", List.of("ADV-X"));
+                    // ADV-X2 is fixed in a patch release, ADV-X only in the next minor
+                    "com.example:loose@1.0", List.of("ADV-X", "ADV-X2"),
+                    "com.example:loose@1.0.2", List.of("ADV-X"));
 
     final MavenModelLoader loader;
     final PatchPlanner planner;
@@ -135,6 +137,7 @@ final class MavenWorld {
                     case "ADV-D", "ADV-F" -> "1.1";
                     case "ADV-L2" -> "2.0";
                     case "ADV-X" -> "1.2";
+                    case "ADV-X2" -> "1.0.2";
                     case "ADV-GHOST" -> "1.9";
                     default -> "9.9";
                 };
@@ -259,7 +262,7 @@ final class MavenWorld {
                         new String[] {"lib", "1.0", "1.0.1", "1.1", "2.0"},
                         new String[] {"fam-a", "1.0", "1.1"},
                         new String[] {"fam-b", "1.0", "1.1"},
-                        new String[] {"loose", "1.0", "1.2"})) {
+                        new String[] {"loose", "1.0", "1.0.2", "1.2"})) {
             for (int i = 1; i < artifact.length; i++) {
                 pom(localRepository, artifact[0], artifact[i], "");
             }

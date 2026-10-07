@@ -107,7 +107,8 @@ public class PatchPlanner {
         for (Target target : targets(vulnerabilities, model)) {
             for (Candidate candidate : target.candidates(isPublished)) {
                 candidates.merge(
-                        candidate.edit().key() + (candidate.crossesMajor() ? "+major" : ""),
+                        // Separate tiers of the same edit stay separate patches
+                        candidate.edit().key() + "+" + candidate.level(),
                         candidate,
                         Candidate::merge);
             }
@@ -372,6 +373,18 @@ public class PatchPlanner {
                                                                     ? newMajor
                                                                     : sameMajor)
                                                             .put(advisory, v)));
+            // A patch release that fixes what it can within the current minor line (Logback
+            // 1.2.13 rather than 1.5.x): the safe option when the rest needs a minor jump
+            Map<String, String> sameMinor = new LinkedHashMap<>();
+            sameMajor.forEach(
+                    (advisory, v) -> {
+                        if (Versions.update(version, v) == Versions.Update.PATCH) {
+                            sameMinor.put(advisory, v);
+                        }
+                    });
+            if (!sameMinor.isEmpty() && sameMinor.size() < sameMajor.size()) {
+                candidate(sameMinor, false).ifPresent(candidates::add);
+            }
             candidate(sameMajor, false).ifPresent(candidates::add);
             // The cross-major patch has to fix the same-major advisories too
             Map<String, String> all = new LinkedHashMap<>(sameMajor);
@@ -516,6 +529,14 @@ public class PatchPlanner {
             boolean crossesMajor,
             Optional<String> bom,
             List<Candidate> fallbacks) {
+
+        /** The biggest move among the changes (Update is declared biggest first). */
+        Versions.Update level() {
+            return changes.stream()
+                    .map(c -> Versions.update(c.from(), c.to()))
+                    .min(Comparator.naturalOrder())
+                    .orElse(Versions.Update.PATCH);
+        }
 
         /** Two edits of the same thing: one edit at the higher version, covering both. */
         Candidate merge(Candidate other) {
