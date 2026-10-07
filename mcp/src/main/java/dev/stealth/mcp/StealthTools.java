@@ -230,12 +230,20 @@ class StealthTools {
         }
         warnings(json, report);
         scanned(json, scan);
+        boolean vulnerable =
+                report.findings().stream()
+                        .anyMatch(f -> f.ruleId().equals("vuln/known-vulnerability"));
         json.put(
                 "next",
                 report.findings().isEmpty()
                         ? "Nothing to fix."
-                        : "Call list_findings (e.g. category=security) for every finding with its"
-                                + " fix.");
+                        : (vulnerable
+                                        ? "To fix the vulnerabilities, call plan_cleanup: it works"
+                                              + " out proven version changes (don't edit pom.xml by"
+                                              + " hand). "
+                                        : "")
+                                + "Call list_findings (e.g. category=security) for every finding"
+                                + " with its fix.");
         return json;
     }
 
@@ -375,6 +383,12 @@ class StealthTools {
                                 r.fixedVersion().ifPresent(v -> node.put("fixedVersion", v));
                                 r.description().ifPresent(d -> node.put("fix", d));
                             });
+        }
+        if (matching.stream().anyMatch(f -> f.ruleId().equals("vuln/known-vulnerability"))) {
+            json.put(
+                    "fixVulnerabilities",
+                    "Call plan_cleanup for proven version changes that fix these, instead of"
+                            + " editing pom.xml by hand.");
         }
         if (matching.size() > limit) {
             json.put(

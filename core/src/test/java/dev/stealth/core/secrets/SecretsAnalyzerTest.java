@@ -112,6 +112,30 @@ class SecretsAnalyzerTest {
         assertThat(copied).isEqualTo(inRepo);
     }
 
+    @Test
+    void analyze_windowsLineEndings_findsTheSameSecretsWithTheSameFingerprints() throws Exception {
+        Path copy = Fixture.WITH_SECRETS.copyTo(tempDir);
+        try (var files = java.nio.file.Files.walk(copy)) {
+            for (Path file : files.filter(java.nio.file.Files::isRegularFile).toList()) {
+                String text = java.nio.file.Files.readString(file);
+                java.nio.file.Files.writeString(
+                        file, text.replace("\r\n", "\n").replace("\n", "\r\n"));
+            }
+        }
+
+        List<Finding> crlf = analyzer.analyze(context(copy));
+
+        assertThat(crlf)
+                .extracting(Finding::ruleId, Finding::fingerprint)
+                .containsExactlyElementsOf(
+                        analyzer.analyze(Fixture.WITH_SECRETS.context()).stream()
+                                .map(
+                                        f ->
+                                                org.assertj.core.groups.Tuple.tuple(
+                                                        f.ruleId(), f.fingerprint()))
+                                .toList());
+    }
+
     /** Every fixture except with-secrets must say "no secrets". */
     @ParameterizedTest
     @EnumSource(value = Fixture.class, names = "WITH_SECRETS", mode = EnumSource.Mode.EXCLUDE)

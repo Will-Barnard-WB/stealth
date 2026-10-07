@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,6 +57,93 @@ final class VersionLocator {
             return new Located(followValue(sourcePom.get(), version, modulePom), source);
         }
         return locateExternal(version.getSource().getModelId(), modulePom);
+    }
+
+    /**
+     * Where a {@code <dependencyManagement>} version of a module's effective model comes from, and
+     * whether a property in this repository can change it.
+     *
+     * @param lineage the model ids of the module and its parents, as the model builder reports them
+     * @param imports BOM imports declared by the module and its parents, by the BOM's {@code
+     *     groupId:artifactId}
+     */
+    ManagedVersion managed(
+            Dependency managed,
+            Set<String> lineage,
+            Map<String, BomImport> imports,
+            Path modulePom) {
+        InputLocation version = managed.getLocation("version");
+        if (version == null || version.getSource() == null) {
+            return new ManagedVersion(
+                    managed.getVersion(),
+                    "",
+                    Optional.empty(),
+                    false,
+                    Optional.empty(),
+                    Optional.empty());
+        }
+        String modelId = Objects.requireNonNullElse(version.getSource().getModelId(), "");
+        Optional<Path> repoPom = repoPom(version.getSource().getLocation());
+        if (repoPom.isPresent()) {
+            return new ManagedVersion(
+                    managed.getVersion(),
+                    modelId,
+                    Optional.empty(),
+                    false,
+                    followValue(repoPom.get(), version, modulePom),
+                    Optional.empty());
+        }
+        // Managed by a BOM that we or a parent import: its version is what can change
+        BomImport bom = imports.get(groupAndArtifact(modelId));
+        if (bom != null && !lineage.contains(modelId)) {
+            Matcher matcher = PROPERTY.matcher(Objects.requireNonNullElse(bom.version(), ""));
+            Optional<String> property =
+                    matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
+            Optional<Location> here =
+                    bom.declaringPom().flatMap(pom -> followValue(pom, bom.location(), modulePom));
+            // An external parent's import reads its version property in our inheritance chain,
+            // so overriding that property here moves the BOM
+            boolean overridable = bom.declaringPom().isEmpty() && property.isPresent();
+            return new ManagedVersion(
+                    managed.getVersion(),
+                    modelId,
+                    property,
+                    overridable,
+                    here,
+                    Optional.of(groupAndArtifact(modelId)));
+        }
+        Optional<String> property = Optional.empty();
+        String sourceFile = version.getSource().getLocation();
+        if (sourceFile != null) {
+            Matcher matcher = PROPERTY.matcher(line(Path.of(sourceFile), version.getLineNumber()));
+            if (matcher.find()) {
+                property = Optional.of(matcher.group(1));
+            }
+        }
+        // Parents' properties can be overridden by ours; an imported BOM's can't
+        boolean inherited = lineage.contains(modelId);
+        return new ManagedVersion(
+                managed.getVersion(),
+                modelId,
+                property,
+                inherited && property.isPresent(),
+                Optional.empty(),
+                Optional.empty());
+    }
+
+    /**
+     * A BOM import as written by the module or one of its parents.
+     *
+     * @param version the version as written, e.g. {@code ${jackson-bom.version}}
+     * @param location where the version is written
+     * @param declaringPom the importing POM when it's in this repository; empty for external
+     *     parents
+     */
+    record BomImport(String version, InputLocation location, Optional<Path> declaringPom) {}
+
+    /** Whether {@code sourceLocation} is one of this repository's POMs, and which. */
+    Optional<Path> repositoryPom(String sourceLocation) {
+        return repoPom(sourceLocation);
     }
 
     /**

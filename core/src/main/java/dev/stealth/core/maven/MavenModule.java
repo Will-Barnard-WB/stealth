@@ -19,6 +19,9 @@ import java.util.Optional;
  * @param springBootVersion the Spring Boot version the module uses, if any
  * @param parent the external parent at the top of the module's hierarchy, if any
  * @param importedBoms BOMs imported by the module or its parents in this repository
+ * @param managedVersions the effective {@code <dependencyManagement>} by {@code
+ *     groupId:artifactId}, with where each version comes from; empty when the model couldn't be
+ *     built
  */
 public record MavenModule(
         String groupId,
@@ -32,7 +35,8 @@ public record MavenModule(
         Optional<DeclaredVersion> javaVersion,
         Optional<DeclaredVersion> springBootVersion,
         Optional<PomReference> parent,
-        List<PomReference> importedBoms) {
+        List<PomReference> importedBoms,
+        Map<String, ManagedVersion> managedVersions) {
 
     public MavenModule {
         Objects.requireNonNull(groupId, "groupId");
@@ -47,6 +51,7 @@ public record MavenModule(
         Objects.requireNonNull(springBootVersion, "springBootVersion");
         Objects.requireNonNull(parent, "parent");
         importedBoms = List.copyOf(importedBoms);
+        managedVersions = Map.copyOf(managedVersions);
     }
 
     /** The direct dependency {@code groupId:artifactId}, if the module has one. */

@@ -115,6 +115,17 @@ class RepoScans {
         }
     }
 
+    /** The repository with its {@code .stealth.yml}, for tools that run more than doctor. */
+    RepoContext context(Path root) throws ConfigException {
+        Set<String> rules = new HashSet<>();
+        Set<String> analyzers = new HashSet<>();
+        for (Analyzer analyzer : runner.analyzers()) {
+            analyzers.add(analyzer.id());
+            analyzer.rules().forEach(rule -> rules.add(rule.id()));
+        }
+        return new RepoContext(root, StealthConfigLoader.load(root, rules, analyzers).config());
+    }
+
     /** The repository's state, or empty outside git (or if git can't be read). */
     static Optional<String> state(Path root) {
         FileRepositoryBuilder builder = new FileRepositoryBuilder().findGitDir(root.toFile());

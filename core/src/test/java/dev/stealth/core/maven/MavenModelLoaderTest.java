@@ -148,6 +148,50 @@ class MavenModelLoaderTest {
     }
 
     @Test
+    void load_boot2Legacy_transitiveVersionsManagedByTheBootParentAreOverridableProperties() {
+        ManagedVersion tomcat =
+                boot2Legacy
+                        .module("")
+                        .orElseThrow()
+                        .managedVersions()
+                        .get("org.apache.tomcat.embed:tomcat-embed-core");
+
+        assertThat(tomcat.version()).isEqualTo("9.0.83");
+        assertThat(tomcat.managedBy())
+                .startsWith("org.springframework.boot:spring-boot-dependencies:");
+        assertThat(tomcat.property()).contains("tomcat.version");
+        assertThat(tomcat.overridable()).isTrue();
+        assertThat(tomcat.declaredAt()).isEmpty();
+    }
+
+    @Test
+    void load_multiModule_versionsFromAnImportedBomAreNotOverridable() {
+        ManagedVersion databind =
+                multiModule
+                        .module("")
+                        .orElseThrow()
+                        .managedVersions()
+                        .get("com.fasterxml.jackson.core:jackson-databind");
+
+        assertThat(databind.managedBy()).startsWith("com.fasterxml.jackson:jackson-bom:");
+        assertThat(databind.overridable()).isFalse();
+    }
+
+    @Test
+    void load_multiModule_versionsManagedInTheRepositoryPointAtTheirLine() {
+        ManagedVersion guava =
+                multiModule
+                        .module("")
+                        .orElseThrow()
+                        .managedVersions()
+                        .get("com.google.guava:guava");
+
+        assertThat(guava.declaredAt())
+                .hasValueSatisfying(l -> assertThat(l.path()).contains("pom.xml"));
+        assertThat(guava.overridable()).isFalse();
+    }
+
+    @Test
     void load_boot2Legacy_extractsSpringBootAndJavaVersions() {
         MavenModule module = boot2Legacy.module("").orElseThrow();
 
